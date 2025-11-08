@@ -58,7 +58,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use(mongoSanitize());
 
+// Health check endpoints (both /health and /api/health for compatibility)
 app.get('/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
@@ -84,7 +89,8 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(frontendDistPath));
 
   // Serve index.html for all non-API routes (SPA fallback)
-  app.get('*', (req, res) => {
+  // This must come AFTER all API routes to avoid catching them
+  app.get(/^(?!\/api).*/, (req, res) => {
     res.sendFile(join(frontendDistPath, 'index.html'));
   });
 }
