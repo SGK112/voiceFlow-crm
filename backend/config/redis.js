@@ -3,6 +3,12 @@ import { createClient } from 'redis';
 let redisClient = null;
 
 export const connectRedis = async () => {
+  // Skip Redis entirely if no config is provided
+  if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
+    console.log('⚠️  Redis not configured - skipping (caching and rate limiting disabled)');
+    return null;
+  }
+
   try {
     let redisConfig;
 
@@ -27,15 +33,10 @@ export const connectRedis = async () => {
         redisConfig.password = password;
       }
     }
-    // Otherwise try REDIS_URL
+    // Otherwise use REDIS_URL
     else if (process.env.REDIS_URL) {
       console.log('Connecting to Redis via URL');
       redisConfig = { url: process.env.REDIS_URL };
-    }
-    // Fallback to localhost
-    else {
-      console.log('No Redis config found, using localhost');
-      redisConfig = { url: 'redis://localhost:6379' };
     }
 
     redisClient = createClient(redisConfig);
@@ -46,8 +47,8 @@ export const connectRedis = async () => {
     await redisClient.connect();
     return redisClient;
   } catch (error) {
-    console.error('Redis connection error:', error);
-    console.error('Please check your REDIS_URL or REDIS_HOST/PORT/PASSWORD configuration');
+    console.error('⚠️  Redis connection failed:', error.message);
+    console.log('Continuing without Redis (caching and rate limiting disabled)');
     return null;
   }
 };
