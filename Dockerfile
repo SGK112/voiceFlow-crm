@@ -16,9 +16,9 @@ RUN npm install
 # Copy all application code
 COPY . ./
 
-# Install frontend dependencies and build
+# Install frontend dependencies and build (skip postinstall scripts to avoid patch-package issues)
 WORKDIR /app/frontend
-RUN npm install
+RUN npm install --ignore-scripts
 RUN npm run build
 
 # Clean up frontend node_modules to save space
