@@ -7,6 +7,9 @@ import ErrorBoundary from './components/ErrorBoundary';
 import App from './App';
 import './styles/index.css';
 
+// Enable dark mode by default
+document.documentElement.classList.add('dark');
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

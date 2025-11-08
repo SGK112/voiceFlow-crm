@@ -31,8 +31,8 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <Card className="w-full max-w-md shadow-xl">
         <CardHeader>
           <CardTitle className="text-2xl">Create your account</CardTitle>
           <CardDescription>Get started with VoiceFlow CRM</CardDescription>

@@ -2,6 +2,12 @@ import express from 'express';
 import { handleElevenLabsWebhook, handleN8nWebhook } from '../controllers/webhookController.js';
 import { handleStripeWebhook } from '../controllers/subscriptionController.js';
 import { handleCallCompletion, handleCallEvent } from '../controllers/callWebhookController.js';
+import {
+  handleTwilioVoice,
+  handleTwilioStatus,
+  handleElevenLabsForward,
+  handleElevenLabsOutbound
+} from '../controllers/twilioWebhookController.js';
 import { webhookLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
@@ -10,6 +16,12 @@ const router = express.Router();
 router.post('/elevenlabs', webhookLimiter, handleElevenLabsWebhook);
 router.post('/elevenlabs/call-completed', webhookLimiter, handleCallCompletion);
 router.post('/elevenlabs/call-event', webhookLimiter, handleCallEvent);
+
+// Twilio webhooks
+router.post('/twilio/voice', handleTwilioVoice);
+router.post('/twilio/status', handleTwilioStatus);
+router.post('/twilio/elevenlabs-forward', handleElevenLabsForward);
+router.post('/twilio/elevenlabs-outbound', handleElevenLabsOutbound);
 
 // N8N webhooks
 router.post('/n8n', webhookLimiter, handleN8nWebhook);

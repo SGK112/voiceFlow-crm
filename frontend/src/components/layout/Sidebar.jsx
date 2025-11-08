@@ -1,24 +1,25 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Phone, Users, PhoneCall, Workflow, CreditCard, Settings } from 'lucide-react';
+import { LayoutDashboard, Phone, Users, PhoneCall, Workflow, CreditCard, Settings, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Agents', href: '/agents', icon: Phone },
-  { name: 'Calls', href: '/calls', icon: PhoneCall },
-  { name: 'Leads', href: '/leads', icon: Users },
-  { name: 'Workflows', href: '/workflows', icon: Workflow },
-  { name: 'Billing', href: '/billing', icon: CreditCard },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
+  { name: 'Agents', href: '/app/agents', icon: Phone },
+  { name: 'Campaigns', href: '/app/campaigns', icon: Target },
+  { name: 'Calls', href: '/app/calls', icon: PhoneCall },
+  { name: 'Leads', href: '/app/leads', icon: Users },
+  { name: 'Workflows', href: '/app/workflows', icon: Workflow },
+  { name: 'Billing', href: '/app/billing', icon: CreditCard },
+  { name: 'Settings', href: '/app/settings', icon: Settings },
 ];
 
 export default function Sidebar() {
   const location = useLocation();
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 flex flex-col">
-      <div className="p-6 border-b border-gray-200">
-        <h1 className="text-2xl font-bold text-primary">VoiceFlow</h1>
+    <div className="w-64 bg-card border-r border-border flex flex-col">
+      <div className="p-6 border-b border-border">
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-amber-400 bg-clip-text text-transparent">VoiceFlow</h1>
         <p className="text-sm text-muted-foreground">AI Voice CRM</p>
       </div>
 
@@ -30,10 +31,10 @@ export default function Sidebar() {
               key={item.name}
               to={item.href}
               className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all',
                 isActive
-                  ? 'bg-primary text-white'
-                  : 'text-gray-700 hover:bg-gray-100'
+                  ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               )}
             >
               <item.icon className="h-5 w-5" />

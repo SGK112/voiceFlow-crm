@@ -36,12 +36,21 @@ class ElevenLabsService {
 
   async createAgent(config) {
     try {
-      const response = await this.client.post('/convai/agents', {
+      const response = await this.client.post('/convai/agents/create', {
         name: config.name,
-        voice_id: config.voiceId,
-        prompt: config.script,
-        first_message: config.firstMessage || 'Hello, how can I help you today?',
-        language: config.language || 'en'
+        conversation_config: {
+          tts: {
+            voice_id: config.voiceId,
+            model_id: 'eleven_flash_v2'  // Must use turbo or flash v2 for English agents
+          },
+          agent: {
+            prompt: {
+              prompt: config.script
+            },
+            first_message: config.firstMessage || 'Hello, how can I help you today?',
+            language: config.language || 'en'
+          }
+        }
       });
       return response.data;
     } catch (error) {

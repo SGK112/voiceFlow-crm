@@ -45,6 +45,78 @@
             margin: 0 auto;
             padding: 0 20px;
         }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 20, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            padding: 16px 0;
+            transition: all 0.3s;
+        }
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-logo {
+            font-size: 24px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #3b82f6, #fbbf24);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-decoration: none;
+        }
+        .navbar-menu {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .navbar-link {
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .navbar-link:hover {
+            color: #3b82f6;
+        }
+        .btn-nav {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-nav-login {
+            background: transparent;
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+        .btn-nav-login:hover {
+            background: rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+        .btn-nav-signup {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+        }
+        .btn-nav-signup:hover {
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+        }
         .hero {
             position: relative;
             min-height: 100vh;
@@ -372,6 +444,9 @@
             .btn { width: 100%; }
             .cta-container { flex-direction: column; }
             .pricing-card.featured { transform: scale(1); }
+            .navbar-menu { gap: 12px; }
+            .navbar-link { display: none; }
+            .btn-nav { padding: 8px 16px; font-size: 12px; }
         }
         @media (max-width: 480px) {
             .hero h1 { font-size: 34px; }
@@ -381,6 +456,19 @@
     </style>
 </head>
 <body>
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-logo">VoiceFlow CRM</a>
+            <div class="navbar-menu">
+                <a href="#pricing" class="navbar-link">Pricing</a>
+                <a href="https://elevenlabs.io/app/talk-to?agent_id=agent_3601k949jev2ekj8qe50z5c7tdfc" target="_blank" class="navbar-link">Demo</a>
+                <a href="/login" class="btn-nav btn-nav-login">Login</a>
+                <a href="/login" class="btn-nav btn-nav-signup">Start Free Trial</a>
+            </div>
+        </div>
+    </nav>
+
     <!-- HERO -->
     <section class="hero" id="hero">
         <video class="hero-video" autoplay muted loop playsinline>

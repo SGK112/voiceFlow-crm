@@ -33,6 +33,7 @@ import leadRoutes from './routes/leads.js';
 import workflowRoutes from './routes/workflows.js';
 import webhookRoutes from './routes/webhooks.js';
 import settingsRoutes from './routes/settings.js';
+import campaignRoutes from './routes/campaigns.js';
 
 const app = express();
 
@@ -68,6 +69,7 @@ app.use('/api/leads', leadRoutes);
 app.use('/api/workflows', workflowRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/campaigns', campaignRoutes);
 
 app.use('/api', apiLimiter);
 

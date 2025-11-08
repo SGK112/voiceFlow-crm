@@ -1,90 +1,178 @@
-# Render.com deployment configuration for VoiceFlow CRM
-# Visit: https://render.com
+# Render Blueprint for VoiceFlow CRM
+# One-click deployment to Render
+# Documentation: https://render.com/docs/blueprint-spec
+#
+# IMPORTANT: After deployment, you MUST set these environment variables in Render Dashboard:
+# - MONGO_URI (MongoDB Atlas connection string)
+# - ELEVENLABS_API_KEY and all agent IDs
+# - TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN
+# - STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET, and all price IDs
+# - EMAIL_USER and EMAIL_PASS
+# - VITE_STRIPE_PUBLISHABLE_KEY (for frontend)
 
 services:
   # Backend API Service
   - type: web
-    name: voiceflow-crm-backend
-    env: node
+    name: voiceflow-api
+    runtime: node
     region: oregon
     plan: starter
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    branch: main
+    buildCommand: npm install
+    startCommand: node backend/server.js
+    healthCheckPath: /health
+
     envVars:
       - key: NODE_ENV
         value: production
+
       - key: PORT
-        value: 5000
-      - key: CLIENT_URL
+        value: 5001
+
+      # Database - SET IN RENDER DASHBOARD
+      - key: MONGO_URI
         sync: false
-      - key: API_URL
-        sync: false
-      - key: MONGODB_URI
-        sync: false
+
+      # Redis - Can use Render Redis or Redis Cloud
       - key: REDIS_URL
-        fromService:
-          type: redis
-          name: voiceflow-redis
-          property: connectionString
+        sync: false
+
+      # JWT - Auto-generated
       - key: JWT_SECRET
         generateValue: true
+
       - key: JWT_EXPIRE
-        value: 30d
-      - key: ENCRYPTION_KEY
-        generateValue: true
+        value: 7d
+
+      # Application URLs - Update after custom domain setup
+      - key: CLIENT_URL
+        value: https://voiceflow-app.onrender.com
+
+      - key: API_URL
+        value: https://voiceflow-api.onrender.com
+
+      # ElevenLabs - SET IN RENDER DASHBOARD
       - key: ELEVENLABS_API_KEY
         sync: false
-      - key: N8N_WEBHOOK_URL
+
+      - key: ELEVENLABS_LEAD_GEN_AGENT_ID
         sync: false
-      - key: N8N_API_KEY
+
+      - key: ELEVENLABS_BOOKING_AGENT_ID
         sync: false
+
+      - key: ELEVENLABS_COLLECTIONS_AGENT_ID
+        sync: false
+
+      - key: ELEVENLABS_PROMO_AGENT_ID
+        sync: false
+
+      - key: ELEVENLABS_SUPPORT_AGENT_ID
+        sync: false
+
+      # Twilio - SET IN RENDER DASHBOARD
       - key: TWILIO_ACCOUNT_SID
         sync: false
+
       - key: TWILIO_AUTH_TOKEN
         sync: false
-      - key: TWILIO_PHONE_NUMBER
-        sync: false
-      - key: SMTP_HOST
-        value: smtp.gmail.com
-      - key: SMTP_PORT
-        value: 587
-      - key: SMTP_SECURE
-        value: false
-      - key: SMTP_USER
-        sync: false
-      - key: SMTP_PASSWORD
-        sync: false
-      - key: SMTP_FROM_EMAIL
-        sync: false
-      - key: SMTP_FROM_NAME
-        value: VoiceFlow CRM
+
+      # Stripe LIVE keys - SET IN RENDER DASHBOARD
       - key: STRIPE_SECRET_KEY
         sync: false
+
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+
       - key: STRIPE_WEBHOOK_SECRET
         sync: false
-    healthCheckPath: /api/health
 
-  # Redis Cache
-  - type: redis
-    name: voiceflow-redis
-    plan: starter
-    maxmemoryPolicy: allkeys-lru
-    ipAllowList: []
+      - key: STRIPE_PRICE_STARTER
+        sync: false
 
-  # Frontend Static Site (Optional - can use Vercel instead)
+      - key: STRIPE_PRICE_PROFESSIONAL
+        sync: false
+
+      - key: STRIPE_PRICE_ENTERPRISE
+        sync: false
+
+      # Email - SET IN RENDER DASHBOARD
+      - key: EMAIL_USER
+        sync: false
+
+      - key: EMAIL_PASS
+        sync: false
+
+      - key: EMAIL_FROM
+        value: VoiceFlow CRM <noreply@yourdomain.com>
+
+      # Security
+      - key: RATE_LIMIT_WINDOW
+        value: 15
+
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 100
+
+      - key: SESSION_SECRET
+        generateValue: true
+
+      - key: COOKIE_SECURE
+        value: true
+
+      - key: COOKIE_SAME_SITE
+        value: strict
+
+      - key: CORS_ORIGINS
+        value: https://voiceflow-app.onrender.com,https://app.voiceflow.ai
+
+      # Feature Flags
+      - key: ENABLE_SIGNUP
+        value: true
+
+      - key: ENABLE_GOOGLE_AUTH
+        value: false
+
+      - key: ENABLE_TRIAL
+        value: true
+
+      - key: TRIAL_DAYS
+        value: 14
+
+  # Frontend Static Site
   - type: web
-    name: voiceflow-crm-frontend
-    env: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/dist
-    headers:
-      - path: /*
-        name: X-Frame-Options
-        value: DENY
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
+    name: voiceflow-app
+    runtime: static
+    region: oregon
+    branch: main
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
+
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+
+      - path: /*
+        name: X-XSS-Protection
+        value: 1; mode=block
+
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+
+    envVars:
+      - key: VITE_API_URL
+        value: https://voiceflow-api.onrender.com
+
+      - key: VITE_STRIPE_PUBLISHABLE_KEY
+        sync: false

@@ -1,0 +1,19 @@
+# VoiceFlow CRM - ElevenLabs Agent IDs
+# Created: 2025-01-10
+# Add these to your Render environment variables
+
+ELEVENLABS_LEAD_GEN_AGENT_ID=agent_1001k9h9ms30fe7ay0w462av0y9v
+ELEVENLABS_BOOKING_AGENT_ID=agent_8801k9h9mv3zempsy3aa5njzwst3
+ELEVENLABS_COLLECTIONS_AGENT_ID=agent_2101k9h9mwedez1rf2e182pdvnsq
+ELEVENLABS_PROMO_AGENT_ID=agent_1801k9h9mxmveytv8a0psq4z756y
+ELEVENLABS_SUPPORT_AGENT_ID=agent_6001k9h9myv9f3w8322g06wf8b1e
+
+# View and configure these agents at:
+# https://elevenlabs.io/app/conversational-ai
+
+# Agent Details:
+# 1. Lead Generation Agent - Qualifies leads, captures contact info
+# 2. Booking Agent - Schedules appointments and demos
+# 3. Collections Agent - Handles payment reminders
+# 4. Promotions Agent - Delivers offers and discounts
+# 5. Support Agent - Technical support and ticketing
