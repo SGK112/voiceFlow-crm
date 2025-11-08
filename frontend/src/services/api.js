@@ -91,6 +91,41 @@ export const workflowApi = {
   getTemplates: () => api.get('/workflows/templates'),
 };
 
+export const dealApi = {
+  getDeals: (params) => api.get('/deals', { params }),
+  getDealById: (id) => api.get(`/deals/${id}`),
+  createDeal: (data) => api.post('/deals', data),
+  updateDeal: (id, data) => api.patch(`/deals/${id}`, data),
+  deleteDeal: (id) => api.delete(`/deals/${id}`),
+  getPipelineSummary: () => api.get('/deals/pipeline/summary'),
+  moveStage: (id, stage) => api.patch(`/deals/${id}/stage`, { stage }),
+};
+
+export const taskApi = {
+  getTasks: (params) => api.get('/tasks', { params }),
+  getTaskById: (id) => api.get(`/tasks/${id}`),
+  createTask: (data) => api.post('/tasks', data),
+  updateTask: (id, data) => api.patch(`/tasks/${id}`, data),
+  deleteTask: (id) => api.delete(`/tasks/${id}`),
+  getStats: () => api.get('/tasks/stats'),
+};
+
+export const noteApi = {
+  getNotes: (params) => api.get('/notes', { params }),
+  getNoteById: (id) => api.get(`/notes/${id}`),
+  createNote: (data) => api.post('/notes', data),
+  updateNote: (id, data) => api.patch(`/notes/${id}`, data),
+  deleteNote: (id) => api.delete(`/notes/${id}`),
+  togglePin: (id) => api.patch(`/notes/${id}/pin`),
+};
+
+export const emailApi = {
+  getEmails: (params) => api.get('/emails', { params }),
+  getEmailById: (id) => api.get(`/emails/${id}`),
+  sendEmail: (data) => api.post('/emails/send', data),
+  getStats: () => api.get('/emails/stats'),
+};
+
 export const settingsApi = {
   getSettings: () => api.get('/settings'),
   updateSettings: (data) => api.patch('/settings', data),
