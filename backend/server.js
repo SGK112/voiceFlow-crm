@@ -34,6 +34,10 @@ import workflowRoutes from './routes/workflows.js';
 import webhookRoutes from './routes/webhooks.js';
 import settingsRoutes from './routes/settings.js';
 import campaignRoutes from './routes/campaigns.js';
+import dealRoutes from './routes/deals.js';
+import taskRoutes from './routes/tasks.js';
+import noteRoutes from './routes/notes.js';
+import emailRoutes from './routes/emails.js';
 
 const app = express();
 
@@ -87,6 +91,10 @@ app.use('/api/workflows', workflowRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/campaigns', campaignRoutes);
+app.use('/api/deals', dealRoutes);
+app.use('/api/tasks', taskRoutes);
+app.use('/api/notes', noteRoutes);
+app.use('/api/emails', emailRoutes);
 
 app.use('/api', apiLimiter);
 
