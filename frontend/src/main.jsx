@@ -10,6 +10,18 @@ import './styles/index.css';
 // Enable dark mode by default
 document.documentElement.classList.add('dark');
 
+// CRITICAL DEBUG - Force console output
+const apiUrl = import.meta.env.VITE_API_URL || 'NOT SET';
+console.error('=== VOICEFLOW DEBUG ===');
+console.error('API URL:', apiUrl);
+console.error('Mode:', import.meta.env.MODE);
+console.error('=======================');
+
+// Show visible error if API URL is wrong
+if (!apiUrl || apiUrl === 'NOT SET' || apiUrl.includes('localhost')) {
+  document.body.innerHTML = '<div style="color: red; font-size: 24px; padding: 50px;">ERROR: API_URL is ' + apiUrl + '</div>';
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
