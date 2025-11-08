@@ -1,5 +1,6 @@
 import CallLog from '../models/CallLog.js';
 import Lead from '../models/Lead.js';
+import User from '../models/User.js';
 import VoiceAgent from '../models/VoiceAgent.js';
 import N8nWorkflow from '../models/N8nWorkflow.js';
 import Usage from '../models/Usage.js';
@@ -17,13 +18,25 @@ export const handleElevenLabsWebhook = async (req, res) => {
       return res.status(404).json({ message: 'Agent not found' });
     }
 
+    // Calculate duration and costs
+    const durationSeconds = callData.duration || 0;
+    const durationMinutes = Math.ceil(durationSeconds / 60); // Round up for billing
+    const costPerMinute = 0.10; // ElevenLabs cost
+    const totalCost = durationMinutes * costPerMinute;
+
     const callLog = await CallLog.create({
       userId: agent.userId,
       agentId: agent._id,
       callerName: callData.caller_name || 'Unknown',
       callerPhone: callData.caller_phone || callData.phone_number,
       direction: callData.direction || 'outbound',
-      duration: callData.duration || 0,
+      duration: durationSeconds,
+      durationMinutes: durationMinutes,
+      cost: {
+        costPerMinute: costPerMinute,
+        totalCost: totalCost,
+        userCharge: 0 // Will be calculated if overage
+      },
       transcript: callData.transcript || '',
       recordingUrl: callData.recording_url,
       status: callData.status || 'completed',
@@ -48,11 +61,15 @@ export const handleElevenLabsWebhook = async (req, res) => {
     }
     await agent.save();
 
-    const usage = await Usage.findOne({ userId: agent.userId });
-    if (usage) {
-      usage.callsThisMonth += 1;
-      await usage.save();
-    }
+    // Update usage with minute tracking
+    const user = await User.findById(agent.userId);
+    const usage = await Usage.getOrCreateForUser(agent.userId, user);
+
+    // Track the call duration and costs
+    await usage.addCall(durationMinutes, {
+      costPerMinute: costPerMinute,
+      totalCost: totalCost
+    });
 
     if (callData.extracted_data?.name && callData.extracted_data?.phone) {
       const lead = await Lead.create({

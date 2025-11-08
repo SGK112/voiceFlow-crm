@@ -24,8 +24,26 @@ const callLogSchema = new mongoose.Schema({
     required: true
   },
   duration: {
-    type: Number,
+    type: Number, // Duration in seconds
     default: 0
+  },
+  durationMinutes: {
+    type: Number, // Duration in minutes (rounded up for billing)
+    default: 0
+  },
+  cost: {
+    costPerMinute: {
+      type: Number, // ElevenLabs cost per minute (e.g., 0.10)
+      default: 0.10
+    },
+    totalCost: {
+      type: Number, // Total platform cost for this call
+      default: 0
+    },
+    userCharge: {
+      type: Number, // What customer pays (if overage)
+      default: 0
+    }
   },
   transcript: {
     type: String,

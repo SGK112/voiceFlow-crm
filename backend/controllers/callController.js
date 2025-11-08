@@ -2,6 +2,7 @@ import CallLog from '../models/CallLog.js';
 import VoiceAgent from '../models/VoiceAgent.js';
 import User from '../models/User.js';
 import Lead from '../models/Lead.js';
+import Usage from '../models/Usage.js';
 import ElevenLabsService from '../services/elevenLabsService.js';
 
 // Use centralized ElevenLabs service with platform credentials
@@ -82,28 +83,23 @@ export const initiateCall = async (req, res) => {
     // Get user to check subscription limits
     const user = await User.findById(req.user._id);
 
-    // Check monthly call limits based on plan
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
-    startOfMonth.setHours(0, 0, 0, 0);
+    // Get or create usage record for this month
+    const usage = await Usage.getOrCreateForUser(req.user._id, user);
 
-    const callsThisMonth = await CallLog.countDocuments({
-      userId: req.user._id,
-      createdAt: { $gte: startOfMonth }
-    });
+    // Check monthly minute limits based on plan
+    const minutesRemaining = usage.minutesIncluded - usage.minutesUsed;
 
-    const planLimits = {
-      trial: 10,        // 10 calls for trial
-      starter: 100,     // 100 calls/month
-      professional: 500, // 500 calls/month
-      enterprise: Infinity // Unlimited
-    };
-
-    const maxCalls = planLimits[user.plan] || 10;
-    if (callsThisMonth >= maxCalls) {
+    // For trial users, block calls if out of minutes
+    if (user.plan === 'trial' && minutesRemaining <= 0) {
       return res.status(403).json({
-        message: `You've reached your ${user.plan} plan limit of ${maxCalls} calls/month. Upgrade to make more calls.`
+        message: `You've used all ${usage.minutesIncluded} trial minutes. Upgrade to continue making calls.`
       });
+    }
+
+    // For paid plans, warn if low on minutes
+    if (minutesRemaining <= 10 && minutesRemaining > 0) {
+      // Set a warning in the response (will be handled below)
+      res.locals.warningMessage = `Warning: Only ${Math.floor(minutesRemaining)} minutes remaining on your ${user.plan} plan.`;
     }
 
     // Get the agent
