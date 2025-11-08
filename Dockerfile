@@ -1,24 +1,30 @@
 # Dockerfile for VoiceFlow CRM
-# Works with monorepo structure (single package.json at root)
+# Works with monorepo structure
 
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files from root
+# Copy all package files
 COPY package*.json ./
+COPY frontend/package*.json ./frontend/
+COPY backend/package*.json ./backend/
 
-# Install ALL dependencies (including dev deps needed for frontend build)
+# Install root dependencies
 RUN npm install
 
 # Copy all application code
 COPY . ./
 
-# Build frontend
+# Install frontend dependencies and build
 WORKDIR /app/frontend
+RUN npm install
 RUN npm run build
 
-# Remove dev dependencies after build to reduce image size
+# Clean up frontend node_modules to save space
+RUN rm -rf node_modules
+
+# Back to root, prune dev dependencies
 WORKDIR /app
 RUN npm prune --production
 
