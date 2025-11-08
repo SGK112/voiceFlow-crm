@@ -22,6 +22,8 @@ RUN npm install -g patch-package
 # Install frontend dependencies and build
 WORKDIR /app/frontend
 RUN npm install
+# Set production API URL to use relative path
+ENV VITE_API_URL=/api
 RUN npm run build
 
 # Clean up frontend node_modules to save space
