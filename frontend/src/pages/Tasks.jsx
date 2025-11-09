@@ -44,7 +44,7 @@ export default function Tasks() {
   });
   const queryClient = useQueryClient();
 
-  const { data: tasks, isLoading } = useQuery({
+  const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['tasks', filterStatus],
     queryFn: () => taskApi.getTasks(filterStatus ? { status: filterStatus } : {}).then(res => res.data),
   });
