@@ -32,7 +32,7 @@ const PRIORITIES = [
 
 export default function Tasks() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [filterStatus, setFilterStatus] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -47,7 +47,7 @@ export default function Tasks() {
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['tasks', filterStatus],
     queryFn: async () => {
-      const res = await taskApi.getTasks(filterStatus ? { status: filterStatus } : {});
+      const res = await taskApi.getTasks(filterStatus && filterStatus !== 'all' ? { status: filterStatus } : {});
       return Array.isArray(res.data) ? res.data : [];
     },
   });
@@ -319,7 +319,7 @@ export default function Tasks() {
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Tasks</SelectItem>
+            <SelectItem value="all">All Tasks</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
             <SelectItem value="in_progress">In Progress</SelectItem>
             <SelectItem value="completed">Completed</SelectItem>
