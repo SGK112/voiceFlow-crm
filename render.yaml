@@ -55,6 +55,9 @@ services:
       - key: ELEVENLABS_API_KEY
         sync: false
 
+      - key: ELEVENLABS_PHONE_NUMBER_ID
+        sync: false
+
       - key: ELEVENLABS_LEAD_GEN_AGENT_ID
         sync: false
 
