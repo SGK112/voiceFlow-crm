@@ -44,35 +44,35 @@ export default function Tasks() {
   });
   const queryClient = useQueryClient();
 
-  const { data: tasks, isLoading } = useQuery({
+  const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['tasks', filterStatus],
     queryFn: async () => {
       const res = await taskApi.getTasks(filterStatus ? { status: filterStatus } : {});
-      return res.data || [];
+      return Array.isArray(res.data) ? res.data : [];
     },
   });
 
-  const { data: stats } = useQuery({
+  const { data: stats = {} } = useQuery({
     queryKey: ['tasks', 'stats'],
     queryFn: async () => {
       const res = await taskApi.getStats();
-      return res.data;
+      return res.data || {};
     },
   });
 
-  const { data: leads } = useQuery({
+  const { data: leads = [] } = useQuery({
     queryKey: ['leads'],
     queryFn: async () => {
       const res = await leadApi.getLeads();
-      return res.data || [];
+      return Array.isArray(res.data) ? res.data : [];
     },
   });
 
-  const { data: deals } = useQuery({
+  const { data: deals = [] } = useQuery({
     queryKey: ['deals'],
     queryFn: async () => {
       const res = await dealApi.getDeals();
-      return res.data || [];
+      return Array.isArray(res.data) ? res.data : [];
     },
   });
 
@@ -180,7 +180,7 @@ export default function Tasks() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {TASK_TYPES.map((type) => (
+                      {(TASK_TYPES || []).map((type) => (
                         <SelectItem key={type.value} value={type.value}>
                           {type.label}
                         </SelectItem>
@@ -199,7 +199,7 @@ export default function Tasks() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {PRIORITIES.map((priority) => (
+                      {(PRIORITIES || []).map((priority) => (
                         <SelectItem key={priority.value} value={priority.value}>
                           {priority.label}
                         </SelectItem>
@@ -231,7 +231,7 @@ export default function Tasks() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">None</SelectItem>
-                      {leads && leads.map((lead) => (
+                      {(leads || []).map((lead) => (
                         <SelectItem key={lead._id} value={lead._id}>
                           {lead.name}
                         </SelectItem>
@@ -251,7 +251,7 @@ export default function Tasks() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="">None</SelectItem>
-                      {deals && deals.map((deal) => (
+                      {(deals || []).map((deal) => (
                         <SelectItem key={deal._id} value={deal._id}>
                           {deal.title}
                         </SelectItem>
@@ -342,8 +342,8 @@ export default function Tasks() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {tasks && tasks.length > 0 ? (
-                tasks.map((task) => (
+              {(tasks || []).length > 0 ? (
+                (tasks || []).map((task) => (
                   <TableRow key={task._id} className={isOverdue(task) ? 'bg-red-50' : ''}>
                     <TableCell className="font-medium">
                       {task.title}

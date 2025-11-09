@@ -33,19 +33,19 @@ export default function Deals() {
   });
   const queryClient = useQueryClient();
 
-  const { data: deals, isLoading } = useQuery({
+  const { data: deals = [], isLoading } = useQuery({
     queryKey: ['deals'],
     queryFn: async () => {
       const res = await dealApi.getDeals();
-      return res.data || [];
+      return Array.isArray(res.data) ? res.data : [];
     },
   });
 
-  const { data: leads } = useQuery({
+  const { data: leads = [] } = useQuery({
     queryKey: ['leads'],
     queryFn: async () => {
       const res = await leadApi.getLeads();
-      return res.data || [];
+      return Array.isArray(res.data) ? res.data : [];
     },
   });
 
@@ -137,7 +137,7 @@ export default function Deals() {
                     <SelectValue placeholder="Select a contact" />
                   </SelectTrigger>
                   <SelectContent>
-                    {leads && leads.map((lead) => (
+                    {(leads || []).map((lead) => (
                       <SelectItem key={lead._id} value={lead._id}>
                         {lead.name} ({lead.email})
                       </SelectItem>
@@ -167,7 +167,7 @@ export default function Deals() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {STAGES.map((stage) => (
+                    {(STAGES || []).map((stage) => (
                       <SelectItem key={stage.value} value={stage.value}>
                         {stage.label}
                       </SelectItem>
@@ -270,8 +270,8 @@ export default function Deals() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {deals && deals.length > 0 ? (
-                deals.map((deal) => (
+              {(deals || []).length > 0 ? (
+                (deals || []).map((deal) => (
                   <TableRow key={deal._id}>
                     <TableCell className="font-medium">{deal.title}</TableCell>
                     <TableCell>{deal.contact?.name || 'N/A'}</TableCell>
@@ -299,7 +299,7 @@ export default function Deals() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {STAGES.map((stage) => (
+                          {(STAGES || []).map((stage) => (
                             <SelectItem key={stage.value} value={stage.value}>
                               {stage.label}
                             </SelectItem>
