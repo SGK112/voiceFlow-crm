@@ -14,9 +14,11 @@ const callLogSchema = new mongoose.Schema({
     index: true
   },
   callerName: String,
-  callerPhone: {
-    type: String,
-    required: true
+  callerPhone: String, // Optional for outbound calls
+  phoneNumber: String, // Phone number called (for outbound) or caller (for inbound)
+  leadId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Lead'
   },
   direction: {
     type: String,
@@ -52,8 +54,8 @@ const callLogSchema = new mongoose.Schema({
   recordingUrl: String,
   status: {
     type: String,
-    enum: ['completed', 'failed', 'no-answer', 'busy', 'canceled'],
-    default: 'completed'
+    enum: ['initiated', 'ringing', 'in-progress', 'completed', 'failed', 'no-answer', 'busy', 'canceled'],
+    default: 'initiated'
   },
   leadsCapured: {
     name: String,
