@@ -24,16 +24,16 @@ const PLANS = [
   {
     name: 'starter',
     displayName: 'Starter',
-    price: 49,
+    price: 149,
     description: 'Perfect for small businesses getting started',
     features: [
-      { text: '500 voice minutes/month', included: true },
-      { text: '10,000 AI tokens/month', included: true },
-      { text: '1,000 SMS messages/month', included: true },
-      { text: '5,000 emails/month', included: true },
-      { text: '5 AI agents', included: true },
-      { text: '2 team members', included: true },
-      { text: 'Basic support', included: true },
+      { text: '200 voice minutes/month', included: true },
+      { text: '5,000 AI tokens/month', included: true },
+      { text: '500 SMS messages/month', included: true },
+      { text: '2,500 emails/month', included: true },
+      { text: '3 AI agents', included: true },
+      { text: '1 team member', included: true },
+      { text: 'Email support', included: true },
       { text: 'Advanced analytics', included: false },
       { text: 'QuickBooks integration', included: false },
       { text: 'Priority support', included: false },
@@ -43,15 +43,15 @@ const PLANS = [
   {
     name: 'professional',
     displayName: 'Professional',
-    price: 99,
+    price: 299,
     description: 'For growing teams that need more power',
     features: [
-      { text: '2,000 voice minutes/month', included: true },
-      { text: '50,000 AI tokens/month', included: true },
-      { text: '5,000 SMS messages/month', included: true },
-      { text: '25,000 emails/month', included: true },
-      { text: 'Unlimited AI agents', included: true },
-      { text: '10 team members', included: true },
+      { text: '500 voice minutes/month', included: true },
+      { text: '15,000 AI tokens/month', included: true },
+      { text: '2,000 SMS messages/month', included: true },
+      { text: '10,000 emails/month', included: true },
+      { text: '10 AI agents', included: true },
+      { text: '5 team members', included: true },
       { text: 'Priority support', included: true },
       { text: 'Advanced analytics', included: true },
       { text: 'QuickBooks integration', included: true },
@@ -62,19 +62,19 @@ const PLANS = [
   {
     name: 'enterprise',
     displayName: 'Enterprise',
-    price: 299,
+    price: 799,
     description: 'For large organizations with custom needs',
     features: [
-      { text: '10,000 voice minutes/month', included: true },
-      { text: '250,000 AI tokens/month', included: true },
-      { text: '25,000 SMS messages/month', included: true },
+      { text: '2,000 voice minutes/month', included: true },
+      { text: '50,000 AI tokens/month', included: true },
+      { text: '10,000 SMS messages/month', included: true },
       { text: 'Unlimited emails', included: true },
       { text: 'Unlimited AI agents', included: true },
       { text: 'Unlimited team members', included: true },
-      { text: 'Dedicated support', included: true },
+      { text: 'Dedicated support & SLA', included: true },
       { text: 'Advanced analytics', included: true },
       { text: 'All integrations', included: true },
-      { text: 'Custom branding', included: true },
+      { text: 'White-label options', included: true },
     ],
     popular: false,
   },
@@ -204,9 +204,9 @@ export default function Billing() {
                 {user?.plan || 'trial'} Plan
               </div>
               <p className="text-muted-foreground mt-2">
-                {user?.plan === 'starter' && '$49/month'}
-                {user?.plan === 'professional' && '$99/month'}
-                {user?.plan === 'enterprise' && '$299/month'}
+                {user?.plan === 'starter' && '$149/month'}
+                {user?.plan === 'professional' && '$299/month'}
+                {user?.plan === 'enterprise' && '$799/month'}
                 {user?.plan === 'trial' && 'Free Trial'}
               </p>
               {user?.subscriptionEndDate && (
