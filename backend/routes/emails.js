@@ -1,7 +1,7 @@
 import express from 'express';
 import EmailTracking from '../models/EmailTracking.js';
 import { protect } from '../middleware/auth.js';
-import { sendEmail } from '../services/emailService.js';
+import emailService from '../services/emailService.js';
 import crypto from 'crypto';
 
 const router = express.Router();
@@ -108,7 +108,7 @@ router.post('/send', protect, async (req, res) => {
     try {
       const recipients = Array.isArray(to) ? to.map(t => t.email || t) : [to];
 
-      await sendEmail({
+      await emailService.sendEmail({
         to: recipients,
         subject,
         text: body,
