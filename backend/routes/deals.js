@@ -1,13 +1,13 @@
 import express from 'express';
 import Deal from '../models/Deal.js';
-import { auth } from '../middleware/auth.js';
+import { protect } from '../middleware/auth.js';
 import N8nWorkflow from '../models/N8nWorkflow.js';
 import axios from 'axios';
 
 const router = express.Router();
 
 // Get all deals for user
-router.get('/', auth, async (req, res) => {
+router.get('/', protect, async (req, res) => {
   try {
     const { stage, assignedTo, priority, search, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
 
@@ -38,7 +38,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Get pipeline summary
-router.get('/pipeline/summary', auth, async (req, res) => {
+router.get('/pipeline/summary', protect, async (req, res) => {
   try {
     const pipeline = await Deal.aggregate([
       { $match: { user: req.user._id } },
@@ -77,7 +77,7 @@ router.get('/pipeline/summary', auth, async (req, res) => {
 });
 
 // Get single deal
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', protect, async (req, res) => {
   try {
     const deal = await Deal.findOne({ _id: req.params.id, user: req.user._id })
       .populate('contact')
@@ -96,7 +96,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // Create new deal
-router.post('/', auth, async (req, res) => {
+router.post('/', protect, async (req, res) => {
   try {
     const deal = new Deal({
       ...req.body,
@@ -116,7 +116,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 // Update deal
-router.patch('/:id', auth, async (req, res) => {
+router.patch('/:id', protect, async (req, res) => {
   try {
     const oldDeal = await Deal.findOne({ _id: req.params.id, user: req.user._id });
     if (!oldDeal) {
@@ -153,7 +153,7 @@ router.patch('/:id', auth, async (req, res) => {
 });
 
 // Delete deal
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', protect, async (req, res) => {
   try {
     const deal = await Deal.findOneAndDelete({ _id: req.params.id, user: req.user._id });
 
@@ -168,7 +168,7 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 // Move deal to stage
-router.patch('/:id/stage', auth, async (req, res) => {
+router.patch('/:id/stage', protect, async (req, res) => {
   try {
     const { stage } = req.body;
 
