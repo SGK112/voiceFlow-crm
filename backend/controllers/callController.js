@@ -120,11 +120,15 @@ export const initiateCall = async (req, res) => {
     }
 
     // Make the call using PLATFORM credentials
+    // TODO: Make phone number ID configurable per agent type
+    const agentPhoneNumberId = process.env.ELEVENLABS_PHONE_NUMBER_ID || 'phnum_1801k7xb68cefjv89rv10f90qykv';
+
     let callData;
     try {
       callData = await elevenLabsService.initiateCall(
         agent.elevenLabsAgentId,
         phoneNumber,
+        agentPhoneNumberId,
         `${process.env.API_URL || 'http://localhost:5000'}/api/webhooks/elevenlabs/call-completed`
       );
     } catch (error) {
@@ -135,11 +139,12 @@ export const initiateCall = async (req, res) => {
     }
 
     // Create call log
+    // Note: batch calling returns batch_id, not call_id
     const call = await CallLog.create({
       userId: req.user._id,
       agentId: agent._id,
       leadId: leadId || null,
-      elevenLabsCallId: callData.call_id,
+      elevenLabsCallId: callData.id || callData.call_id, // batch returns 'id'
       phoneNumber,
       status: 'initiated',
       direction: 'outbound'

@@ -73,12 +73,17 @@ class ElevenLabsService {
     }
   }
 
-  async initiateCall(agentId, phoneNumber, callbackUrl) {
+  async initiateCall(agentId, phoneNumber, agentPhoneNumberId, callbackUrl) {
     try {
-      const response = await this.client.post(`/convai/agents/${agentId}/initiate`, {
-        agent_phone_number_id: null,
-        customer_phone_number: phoneNumber,
-        webhook_url: callbackUrl
+      const response = await this.client.post('/convai/batch-calling/submit', {
+        call_name: `CRM Call - ${phoneNumber} - ${Date.now()}`,
+        agent_id: agentId,
+        agent_phone_number_id: agentPhoneNumberId,
+        recipients: [
+          {
+            phone_number: phoneNumber
+          }
+        ]
       });
       return response.data;
     } catch (error) {
@@ -104,6 +109,16 @@ class ElevenLabsService {
     } catch (error) {
       console.error('ElevenLabs API Error:', error.response?.data || error.message);
       throw new Error('Failed to fetch call transcript');
+    }
+  }
+
+  async getPhoneNumbers() {
+    try {
+      const response = await this.client.get('/convai/phone-numbers');
+      return response.data;
+    } catch (error) {
+      console.error('ElevenLabs API Error:', error.response?.data || error.message);
+      throw new Error('Failed to fetch phone numbers');
     }
   }
 
