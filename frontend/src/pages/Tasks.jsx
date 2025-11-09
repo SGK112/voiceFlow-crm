@@ -44,6 +44,7 @@ export default function Tasks() {
   });
   const queryClient = useQueryClient();
 
+  // Fixed: Added default empty array to prevent .map() error on undefined
   const { data: tasks = [], isLoading } = useQuery({
     queryKey: ['tasks', filterStatus],
     queryFn: () => taskApi.getTasks(filterStatus ? { status: filterStatus } : {}).then(res => res.data),

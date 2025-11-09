@@ -33,6 +33,7 @@ export default function Deals() {
   });
   const queryClient = useQueryClient();
 
+  // Fixed: Added default empty array to prevent .map() error on undefined
   const { data: deals = [], isLoading } = useQuery({
     queryKey: ['deals'],
     queryFn: () => dealApi.getDeals().then(res => res.data),
