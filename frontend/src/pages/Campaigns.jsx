@@ -46,9 +46,12 @@ export default function Campaigns() {
   const queryClient = useQueryClient();
   const [selectedCampaign, setSelectedCampaign] = useState(null);
 
-  const { data: campaigns, isLoading } = useQuery({
+  const { data: campaigns = [], isLoading } = useQuery({
     queryKey: ['campaigns'],
-    queryFn: () => campaignApi.getAll().then(res => res.data),
+    queryFn: async () => {
+      const res = await campaignApi.getAll();
+      return Array.isArray(res.data) ? res.data : [];
+    },
   });
 
   const deleteMutation = useMutation({
@@ -171,7 +174,7 @@ export default function Campaigns() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {campaigns.map((campaign) => (
+              {(campaigns || []).map((campaign) => (
                 <TableRow key={campaign._id}>
                   <TableCell className="font-medium">{campaign.name}</TableCell>
                   <TableCell>{campaign.agentId?.name || 'N/A'}</TableCell>
