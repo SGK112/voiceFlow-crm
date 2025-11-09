@@ -13,8 +13,12 @@ const voiceAgentSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['lead_gen', 'booking', 'collections', 'promo', 'support'],
-    required: true
+    enum: ['lead_gen', 'booking', 'collections', 'promo', 'support', 'custom'],
+    required: true,
+    default: 'custom'
+  },
+  customType: {
+    type: String, // For custom agent types like "Follow-up", "Survey", "Event Reminder", etc.
   },
   elevenLabsAgentId: {
     type: String,
@@ -30,6 +34,13 @@ const voiceAgentSchema = new mongoose.Schema({
   script: {
     type: String,
     default: ''
+  },
+  firstMessage: {
+    type: String,
+    default: 'Hello! How can I help you today?'
+  },
+  voiceName: {
+    type: String, // Friendly name of the voice (e.g., "Rachel", "Adam", "Sarah")
   },
   availability: {
     enabled: { type: Boolean, default: true },
