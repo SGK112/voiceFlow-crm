@@ -11,12 +11,12 @@ export default function Invoices() {
   ];
 
   return (
-    <div className="space-y-6 pb-8">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Invoices & Estimates</h1>
-          <p className="text-gray-600 mt-1">Create and manage invoices and estimates</p>
+          <h1 className="text-3xl font-bold">Invoices & Estimates</h1>
+          <p className="text-muted-foreground mt-1">Create and manage invoices and estimates</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
@@ -34,53 +34,53 @@ export default function Invoices() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-gray-900">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
               <DollarSign className="h-4 w-4 text-green-600" />
               Total Revenue
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">$11,300</div>
-            <p className="text-xs text-gray-600 mt-1">This month</p>
+            <div className="text-2xl font-bold">$11,300</div>
+            <p className="text-xs text-muted-foreground mt-1">This month</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-gray-900">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
               <FileText className="h-4 w-4 text-blue-600" />
               Paid Invoices
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">8</div>
-            <p className="text-xs text-gray-600 mt-1">This month</p>
+            <div className="text-2xl font-bold">8</div>
+            <p className="text-xs text-muted-foreground mt-1">This month</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-gray-900">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Send className="h-4 w-4 text-orange-600" />
               Pending
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">3</div>
-            <p className="text-xs text-gray-600 mt-1">Awaiting payment</p>
+            <div className="text-2xl font-bold">3</div>
+            <p className="text-xs text-muted-foreground mt-1">Awaiting payment</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-gray-900">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
               <FileText className="h-4 w-4 text-purple-600" />
               Drafts
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">2</div>
-            <p className="text-xs text-gray-600 mt-1">Not sent yet</p>
+            <div className="text-2xl font-bold">2</div>
+            <p className="text-xs text-muted-foreground mt-1">Not sent yet</p>
           </CardContent>
         </Card>
       </div>
@@ -88,24 +88,24 @@ export default function Invoices() {
       {/* Invoice Builder Placeholder */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-gray-900">Invoice Builder</CardTitle>
+          <CardTitle>Invoice Builder</CardTitle>
           <CardDescription>Create professional invoices and estimates</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center">
-            <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Invoice Builder Coming Soon</h3>
-            <p className="text-gray-600 mb-4">
+          <div className="border-2 border-dashed rounded-lg p-12 text-center">
+            <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Invoice Builder Coming Soon</h3>
+            <p className="text-muted-foreground mb-4">
               Create, customize, and send professional invoices with ease.
             </p>
             <div className="flex gap-4 justify-center">
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-muted-foreground">
                 • PDF Generation
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-muted-foreground">
                 • Payment Tracking
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-muted-foreground">
                 • QuickBooks Sync
               </div>
             </div>
@@ -116,25 +116,25 @@ export default function Invoices() {
       {/* Invoice List */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-gray-900">Recent Invoices</CardTitle>
+          <CardTitle>Recent Invoices</CardTitle>
           <CardDescription>Your latest invoices and estimates</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {mockInvoices.map((invoice) => (
-              <div key={invoice.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+              <div key={invoice.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center">
                     <FileText className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">{invoice.id}</p>
-                    <p className="text-sm text-gray-600">{invoice.client} • {invoice.date}</p>
+                    <p className="font-medium">{invoice.id}</p>
+                    <p className="text-sm text-muted-foreground">{invoice.client} • {invoice.date}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <p className="font-bold text-gray-900">${invoice.amount.toLocaleString()}</p>
+                    <p className="font-bold">${invoice.amount.toLocaleString()}</p>
                     <Badge variant={
                       invoice.status === 'paid' ? 'success' :
                       invoice.status === 'sent' ? 'warning' : 'secondary'
