@@ -4,6 +4,10 @@
 
 FROM node:18-alpine
 
+# Build argument to bust cache - change this value to force rebuild
+ARG CACHE_BUST=2025-11-10-v2
+RUN echo "Cache bust: $CACHE_BUST"
+
 WORKDIR /app
 
 # Copy all package files
