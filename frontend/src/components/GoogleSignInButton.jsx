@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import api from '../lib/api';
 
+// Google OAuth Sign-In Component
 export default function GoogleSignInButton({ onSuccess }) {
   const navigate = useNavigate();
 
