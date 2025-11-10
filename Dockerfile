@@ -5,7 +5,7 @@
 FROM node:18-alpine
 
 # Build argument to bust cache - change this value to force rebuild
-ARG CACHE_BUST=2025-11-10-v2
+ARG CACHE_BUST=2025-11-10-v3-remove-useOneTap
 RUN echo "Cache bust: $CACHE_BUST"
 
 WORKDIR /app
@@ -27,8 +27,12 @@ RUN npm install -g patch-package
 # Install frontend dependencies and build
 WORKDIR /app/frontend
 RUN npm install
+# Clear any cached build artifacts
+RUN rm -rf dist node_modules/.vite
 # Set production API URL to use relative path
 ENV VITE_API_URL=/api
+# Set Google Client ID for build
+ENV VITE_GOOGLE_CLIENT_ID=710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com
 RUN npm run build
 
 # Clean up frontend node_modules to save space
