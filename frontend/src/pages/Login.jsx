@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import GoogleSignInButton from '@/components/GoogleSignInButton';
+import { GOOGLE_CLIENT_ID } from '@/config/oauth';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -80,7 +81,7 @@ export default function Login() {
           </form>
 
           {/* Google Sign-In - Only show if client ID is configured */}
-          {import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+          {GOOGLE_CLIENT_ID && (
             <>
               {/* Divider */}
               <div className="relative my-6">

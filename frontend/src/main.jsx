@@ -7,9 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import App from './App';
 import './styles/index.css';
-
-// Google OAuth Client ID (public, not a secret)
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com';
+import { GOOGLE_CLIENT_ID } from './config/oauth';
 
 // Enable dark mode by default
 document.documentElement.classList.add('dark');
