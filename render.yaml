@@ -198,7 +198,7 @@ services:
 
     envVars:
       - key: VITE_API_URL
-        value: https://voiceflow-api.onrender.com
+        value: https://voiceflow-crm.onrender.com/api
 
       - key: VITE_GOOGLE_CLIENT_ID
         value: 710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com
