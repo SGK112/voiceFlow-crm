@@ -40,13 +40,12 @@ export default function GoogleSignInButton({ onSuccess }) {
       <GoogleLogin
         onSuccess={handleGoogleSuccess}
         onError={handleGoogleError}
-        useOneTap
         theme="outline"
         size="large"
         text="continue_with"
         shape="rectangular"
         logo_alignment="left"
-        width="100%"
+        width="384"
       />
     </div>
   );
