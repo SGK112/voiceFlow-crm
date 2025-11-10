@@ -18,7 +18,7 @@ services:
     region: oregon
     plan: starter
     branch: main
-    buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install
+    buildCommand: rm -rf frontend/dist && cd frontend && npm ci && npm run build && cd ../backend && npm ci
     startCommand: cd backend && npm start
     healthCheckPath: /api/health
 
