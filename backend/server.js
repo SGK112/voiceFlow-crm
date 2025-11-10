@@ -104,27 +104,6 @@ app.use('/api/projects', projectRoutes);
 
 app.use('/api', apiLimiter);
 
-// Serve static frontend files in production
-if (process.env.NODE_ENV === 'production') {
-  const frontendDistPath = join(__dirname, '../frontend/dist');
-  const frontendPublicPath = join(__dirname, '../frontend/public');
-
-  // Serve marketing landing page at root
-  app.get('/', (req, res) => {
-    res.sendFile(join(frontendPublicPath, 'index.html'));
-  });
-
-  // Serve static files from both dist and public
-  app.use(express.static(frontendDistPath));
-  app.use(express.static(frontendPublicPath));
-
-  // Serve React app for all other non-API routes (SPA fallback for /login, /signup, etc.)
-  // This must come AFTER all API routes to avoid catching them
-  app.get(/^(?!\/api).*/, (req, res) => {
-    res.sendFile(join(frontendDistPath, 'index.html'));
-  });
-}
-
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
