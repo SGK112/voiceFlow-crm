@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 export default function Home() {
   useEffect(() => {
     // Redirect to the static marketing page
-    window.location.href = '/index.html';
+    window.location.href = '/marketing.html';
   }, []);
 
   return (
