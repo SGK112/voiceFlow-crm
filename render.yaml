@@ -10,14 +10,14 @@
 # - SMTP credentials (SMTP_USER, SMTP_PASSWORD, etc.)
 
 services:
-  # Backend API Service
+  # Backend API Service (serves both API and frontend)
   - type: web
-    name: voiceflow-crm-api
+    name: voiceflow-crm
     runtime: node
     region: oregon
     plan: starter
     branch: main
-    buildCommand: cd backend && npm install
+    buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install
     startCommand: cd backend && npm start
     healthCheckPath: /api/health
 
@@ -43,12 +43,19 @@ services:
       - key: JWT_EXPIRE
         value: 7d
 
-      # Application URLs - Update after custom domain setup
+      # Application URLs - Same domain for frontend and backend
       - key: CLIENT_URL
-        value: https://voiceflow-app.onrender.com
+        value: https://voiceflow-crm.onrender.com
 
-      - key: API_URL
-        value: https://voiceflow-api.onrender.com
+      # Frontend environment variables (for Vite build)
+      - key: VITE_API_URL
+        value: https://voiceflow-crm.onrender.com/api
+
+      - key: VITE_GOOGLE_CLIENT_ID
+        value: 710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com
+
+      - key: VITE_STRIPE_PUBLISHABLE_KEY
+        sync: false
 
       # ElevenLabs - SET IN RENDER DASHBOARD
       - key: ELEVENLABS_API_KEY
@@ -166,42 +173,6 @@ services:
       - key: TRIAL_DAYS
         value: 14
 
-  # Frontend Static Site
-  - type: web
-    name: voiceflow-crm-app
-    runtime: static
-    branch: main
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/dist
-
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-
-    headers:
-      - path: /*
-        name: X-Frame-Options
-        value: SAMEORIGIN
-
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
-
-      - path: /*
-        name: X-XSS-Protection
-        value: 1; mode=block
-
-      - path: /assets/*
-        name: Cache-Control
-        value: public, max-age=31536000, immutable
-
-    envVars:
-      - key: VITE_API_URL
-        value: https://voiceflow-crm.onrender.com/api
-
-      - key: VITE_GOOGLE_CLIENT_ID
-        value: 710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com
-
-      - key: VITE_STRIPE_PUBLISHABLE_KEY
-        sync: false
+  # NOTE: Frontend is now served by the backend service above
+  # The voiceflow-crm service builds the frontend and serves it alongside the API
+  # Frontend static site service (voiceflow-crm-app) can be deleted from Render Dashboard

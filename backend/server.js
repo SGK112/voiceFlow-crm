@@ -58,10 +58,15 @@ app.use(helmet({
 app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 
 // CORS configuration
-const corsOptions = {
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-};
+const corsOptions = process.env.NODE_ENV === 'production'
+  ? {
+      origin: true, // Allow same-origin requests in production
+      credentials: true
+    }
+  : {
+      origin: process.env.CLIENT_URL || 'http://localhost:5173',
+      credentials: true
+    };
 
 app.use(cors(corsOptions));
 
@@ -103,6 +108,20 @@ app.use('/api/usage', usageRoutes);
 app.use('/api/projects', projectRoutes);
 
 app.use('/api', apiLimiter);
+
+// Serve static frontend files in production
+if (process.env.NODE_ENV === 'production') {
+  const frontendDistPath = join(__dirname, '../frontend/dist');
+
+  // Serve static files (CSS, JS, images, etc.)
+  app.use(express.static(frontendDistPath));
+
+  // Serve React app for all other non-API routes (SPA fallback)
+  // This must come AFTER all API routes to avoid catching them
+  app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(join(frontendDistPath, 'index.html'));
+  });
+}
 
 app.use(errorHandler);
 
