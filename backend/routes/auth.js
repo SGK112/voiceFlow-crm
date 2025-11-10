@@ -1,5 +1,5 @@
 import express from 'express';
-import { signup, login, googleAuth, getMe } from '../controllers/authController.js';
+import { signup, login, googleAuth, getMe, forgotPassword, resetPassword } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
 
@@ -9,5 +9,7 @@ router.post('/signup', authLimiter, signup);
 router.post('/login', authLimiter, login);
 router.post('/google', authLimiter, googleAuth);
 router.get('/me', protect, getMe);
+router.post('/forgot-password', authLimiter, forgotPassword);
+router.post('/reset-password', authLimiter, resetPassword);
 
 export default router;

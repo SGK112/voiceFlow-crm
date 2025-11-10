@@ -29,6 +29,7 @@ import subscriptionRoutes from './routes/subscription.js';
 import dashboardRoutes from './routes/dashboard.js';
 import agentRoutes from './routes/agents.js';
 import aiAgentRoutes from './routes/aiAgents.js';
+import aiRoutes from './routes/ai.js';
 import callRoutes from './routes/calls.js';
 import leadRoutes from './routes/leads.js';
 import workflowRoutes from './routes/workflows.js';
@@ -39,6 +40,9 @@ import dealRoutes from './routes/deals.js';
 import taskRoutes from './routes/tasks.js';
 import noteRoutes from './routes/notes.js';
 import emailRoutes from './routes/emails.js';
+import apiKeyRoutes from './routes/apiKeys.js';
+import usageRoutes from './routes/usage.js';
+import projectRoutes from './routes/projects.js';
 
 const app = express();
 
@@ -87,6 +91,7 @@ app.use('/api/billing', subscriptionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/agents', agentRoutes);
 app.use('/api/ai-agents', aiAgentRoutes);
+app.use('/api/ai', aiRoutes);
 app.use('/api/calls', callRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/workflows', workflowRoutes);
@@ -97,6 +102,9 @@ app.use('/api/deals', dealRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api/emails', emailRoutes);
+app.use('/api/api-keys', apiKeyRoutes);
+app.use('/api/usage', usageRoutes);
+app.use('/api/projects', projectRoutes);
 
 app.use('/api', apiLimiter);
 

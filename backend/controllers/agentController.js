@@ -3,8 +3,10 @@ import CallLog from '../models/CallLog.js';
 import User from '../models/User.js';
 import ElevenLabsService from '../services/elevenLabsService.js';
 
-// Use centralized ElevenLabs service with platform credentials
-const elevenLabsService = new ElevenLabsService();
+// Factory function to get ElevenLabs service with platform credentials
+const getElevenLabsService = () => {
+  return new ElevenLabsService(process.env.ELEVENLABS_API_KEY);
+};
 
 export const getAgents = async (req, res) => {
   try {
@@ -78,6 +80,7 @@ export const createAgent = async (req, res) => {
 
     // If using a prebuilt type and no voice specified, use default for that type
     if (!selectedVoiceId && type && type !== 'custom') {
+      const elevenLabsService = getElevenLabsService();
       const prebuiltAgents = elevenLabsService.getPrebuiltAgents();
       const prebuiltAgent = prebuiltAgents[type];
       if (prebuiltAgent) {
@@ -95,6 +98,7 @@ export const createAgent = async (req, res) => {
     // Create agent in ElevenLabs using PLATFORM credentials
     let elevenLabsAgent;
     try {
+      const elevenLabsService = getElevenLabsService();
       elevenLabsAgent = await elevenLabsService.createAgent({
         name: name,
         voiceId: selectedVoiceId,
@@ -171,6 +175,7 @@ export const updateAgent = async (req, res) => {
 
     if (script && agent.elevenLabsAgentId) {
       try {
+        const elevenLabsService = getElevenLabsService();
         await elevenLabsService.updateAgent(agent.elevenLabsAgentId, {
           name: agent.name,
           script: agent.script
@@ -222,6 +227,7 @@ export const getAgentCalls = async (req, res) => {
 
 export const getVoices = async (req, res) => {
   try {
+    const elevenLabsService = getElevenLabsService();
     const voices = await elevenLabsService.getVoices();
     res.json(voices);
   } catch (error) {

@@ -3,6 +3,7 @@ import { dashboardApi } from '@/services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone, Users, TrendingUp, DollarSign } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
+import AIInsightsCard from '@/components/AIInsightsCard';
 
 export default function Dashboard() {
   const { data: metrics, isLoading } = useQuery({
@@ -87,6 +88,9 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* AI Insights Card */}
+      <AIInsightsCard />
 
       <Card>
         <CardHeader>

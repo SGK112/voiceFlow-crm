@@ -3,6 +3,8 @@ import { useAuth } from './context/AuthContext';
 import Layout from './components/layout/Layout';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Pricing from './pages/Pricing';
 import Dashboard from './pages/Dashboard';
 import Agents from './pages/Agents';
@@ -20,6 +22,9 @@ import Tasks from './pages/Tasks';
 import Integrations from './pages/Integrations';
 import Calendar from './pages/Calendar';
 import Invoices from './pages/Invoices';
+import Usage from './pages/Usage';
+import Projects from './pages/Projects';
+import Home from './pages/Home';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -43,10 +48,12 @@ function AgentRedirect() {
 function App() {
   return (
     <Routes>
-      {/* Root path is handled by backend serving static HTML from public/index.html */}
-      {/* React router should not handle / - only /login, /signup, /app/* */}
+      {/* Marketing homepage */}
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/pricing" element={<Pricing />} />
 
       <Route
@@ -70,6 +77,8 @@ function App() {
         <Route path="tasks" element={<Tasks />} />
         <Route path="workflows" element={<Workflows />} />
         <Route path="billing" element={<Billing />} />
+        <Route path="usage" element={<Usage />} />
+        <Route path="projects" element={<Projects />} />
         <Route path="integrations" element={<Integrations />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="invoices" element={<Invoices />} />
@@ -88,6 +97,8 @@ function App() {
       <Route path="/tasks" element={<Navigate to="/app/tasks" replace />} />
       <Route path="/workflows" element={<Navigate to="/app/workflows" replace />} />
       <Route path="/billing" element={<Navigate to="/app/billing" replace />} />
+      <Route path="/usage" element={<Navigate to="/app/usage" replace />} />
+      <Route path="/projects" element={<Navigate to="/app/projects" replace />} />
       <Route path="/integrations" element={<Navigate to="/app/integrations" replace />} />
       <Route path="/calendar" element={<Navigate to="/app/calendar" replace />} />
       <Route path="/invoices" element={<Navigate to="/app/invoices" replace />} />

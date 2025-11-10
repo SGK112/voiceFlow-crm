@@ -137,6 +137,19 @@ export const settingsApi = {
   removeTeamMember: (id) => api.delete(`/settings/team-members/${id}`),
 };
 
+export const userApiKeyApi = {
+  getUserApiKeys: () => api.get('/api-keys'),
+  createUserApiKey: (data) => api.post('/api-keys', data),
+  updateUserApiKey: (keyId, data) => api.put(`/api-keys/${keyId}`, data),
+  deleteUserApiKey: (keyId) => api.delete(`/api-keys/${keyId}`),
+};
+
+export const usageApi = {
+  getCurrentUsage: () => api.get('/usage/current'),
+  getUsageHistory: (params) => api.get('/usage/history', { params }),
+  getUsageByMonth: (month) => api.get(`/usage/${month}`),
+};
+
 export const aiAgentApi = {
   getAIAgents: () => api.get('/ai-agents'),
   getAIAgentById: (id) => api.get(`/ai-agents/${id}`),

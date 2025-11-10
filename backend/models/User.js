@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema({
     sparse: true,
     unique: true
   },
+  phone: {
+    type: String,
+    sparse: true,
+    trim: true
+  },
   company: {
     type: String,
     required: [true, 'Company name is required']
@@ -30,6 +35,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['starter', 'professional', 'enterprise', 'trial'],
     default: 'trial'
+  },
+  resetPasswordToken: {
+    type: String,
+    select: false
+  },
+  resetPasswordExpire: {
+    type: Date,
+    select: false
   },
   stripeCustomerId: {
     type: String,
@@ -69,6 +82,26 @@ const userSchema = new mongoose.Schema({
     email: String,
     role: { type: String, enum: ['admin', 'member'], default: 'member' },
     addedAt: { type: Date, default: Date.now }
+  }],
+  userApiKeys: [{
+    name: { type: String, required: true },
+    key: { type: String, required: true, unique: true, select: false },
+    prefix: { type: String, required: true }, // First 8 chars for display
+    scopes: [{
+      type: String,
+      enum: [
+        'agents.read', 'agents.write', 'agents.delete',
+        'calls.read', 'calls.write',
+        'leads.read', 'leads.write', 'leads.delete',
+        'workflows.read', 'workflows.write', 'workflows.execute',
+        'webhooks.read', 'webhooks.write',
+        'all'
+      ]
+    }],
+    environment: { type: String, enum: ['production', 'development'], default: 'production' },
+    lastUsedAt: Date,
+    expiresAt: Date,
+    createdAt: { type: Date, default: Date.now }
   }],
   settings: {
     webhookUrl: String,

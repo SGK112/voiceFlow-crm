@@ -21,7 +21,10 @@ import {
   Users,
   PhoneCall,
   MessageSquare,
-  Zap
+  Zap,
+  ChevronDown,
+  ChevronUp,
+  Download
 } from 'lucide-react';
 
 // Mock ElevenLabs voices data - in production, this would come from ElevenLabs API
@@ -57,6 +60,7 @@ export default function AgentDetail() {
   const [testPhoneNumber, setTestPhoneNumber] = useState('');
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [editedAgent, setEditedAgent] = useState(null);
+  const [expandedCallId, setExpandedCallId] = useState(null);
 
   const { data: agent, isLoading } = useQuery({
     queryKey: ['agent', id],
@@ -123,6 +127,57 @@ export default function AgentDetail() {
       return;
     }
     testCallMutation.mutate(testPhoneNumber);
+  };
+
+  const handleDownloadAudio = async (call) => {
+    if (!call.recordingUrl) {
+      alert('No recording available for this call');
+      return;
+    }
+
+    try {
+      const response = await fetch(call.recordingUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `call-${call._id}-${formatDateTime(call.createdAt).replace(/[/:]/g, '-')}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      alert('Failed to download recording');
+      console.error('Download error:', error);
+    }
+  };
+
+  const toggleCallExpansion = (callId) => {
+    setExpandedCallId(expandedCallId === callId ? null : callId);
+  };
+
+  const parseTranscript = (transcript) => {
+    if (!transcript) return [];
+
+    // Try to parse JSON format first (ElevenLabs format)
+    try {
+      const parsed = JSON.parse(transcript);
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    } catch (e) {
+      // Not JSON, try to parse text format
+    }
+
+    // Parse text format: "Speaker: message"
+    const lines = transcript.split('\n').filter(line => line.trim());
+    return lines.map(line => {
+      const match = line.match(/^(Agent|User|Customer):\s*(.+)$/i);
+      if (match) {
+        return { role: match[1].toLowerCase(), message: match[2] };
+      }
+      return { role: 'unknown', message: line };
+    });
   };
 
   const insertVariable = (variable) => {
@@ -569,36 +624,151 @@ export default function AgentDetail() {
         </div>
       </div>
 
-      {/* Recent Calls */}
+      {/* Recent Calls with Conversation View */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-gray-900">
             <TrendingUp className="h-5 w-5" />
-            Recent Calls
+            Recent Calls & Conversations
           </CardTitle>
-          <CardDescription>View recent calls made by this agent</CardDescription>
+          <CardDescription>View recent calls, transcripts, and download recordings</CardDescription>
         </CardHeader>
         <CardContent>
           {calls && calls.length > 0 ? (
             <div className="space-y-3">
-              {calls.slice(0, 10).map((call) => (
-                <div key={call._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Phone className="h-5 w-5 text-blue-600" />
+              {calls.slice(0, 10).map((call) => {
+                const isExpanded = expandedCallId === call._id;
+                const transcript = parseTranscript(call.transcript);
+                const hasTranscript = transcript.length > 0;
+                const hasRecording = !!call.recordingUrl;
+
+                return (
+                  <div key={call._id} className="border rounded-lg overflow-hidden">
+                    {/* Call Header */}
+                    <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                          <Phone className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900">{call.callerName || call.phoneNumber || call.callerPhone || 'Unknown'}</p>
+                          <p className="text-sm text-gray-600">
+                            {formatDateTime(call.createdAt)} • {formatDuration(call.duration)}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {hasRecording && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDownloadAudio(call);
+                              }}
+                              className="flex items-center gap-1"
+                            >
+                              <Download className="h-4 w-4" />
+                              <span className="hidden sm:inline">Audio</span>
+                            </Button>
+                          )}
+                          <Badge variant={call.status === 'completed' ? 'success' : call.status === 'failed' ? 'destructive' : 'secondary'}>
+                            {call.status}
+                          </Badge>
+                          {hasTranscript && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleCallExpansion(call._id)}
+                              className="ml-2"
+                            >
+                              {isExpanded ? (
+                                <>
+                                  <ChevronUp className="h-4 w-4 mr-1" />
+                                  Hide
+                                </>
+                              ) : (
+                                <>
+                                  <ChevronDown className="h-4 w-4 mr-1" />
+                                  View Transcript
+                                </>
+                              )}
+                            </Button>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{call.callerName || call.callerPhone || 'Unknown'}</p>
-                      <p className="text-sm text-gray-600">
-                        {formatDateTime(call.createdAt)} • {formatDuration(call.duration)}
-                      </p>
-                    </div>
+
+                    {/* Expanded Conversation View */}
+                    {isExpanded && hasTranscript && (
+                      <div className="border-t bg-gray-50 p-4">
+                        <div className="bg-white rounded-lg p-4 max-h-96 overflow-y-auto">
+                          <div className="flex items-center gap-2 mb-4 pb-3 border-b">
+                            <MessageSquare className="h-5 w-5 text-blue-600" />
+                            <h4 className="font-semibold text-gray-900">Call Transcript</h4>
+                          </div>
+                          <div className="space-y-3">
+                            {transcript.map((item, idx) => {
+                              const isAgent = item.role === 'agent' || item.role === 'assistant';
+                              const isUser = item.role === 'user' || item.role === 'customer';
+
+                              return (
+                                <div key={idx} className={`flex ${isAgent ? 'justify-start' : 'justify-end'}`}>
+                                  <div className={`max-w-[80%] ${isAgent ? '' : 'flex flex-col items-end'}`}>
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <span className="text-xs font-medium text-gray-500 uppercase">
+                                        {isAgent ? agent.name || 'Agent' : 'Customer'}
+                                      </span>
+                                    </div>
+                                    <div className={`rounded-lg px-4 py-2 ${
+                                      isAgent
+                                        ? 'bg-blue-100 text-gray-900'
+                                        : 'bg-gray-200 text-gray-900'
+                                    }`}>
+                                      <p className="text-sm">{item.message || item.text || item.content}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* Call Metadata */}
+                        {(call.sentiment || call.leadsCapured) && (
+                          <div className="grid grid-cols-2 gap-4 mt-4">
+                            {call.sentiment && (
+                              <div className="bg-white rounded-lg p-3 border">
+                                <p className="text-xs font-medium text-gray-500 mb-1">Sentiment</p>
+                                <Badge variant={
+                                  call.sentiment === 'positive' ? 'success' :
+                                  call.sentiment === 'negative' ? 'destructive' :
+                                  'secondary'
+                                }>
+                                  {call.sentiment}
+                                </Badge>
+                              </div>
+                            )}
+                            {call.leadsCapured?.qualified && (
+                              <div className="bg-white rounded-lg p-3 border">
+                                <p className="text-xs font-medium text-gray-500 mb-1">Lead Status</p>
+                                <Badge variant="success">Qualified</Badge>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* No Transcript Message */}
+                    {isExpanded && !hasTranscript && (
+                      <div className="border-t bg-gray-50 p-4 text-center">
+                        <MessageSquare className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-sm text-gray-600">No transcript available for this call</p>
+                      </div>
+                    )}
                   </div>
-                  <Badge variant={call.status === 'completed' ? 'success' : call.status === 'failed' ? 'destructive' : 'secondary'}>
-                    {call.status}
-                  </Badge>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-12">

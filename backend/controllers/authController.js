@@ -3,8 +3,16 @@ import Usage from '../models/Usage.js';
 import { generateToken } from '../middleware/auth.js';
 import { OAuth2Client } from 'google-auth-library';
 import emailService from '../services/emailService.js';
+import twilio from 'twilio';
+import crypto from 'crypto';
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// Initialize Twilio client
+let twilioClient = null;
+if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+  twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+}
 
 export const signup = async (req, res) => {
   try {
@@ -24,9 +32,21 @@ export const signup = async (req, res) => {
     });
 
     const now = new Date();
+    const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const planLimits = {
+      trial: { minutes: 30, agents: 1 },
+      starter: { minutes: 200, agents: 1 },
+      professional: { minutes: 1000, agents: 5 },
+      enterprise: { minutes: 5000, agents: Infinity }
+    };
+    const limits = planLimits[user.plan] || planLimits.trial;
+
     await Usage.create({
       userId: user._id,
-      resetDate: new Date(now.getFullYear(), now.getMonth() + 1, 1)
+      month,
+      plan: user.plan,
+      minutesIncluded: limits.minutes,
+      agentsLimit: limits.agents
     });
 
     const token = generateToken(user._id);
@@ -108,9 +128,21 @@ export const googleAuth = async (req, res) => {
       });
 
       const now = new Date();
+      const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      const planLimits = {
+        trial: { minutes: 30, agents: 1 },
+        starter: { minutes: 200, agents: 1 },
+        professional: { minutes: 1000, agents: 5 },
+        enterprise: { minutes: 5000, agents: Infinity }
+      };
+      const limits = planLimits[user.plan] || planLimits.trial;
+
       await Usage.create({
         userId: user._id,
-        resetDate: new Date(now.getFullYear(), now.getMonth() + 1, 1)
+        month,
+        plan: user.plan,
+        minutesIncluded: limits.minutes,
+        agentsLimit: limits.agents
       });
     }
 
@@ -136,5 +168,122 @@ export const getMe = async (req, res) => {
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// Forgot Password - Send SMS with reset code
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email, phone } = req.body;
+
+    if (!email && !phone) {
+      return res.status(400).json({ message: 'Email or phone number required' });
+    }
+
+    // Find user by email or phone
+    const query = email ? { email } : { phone };
+    const user = await User.findOne(query);
+
+    if (!user) {
+      // Don't reveal if user exists for security
+      return res.json({ message: 'If an account exists, a reset code has been sent' });
+    }
+
+    // Generate 6-digit reset code
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Hash the reset code before storing
+    const resetToken = crypto.createHash('sha256').update(resetCode).digest('hex');
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await user.save();
+
+    // Send reset code via SMS if phone is provided
+    if (phone && twilioClient) {
+      try {
+        await twilioClient.messages.create({
+          body: `Your VoiceFlow CRM password reset code is: ${resetCode}. This code expires in 10 minutes.`,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: phone
+        });
+      } catch (twilioError) {
+        console.error('Twilio SMS Error:', twilioError);
+        return res.status(500).json({ message: 'Failed to send SMS. Please try again.' });
+      }
+    } else {
+      // Fallback to email
+      try {
+        await emailService.sendPasswordResetEmail(user.email, resetCode);
+      } catch (emailError) {
+        console.error('Email Error:', emailError);
+        return res.status(500).json({ message: 'Failed to send reset code. Please try again.' });
+      }
+    }
+
+    res.json({
+      message: 'If an account exists, a reset code has been sent',
+      method: phone ? 'sms' : 'email'
+    });
+  } catch (error) {
+    console.error('Forgot Password Error:', error);
+    res.status(500).json({ message: 'Error processing request' });
+  }
+};
+
+// Reset Password - Verify code and update password
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, phone, code, newPassword } = req.body;
+
+    if (!code || !newPassword) {
+      return res.status(400).json({ message: 'Reset code and new password required' });
+    }
+
+    if (!email && !phone) {
+      return res.status(400).json({ message: 'Email or phone number required' });
+    }
+
+    // Hash the provided code to compare with stored hash
+    const resetToken = crypto.createHash('sha256').update(code).digest('hex');
+
+    // Find user with valid reset token
+    const query = {
+      resetPasswordToken: resetToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    };
+
+    if (email) {
+      query.email = email;
+    } else if (phone) {
+      query.phone = phone;
+    }
+
+    const user = await User.findOne(query);
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset code' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    // Generate new token for auto-login
+    const token = generateToken(user._id);
+
+    res.json({
+      message: 'Password reset successful',
+      token,
+      _id: user._id,
+      email: user.email,
+      company: user.company,
+      plan: user.plan
+    });
+  } catch (error) {
+    console.error('Reset Password Error:', error);
+    res.status(500).json({ message: 'Error resetting password' });
   }
 };

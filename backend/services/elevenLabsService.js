@@ -5,6 +5,11 @@ const ELEVENLABS_API_URL = 'https://api.elevenlabs.io/v1';
 class ElevenLabsService {
   constructor(apiKey = process.env.ELEVENLABS_API_KEY) {
     this.apiKey = apiKey;
+
+    if (!this.apiKey) {
+      console.error('⚠️ ELEVENLABS_API_KEY is not set!');
+    }
+
     this.client = axios.create({
       baseURL: ELEVENLABS_API_URL,
       headers: {

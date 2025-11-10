@@ -3,24 +3,23 @@
 # Documentation: https://render.com/docs/blueprint-spec
 #
 # IMPORTANT: After deployment, you MUST set these environment variables in Render Dashboard:
-# - MONGO_URI (MongoDB Atlas connection string)
-# - ELEVENLABS_API_KEY and all agent IDs
+# - MONGODB_URI (MongoDB Atlas connection string)
+# - ELEVENLABS_API_KEY
 # - TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN
-# - STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET, and all price IDs
-# - EMAIL_USER and EMAIL_PASS
-# - VITE_STRIPE_PUBLISHABLE_KEY (for frontend)
+# - STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, and all price IDs
+# - SMTP credentials (SMTP_USER, SMTP_PASSWORD, etc.)
 
 services:
   # Backend API Service
   - type: web
-    name: voiceflow-api
+    name: voiceflow-crm-api
     runtime: node
     region: oregon
     plan: starter
     branch: main
-    buildCommand: npm install
-    startCommand: node backend/server.js
-    healthCheckPath: /health
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    healthCheckPath: /api/health
 
     envVars:
       - key: NODE_ENV
@@ -30,11 +29,11 @@ services:
         value: 5001
 
       # Database - SET IN RENDER DASHBOARD
-      - key: MONGO_URI
+      - key: MONGODB_URI
         sync: false
 
       # Redis - Can use Render Redis or Redis Cloud
-      - key: REDIS_URL
+      - key: REDIS_URI
         sync: false
 
       # JWT - Auto-generated
@@ -73,6 +72,17 @@ services:
       - key: ELEVENLABS_SUPPORT_AGENT_ID
         sync: false
 
+      # AI Providers (Optional - for AI Assistant features)
+      # Only one is needed, configure in Render Dashboard
+      - key: OPENAI_API_KEY
+        sync: false
+
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+      - key: GOOGLE_AI_API_KEY
+        sync: false
+
       # Twilio - SET IN RENDER DASHBOARD
       - key: TWILIO_ACCOUNT_SID
         sync: false
@@ -90,24 +100,36 @@ services:
       - key: STRIPE_WEBHOOK_SECRET
         sync: false
 
-      - key: STRIPE_PRICE_STARTER
+      - key: STRIPE_STARTER_PRICE_ID
         sync: false
 
-      - key: STRIPE_PRICE_PROFESSIONAL
+      - key: STRIPE_PROFESSIONAL_PRICE_ID
         sync: false
 
-      - key: STRIPE_PRICE_ENTERPRISE
+      - key: STRIPE_ENTERPRISE_PRICE_ID
         sync: false
 
       # Email - SET IN RENDER DASHBOARD
-      - key: EMAIL_USER
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+
+      - key: SMTP_PORT
+        value: 587
+
+      - key: SMTP_SECURE
+        value: false
+
+      - key: SMTP_USER
         sync: false
 
-      - key: EMAIL_PASS
+      - key: SMTP_PASSWORD
         sync: false
 
-      - key: EMAIL_FROM
-        value: VoiceFlow CRM <noreply@yourdomain.com>
+      - key: SMTP_FROM_EMAIL
+        sync: false
+
+      - key: SMTP_FROM_NAME
+        value: VoiceFlow CRM
 
       # Security
       - key: RATE_LIMIT_WINDOW
@@ -143,13 +165,12 @@ services:
 
   # Frontend Static Site
   - type: web
-    name: voiceflow-app
+    name: voiceflow-crm-app
     runtime: static
     region: oregon
     branch: main
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
 
     routes:
       - type: rewrite
