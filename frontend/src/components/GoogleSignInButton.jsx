@@ -2,31 +2,27 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthContext';
 import api from '../lib/api';
 
 // Google OAuth Sign-In Component using popup flow (more reliable than iframe)
 export default function GoogleSignInButton({ onSuccess }) {
   const navigate = useNavigate();
+  const { googleLogin } = useAuth();
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        // Exchange the access token with our backend
-        const response = await api.post('/auth/google', {
+        // Use AuthContext's googleLogin to properly update user state
+        const userData = await googleLogin({
           credential: tokenResponse.access_token,
           tokenType: 'access_token'
         });
 
-        // Store token
-        localStorage.setItem('token', response.data.token);
-
-        // Set auth header for future requests
-        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-
         toast.success('Successfully signed in with Google!');
 
         if (onSuccess) {
-          onSuccess(response.data);
+          onSuccess(userData);
         } else {
           navigate('/app/dashboard');
         }
