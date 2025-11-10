@@ -26,6 +26,7 @@ import { apiLimiter } from './middleware/rateLimiter.js';
 
 import authRoutes from './routes/auth.js';
 import subscriptionRoutes from './routes/subscription.js';
+import billingRoutes from './routes/billing.js';
 import dashboardRoutes from './routes/dashboard.js';
 import agentRoutes from './routes/agents.js';
 import aiAgentRoutes from './routes/aiAgents.js';
@@ -43,6 +44,7 @@ import emailRoutes from './routes/emails.js';
 import apiKeyRoutes from './routes/apiKeys.js';
 import usageRoutes from './routes/usage.js';
 import projectRoutes from './routes/projects.js';
+import { startOverageBillingCron } from './jobs/monthlyOverageBilling.js';
 
 const app = express();
 
@@ -56,16 +58,10 @@ app.use(helmet({
 app.use(morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined'));
 
 // CORS configuration
-// In production, frontend and backend are served from same origin, so we can be more permissive
-const corsOptions = process.env.NODE_ENV === 'production'
-  ? {
-      origin: true, // Allow same-origin requests
-      credentials: true
-    }
-  : {
-      origin: process.env.CLIENT_URL || 'http://localhost:5173',
-      credentials: true
-    };
+const corsOptions = {
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true
+};
 
 app.use(cors(corsOptions));
 
@@ -87,7 +83,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/subscription', subscriptionRoutes);
-app.use('/api/billing', subscriptionRoutes);
+app.use('/api/billing', billingRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/agents', agentRoutes);
 app.use('/api/ai-agents', aiAgentRoutes);
@@ -142,6 +138,9 @@ app.listen(PORT, () => {
   ║   API: http://localhost:${PORT}/api    ║
   ╚════════════════════════════════════════╝
   `);
+
+  // Start monthly overage billing cron job
+  startOverageBillingCron();
 });
 
 export default app;
