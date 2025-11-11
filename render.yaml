@@ -48,14 +48,27 @@ services:
       - key: CLIENT_URL
         value: https://voiceflow-crm.onrender.com
 
-      # Frontend environment variables (for Vite build)
+      - key: API_URL
+        value: https://voiceflow-crm.onrender.com
+
+      - key: BASE_URL
+        value: https://voiceflow-crm.onrender.com
+
+      # Frontend environment variables (for Vite build ONLY - embedded during npm run build)
       - key: VITE_API_URL
-        value: https://voiceflow-crm.onrender.com/api
+        value: /api
 
       - key: VITE_GOOGLE_CLIENT_ID
         value: 710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com
 
       - key: VITE_STRIPE_PUBLISHABLE_KEY
+        sync: false
+
+      # Google OAuth (Backend)
+      - key: GOOGLE_CLIENT_ID
+        value: 710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com
+
+      - key: GOOGLE_CLIENT_SECRET
         sync: false
 
       # ElevenLabs - SET IN RENDER DASHBOARD
@@ -140,7 +153,7 @@ services:
         sync: false
 
       - key: SMTP_FROM_NAME
-        value: VoiceFlow CRM
+        value: Remodely.ai
 
       # Security
       - key: RATE_LIMIT_WINDOW
