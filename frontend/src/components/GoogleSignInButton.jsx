@@ -35,7 +35,8 @@ export default function GoogleSignInButton({ onSuccess }) {
       console.error('Google OAuth error:', error);
       toast.error('Google sign-in failed. Please try again.');
     },
-    flow: 'implicit',
+    // Remove flow: 'implicit' - default authorization code flow with PKCE is more secure
+    // and works better in incognito/privacy-focused browsers
   });
 
   return (
