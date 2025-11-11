@@ -142,10 +142,20 @@ export default function AIAgents() {
 
     try {
       const response = await aiAgentApi.chatWithAgent(selectedAgent._id, newMessages);
-      setChatMessages([...newMessages, response.data.message]);
+
+      // Validate response format before adding to state
+      if (response.data.message && response.data.message.role && response.data.message.content) {
+        setChatMessages([...newMessages, response.data.message]);
+      } else {
+        throw new Error('Invalid response format from AI agent');
+      }
     } catch (error) {
       console.error('Error sending message:', error);
-      alert(error.response?.data?.message || 'Failed to send message');
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to send message';
+      alert(errorMessage);
+
+      // Remove the failed user message from state to prevent corruption
+      setChatMessages(chatMessages);
     } finally {
       setChatLoading(false);
     }
@@ -561,22 +571,24 @@ export default function AIAgents() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {chatMessages.map((msg, index) => (
-                    <div
-                      key={index}
-                      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                    >
+                  {chatMessages
+                    .filter((msg) => msg && msg.role && msg.content)
+                    .map((msg, index) => (
                       <div
-                        className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                          msg.role === 'user'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-card border'
-                        }`}
+                        key={index}
+                        className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                       >
-                        <div className="whitespace-pre-wrap">{msg.content}</div>
+                        <div
+                          className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                            msg.role === 'user'
+                              ? 'bg-primary text-primary-foreground'
+                              : 'bg-card border'
+                          }`}
+                        >
+                          <div className="whitespace-pre-wrap">{msg.content}</div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                   {chatLoading && (
                     <div className="flex justify-start">
                       <div className="bg-card border rounded-lg px-4 py-2">
