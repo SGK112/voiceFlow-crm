@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remodely - AI Voice CRM for Contractors</title>
-    <meta name="description" content="Automate your remodeling business with AI voice agents that answer calls, qualify leads, and book jobs 24/7.">
+    <title>VoiceFlow CRM - AI-Powered Voice Agent Platform</title>
+    <meta name="description" content="Build custom AI voice workflows with ElevenLabs integration. Automate calls, qualify leads, and scale your business with intelligent voice agents.">
     <style>
         * {
             margin: 0;
@@ -382,6 +382,57 @@
             font-size: 14px;
         }
         
+        /* How It Works Section */
+        .how-it-works {
+            padding: 80px 24px;
+            background: #ffffff;
+        }
+
+        .how-it-works-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-top: 48px;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .step-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .step-card p {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 { font-size: 36px; }
@@ -397,9 +448,10 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="/" class="logo">Remodely</a>
+            <a href="/" class="logo">VoiceFlow CRM</a>
             <div class="nav-menu">
                 <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
                 <a href="#pricing" class="nav-link">Pricing</a>
                 <a href="/login" class="btn btn-secondary">Sign In</a>
                 <a href="/signup" class="btn btn-primary">Get Started</a>
@@ -410,14 +462,14 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <div class="hero-badge">✨ AI-Powered CRM for Contractors</div>
-            <h1>Never Miss a Lead Again</h1>
-            <p>AI voice agents that answer calls, qualify leads, and book jobs 24/7. Built specifically for remodeling contractors who want to grow without hiring more staff.</p>
+            <div class="hero-badge">🚀 Powered by ElevenLabs AI Voice Technology</div>
+            <h1>Build Custom AI Voice Workflows That Scale Your Business</h1>
+            <p>VoiceFlow CRM combines intelligent voice agents with powerful automation. Create custom workflows, qualify leads automatically, and manage your entire sales pipeline - all powered by ultra-realistic AI voice technology.</p>
             <div class="cta-group">
                 <a href="/signup" class="btn btn-primary">Start Free Trial</a>
-                <a href="#pricing" class="btn btn-secondary">View Pricing</a>
+                <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
             </div>
-            <p class="hero-notice">14-day free trial • No credit card required</p>
+            <p class="hero-notice">14-day free trial • No credit card required • Try the demo agent below ↓</p>
         </div>
     </section>
 
@@ -443,43 +495,90 @@
         </div>
     </section>
 
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="how-it-works-container">
+            <div class="section-title">
+                <h2>How VoiceFlow CRM Works</h2>
+                <p>From setup to scaling - see how easy it is to automate your business with AI voice agents.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Connect Your Tools</h3>
+                    <p>Integrate ElevenLabs voice agents, connect your CRM, calendar, and communication channels in minutes.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Build Custom Workflows</h3>
+                    <p>Design intelligent automation workflows - from lead qualification to appointment scheduling and follow-ups.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Deploy AI Voice Agents</h3>
+                    <p>Launch ultra-realistic voice agents that handle inbound calls, outbound campaigns, and customer interactions 24/7.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Scale & Optimize</h3>
+                    <p>Monitor performance, track conversions, and continuously improve your workflows with built-in analytics and A/B testing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Features Section -->
     <section class="features" id="features">
         <div class="features-container">
             <div class="section-title">
-                <h2>Everything You Need to Scale</h2>
-                <p>Automate repetitive tasks and focus on what matters - delivering exceptional work.</p>
+                <h2>Powerful Features, Endless Possibilities</h2>
+                <p>Everything you need to automate, scale, and optimize your voice-powered business.</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📞</div>
-                    <h3>AI Voice Agents</h3>
-                    <p>Natural-sounding voice agents that answer calls, qualify leads, and schedule appointments automatically.</p>
+                    <div class="feature-icon">🎙️</div>
+                    <h3>ElevenLabs Voice Integration</h3>
+                    <p>Ultra-realistic AI voices with emotional intelligence. Create natural conversations that convert prospects into customers.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Project Management</h3>
-                    <p>Track estimates, materials, timelines, and team members for all your remodeling projects in one place.</p>
+                    <div class="feature-icon">⚡</div>
+                    <h3>Custom Workflow Builder</h3>
+                    <p>Drag-and-drop workflow designer to create complex automation. If-then logic, conditional routing, and multi-step sequences made easy.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
-                    <h3>Lead Management</h3>
-                    <p>Capture, qualify, and nurture leads automatically with intelligent workflows and follow-ups.</p>
+                    <h3>Intelligent Lead Qualification</h3>
+                    <p>AI agents ask the right questions, score leads automatically, and route hot prospects to your sales team instantly.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Complete CRM & Pipeline</h3>
+                    <p>Manage contacts, deals, projects, and tasks. Visual pipeline, automated follow-ups, and deal tracking in one unified platform.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📅</div>
-                    <h3>Calendar Integration</h3>
-                    <p>Sync with Google Calendar and automatically schedule consultations and site visits.</p>
+                    <h3>Smart Scheduling</h3>
+                    <p>Agents check availability, book appointments, send reminders, and handle reschedules - all without human intervention.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📧</div>
-                    <h3>Email & SMS Automation</h3>
-                    <p>Send automated follow-ups, reminders, and updates to keep clients informed.</p>
+                    <div class="feature-icon">🔗</div>
+                    <h3>Seamless Integrations</h3>
+                    <p>Connect Twilio, Stripe, Google Calendar, SMTP, and custom APIs. Extend functionality with webhooks and Zapier.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📈</div>
-                    <h3>Advanced Analytics</h3>
-                    <p>Track call performance, conversion rates, and revenue to optimize your business.</p>
+                    <h3>Real-Time Analytics</h3>
+                    <p>Track call metrics, conversion rates, agent performance, and ROI. Make data-driven decisions to optimize your workflows.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Enterprise Security</h3>
+                    <p>SOC 2 compliant infrastructure. End-to-end encryption, role-based access control, and audit logs for complete peace of mind.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Scalable Infrastructure</h3>
+                    <p>Handle thousands of concurrent calls. Auto-scaling, 99.9% uptime SLA, and global edge network for low-latency voice.</p>
                 </div>
             </div>
         </div>
@@ -546,20 +645,20 @@
 
     <!-- Final CTA -->
     <section class="cta-section">
-        <h2>Ready to Grow Your Business?</h2>
-        <p>Join hundreds of contractors who are automating their business and winning more jobs with Remodely.</p>
+        <h2>Ready to Transform Your Business with AI?</h2>
+        <p>Join innovative businesses already using VoiceFlow CRM to automate operations, qualify leads faster, and scale without limits.</p>
         <div class="cta-group">
             <a href="/signup" class="btn btn-primary">Start Free Trial</a>
-            <a href="mailto:help@remodely.ai" class="btn btn-secondary">Contact Sales</a>
+            <a href="mailto:support@voiceflowcrm.com" class="btn btn-secondary">Contact Sales</a>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <p>© 2025 Remodely LLC. All rights reserved.</p>
+        <p>© 2025 VoiceFlow CRM. All rights reserved.</p>
     </footer>
 
-    <!-- ElevenLabs Widget -->
+    <!-- ElevenLabs Demo Widget - Try it now! -->
     <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
     <elevenlabs-convai agent-id="agent_3601k949jev2ekj8qe50z5c7tdfc"></elevenlabs-convai>
 </body>
