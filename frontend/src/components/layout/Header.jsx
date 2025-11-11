@@ -2,6 +2,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { LogOut, User, Menu } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Header({ isMobileOpen, setIsMobileOpen }) {
   const { user, logout } = useAuth();
@@ -40,6 +41,8 @@ export default function Header({ isMobileOpen, setIsMobileOpen }) {
               <div className="text-muted-foreground capitalize">{user?.plan} Plan</div>
             </div>
           </div>
+
+          <ThemeToggle />
 
           <Button variant="ghost" size="icon" onClick={handleLogout} className="hover:bg-accent">
             <LogOut className="h-4 w-4" />

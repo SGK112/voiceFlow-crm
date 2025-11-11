@@ -74,14 +74,14 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
             isCollapsed ? 'w-0 opacity-0' : 'w-full opacity-100'
           )}>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-amber-400 bg-clip-text text-transparent whitespace-nowrap">
-              VoiceFlow
+              🚀 Remodely.ai
             </h1>
-            <p className="text-sm text-muted-foreground whitespace-nowrap">AI Voice CRM</p>
+            <p className="text-sm text-muted-foreground whitespace-nowrap">VoiceFlow CRM</p>
           </div>
 
           {isCollapsed && (
             <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-amber-400 flex items-center justify-center text-white font-bold text-xl">
-              V
+              🚀
             </div>
           )}
 
