@@ -47,6 +47,7 @@ import emailRoutes from './routes/emails.js';
 import apiKeyRoutes from './routes/apiKeys.js';
 import usageRoutes from './routes/usage.js';
 import projectRoutes from './routes/projects.js';
+import diagnosticRoutes from './routes/diagnostic.js';
 import { startOverageBillingCron } from './jobs/monthlyOverageBilling.js';
 
 const app = express();
@@ -109,6 +110,7 @@ app.use('/api/emails', emailRoutes);
 app.use('/api/api-keys', apiKeyRoutes);
 app.use('/api/usage', usageRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/diagnostic', diagnosticRoutes);
 
 app.use('/api', apiLimiter);
 
