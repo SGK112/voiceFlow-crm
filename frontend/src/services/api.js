@@ -175,4 +175,24 @@ export const aiAgentApi = {
   getAIAgentTemplates: () => api.get('/ai-agents/helpers/templates'),
 };
 
+export const campaignApi = {
+  getCampaigns: (params) => api.get('/campaigns', { params }),
+  getCampaignById: (id) => api.get(`/campaigns/${id}`),
+  createCampaign: (data) => api.post('/campaigns', data),
+  updateCampaign: (id, data) => api.put(`/campaigns/${id}`, data),
+  deleteCampaign: (id) => api.delete(`/campaigns/${id}`),
+  startCampaign: (id) => api.post(`/campaigns/${id}/start`),
+  pauseCampaign: (id) => api.post(`/campaigns/${id}/pause`),
+  resumeCampaign: (id) => api.post(`/campaigns/${id}/resume`),
+  getCampaignStats: (id) => api.get(`/campaigns/${id}/stats`),
+  uploadContacts: (id, file) => {
+    const formData = new FormData();
+    formData.append('csv', file);
+    return api.post(`/campaigns/${id}/contacts/upload`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+  addContact: (id, data) => api.post(`/campaigns/${id}/contacts`, data),
+};
+
 export default api;

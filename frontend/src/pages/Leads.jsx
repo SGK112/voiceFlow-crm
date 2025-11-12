@@ -114,14 +114,14 @@ export default function Leads() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-4 sm:space-y-6 max-w-7xl mx-auto px-2 sm:px-0">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="text-center sm:text-left w-full sm:w-auto">
+        <div className="text-left w-full sm:w-auto">
           <h1 className="text-2xl sm:text-3xl font-bold">Leads</h1>
           <p className="text-muted-foreground text-sm sm:text-base">Manage your sales leads</p>
         </div>
 
-        <div className="flex gap-2 w-full sm:w-auto justify-center sm:justify-end">
+        <div className="flex gap-2 w-full sm:w-auto">
           <Button variant="outline" onClick={handleExport} className="flex-1 sm:flex-initial">
             <Download className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">Export CSV</span>
@@ -267,9 +267,14 @@ export default function Leads() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">Select an agent</SelectItem>
-                  {(agents || []).map((agent) => (
+                  {(agents || [])
+                    .filter((agent, index, self) =>
+                      // Remove duplicates based on elevenLabsAgentId (unique ElevenLabs ID)
+                      index === self.findIndex((a) => a.elevenLabsAgentId === agent.elevenLabsAgentId)
+                    )
+                    .map((agent) => (
                     <SelectItem key={agent._id} value={agent._id}>
-                      {agent.name} ({agent.type})
+                      {agent.name} ({agent.type?.replace('_', ' ') || 'Voice Agent'})
                     </SelectItem>
                   ))}
                 </SelectContent>
