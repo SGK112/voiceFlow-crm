@@ -78,31 +78,102 @@ class ElevenLabsService {
     }
   }
 
-  async initiateCall(agentId, phoneNumber, agentPhoneNumberId, callbackUrl, dynamicVariables = {}) {
+  async initiateCall(agentId, phoneNumber, agentPhoneNumberId, callbackUrl, dynamicVariables = {}, personalizedScript = null, personalizedFirstMessage = null) {
     try {
+      // Validate inputs
+      if (!agentId || !phoneNumber || !agentPhoneNumberId) {
+        throw new Error('Missing required parameters for call initiation');
+      }
+
+      // Validate script length (ElevenLabs typically has limits around 3000-5000 chars)
+      const MAX_SCRIPT_LENGTH = 4000;
+      if (personalizedScript && personalizedScript.length > MAX_SCRIPT_LENGTH) {
+        console.warn(`⚠️ Script length (${personalizedScript.length}) exceeds recommended maximum (${MAX_SCRIPT_LENGTH}). Truncating...`);
+        personalizedScript = personalizedScript.substring(0, MAX_SCRIPT_LENGTH) + '...';
+      }
+
       const recipientData = {
         phone_number: phoneNumber
       };
 
       // Add dynamic variables for personalized conversations
-      // These become available to the agent during the call
+      // ElevenLabs supports custom variables in batch calling via the recipient object
+      // These will be available as {{variable_name}} in the agent's prompt
       if (Object.keys(dynamicVariables).length > 0) {
-        // ElevenLabs supports these dynamic variables in the agent prompt
-        Object.assign(recipientData, dynamicVariables);
+        recipientData.variables = dynamicVariables;
       }
 
-      const response = await this.client.post('/convai/batch-calling/submit', {
+      const requestBody = {
         call_name: dynamicVariables.lead_name
           ? `Call to ${dynamicVariables.lead_name}`
           : `CRM Call - ${phoneNumber} - ${Date.now()}`,
         agent_id: agentId,
         agent_phone_number_id: agentPhoneNumberId,
         recipients: [recipientData]
+      };
+
+      // Override agent prompt and first message with personalized versions if provided
+      // This allows each call to have a customized script with lead-specific information
+      if (personalizedScript || personalizedFirstMessage) {
+        requestBody.conversation_config_override = {
+          agent: {}
+        };
+
+        if (personalizedScript) {
+          requestBody.conversation_config_override.agent.prompt = {
+            prompt: personalizedScript
+          };
+        }
+
+        if (personalizedFirstMessage) {
+          requestBody.conversation_config_override.agent.first_message = personalizedFirstMessage;
+        }
+      }
+
+      // Add webhook callback URL if provided
+      if (callbackUrl) {
+        requestBody.webhook_url = callbackUrl;
+      }
+
+      console.log('📞 Initiating call with personalized content:', {
+        agentId,
+        phoneNumber,
+        variableCount: Object.keys(dynamicVariables).length,
+        webhook: callbackUrl,
+        scriptLength: personalizedScript?.length || 0,
+        hasPersonalizedScript: !!personalizedScript,
+        hasPersonalizedFirstMessage: !!personalizedFirstMessage
       });
+
+      const response = await this.client.post('/convai/batch-calling/submit', requestBody);
+
+      if (!response.data) {
+        throw new Error('Empty response from ElevenLabs API');
+      }
+
       return response.data;
     } catch (error) {
-      console.error('ElevenLabs API Error:', error.response?.data || error.message);
-      throw new Error('Failed to initiate call');
+      // Enhanced error logging
+      if (error.response?.data) {
+        console.error('ElevenLabs API Error Details:', {
+          status: error.response.status,
+          data: error.response.data,
+          headers: error.response.headers
+        });
+      } else {
+        console.error('ElevenLabs API Error:', error.message);
+      }
+
+      // Provide more specific error messages
+      if (error.response?.status === 401) {
+        throw new Error('Invalid ElevenLabs API key');
+      } else if (error.response?.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later');
+      } else if (error.response?.status === 400) {
+        throw new Error(`Invalid request: ${error.response.data?.detail || 'Bad request'}`);
+      }
+
+      throw new Error('Failed to initiate call with ElevenLabs');
     }
   }
 

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { agentApi } from '@/services/api';
+import { agentApi, callApi } from '@/services/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -65,20 +65,25 @@ export default function AgentDetail() {
   const { data: agent, isLoading } = useQuery({
     queryKey: ['agent', id],
     queryFn: () => agentApi.getAgentById(id).then(res => res.data),
-    onSuccess: (data) => {
+    enabled: !!id
+  });
+
+  // Handle agent data when it loads
+  useEffect(() => {
+    if (agent) {
       const agentWithDefaults = {
-        ...data,
-        configuration: data.configuration || {
+        ...agent,
+        configuration: agent.configuration || {
           temperature: 0.8,
           maxDuration: 300,
           language: 'en'
         }
       };
       setEditedAgent(agentWithDefaults);
-      const voice = ELEVENLABS_VOICES.find(v => v.id === data.voiceId);
+      const voice = ELEVENLABS_VOICES.find(v => v.id === agent.voiceId);
       setSelectedVoice(voice || ELEVENLABS_VOICES[0]);
     }
-  });
+  }, [agent]);
 
   const { data: calls } = useQuery({
     queryKey: ['agent-calls', id],
@@ -103,7 +108,7 @@ export default function AgentDetail() {
   });
 
   const testCallMutation = useMutation({
-    mutationFn: (phoneNumber) => agentApi.initiateCall({ agentId: id, phoneNumber }),
+    mutationFn: (phoneNumber) => callApi.initiateCall({ agentId: id, phoneNumber }),
     onSuccess: () => {
       alert('Test call initiated! Check your phone.');
       setTestPhoneNumber('');
@@ -127,6 +132,44 @@ export default function AgentDetail() {
       return;
     }
     testCallMutation.mutate(testPhoneNumber);
+  };
+
+  const handleVoicePreview = async () => {
+    try {
+      // Use ElevenLabs Text-to-Speech API to generate a preview
+      const previewText = "Hello! This is a preview of my voice. I'm excited to help you with your calls.";
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice.id}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'audio/mpeg',
+          'xi-api-key': import.meta.env.VITE_ELEVENLABS_API_KEY || '',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: previewText,
+          model_id: 'eleven_monolingual_v1',
+          voice_settings: {
+            stability: 0.5,
+            similarity_boost: 0.5
+          }
+        })
+      });
+
+      if (response.ok) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        audio.play();
+
+        // Clean up the object URL after playing
+        audio.onended = () => URL.revokeObjectURL(audioUrl);
+      } else {
+        alert(`Voice: ${selectedVoice.name}\n${selectedVoice.gender} • ${selectedVoice.accent} • ${selectedVoice.age}\n\nNote: Audio preview requires ElevenLabs API key`);
+      }
+    } catch (error) {
+      console.error('Voice preview error:', error);
+      alert(`Voice: ${selectedVoice.name}\n${selectedVoice.gender} • ${selectedVoice.accent} • ${selectedVoice.age}`);
+    }
   };
 
   const handleDownloadAudio = async (call) => {
@@ -201,7 +244,7 @@ export default function AgentDetail() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading agent details...</p>
+          <p className="text-muted-foreground">Loading agent details...</p>
         </div>
       </div>
     );
@@ -215,8 +258,8 @@ export default function AgentDetail() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex-1">
-          <h1 className="text-3xl font-bold text-gray-900">{agent.name}</h1>
-          <p className="text-gray-600 capitalize">{agent.type.replace('_', ' ')} Agent</p>
+          <h1 className="text-3xl font-bold text-foreground">{agent.name}</h1>
+          <p className="text-muted-foreground capitalize">{agent.type.replace('_', ' ')} Agent</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant={agent.enabled ? 'success' : 'secondary'} className="text-sm px-3 py-1">
@@ -245,57 +288,57 @@ export default function AgentDetail() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-gray-900">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-foreground">
               <PhoneCall className="h-4 w-4 text-blue-600" />
               Total Calls
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{performance?.totalCalls || agent.performance?.totalCalls || 0}</div>
-            <p className="text-xs text-gray-600 mt-1">All time</p>
+            <div className="text-2xl font-bold text-foreground">{performance?.totalCalls || agent.performance?.totalCalls || 0}</div>
+            <p className="text-xs text-muted-foreground mt-1">All time</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-gray-900">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-foreground">
               <CheckCircle className="h-4 w-4 text-green-600" />
               Success Rate
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="text-2xl font-bold text-foreground">
               {performance?.successRate || agent.performance?.conversionRate || 0}%
             </div>
-            <p className="text-xs text-gray-600 mt-1">Successful outcomes</p>
+            <p className="text-xs text-muted-foreground mt-1">Successful outcomes</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-gray-900">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-foreground">
               <Clock className="h-4 w-4 text-orange-600" />
               Avg Duration
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="text-2xl font-bold text-foreground">
               {formatDuration(performance?.averageDuration || agent.performance?.averageDuration || 0)}
             </div>
-            <p className="text-xs text-gray-600 mt-1">Per call</p>
+            <p className="text-xs text-muted-foreground mt-1">Per call</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2 text-gray-900">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-foreground">
               <Users className="h-4 w-4 text-purple-600" />
               Leads Generated
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{agent.performance?.leadsGenerated || 0}</div>
-            <p className="text-xs text-gray-600 mt-1">From calls</p>
+            <div className="text-2xl font-bold text-foreground">{agent.performance?.leadsGenerated || 0}</div>
+            <p className="text-xs text-muted-foreground mt-1">From calls</p>
           </CardContent>
         </Card>
       </div>
@@ -306,7 +349,7 @@ export default function AgentDetail() {
           {/* Agent Settings */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-gray-900">
+              <CardTitle className="flex items-center gap-2 text-foreground">
                 <Settings className="h-5 w-5" />
                 Agent Settings
               </CardTitle>
@@ -315,22 +358,22 @@ export default function AgentDetail() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Agent Name</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Agent Name</label>
                   <input
                     type="text"
                     value={editedAgent.name}
                     onChange={(e) => setEditedAgent({ ...editedAgent, name: e.target.value })}
                     disabled={!isEditing}
-                    className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                    className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Agent Type</label>
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">Agent Type</label>
                   <select
                     value={editedAgent.type}
                     onChange={(e) => setEditedAgent({ ...editedAgent, type: e.target.value })}
                     disabled={!isEditing}
-                    className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                    className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
                   >
                     <option value="lead_gen">Lead Generation</option>
                     <option value="booking">Booking</option>
@@ -343,19 +386,19 @@ export default function AgentDetail() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">First Message</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">First Message</label>
                 <input
                   type="text"
                   value={editedAgent.firstMessage}
                   onChange={(e) => setEditedAgent({ ...editedAgent, firstMessage: e.target.value })}
                   disabled={!isEditing}
                   placeholder="Hello! How can I help you today?"
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                  className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <label className="block text-sm font-medium text-muted-foreground mb-1">Status</label>
                 <div className="flex items-center gap-4">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -365,7 +408,7 @@ export default function AgentDetail() {
                       disabled={!isEditing}
                       className="text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-gray-900">Active</span>
+                    <span className="text-foreground">Active</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -375,7 +418,7 @@ export default function AgentDetail() {
                       disabled={!isEditing}
                       className="text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-gray-900">Inactive</span>
+                    <span className="text-foreground">Inactive</span>
                   </label>
                 </div>
               </div>
@@ -387,7 +430,7 @@ export default function AgentDetail() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="flex items-center gap-2 text-gray-900">
+                  <CardTitle className="flex items-center gap-2 text-foreground">
                     <Mic className="h-5 w-5" />
                     Voice Selection
                   </CardTitle>
@@ -405,19 +448,19 @@ export default function AgentDetail() {
             </CardHeader>
             <CardContent className="space-y-4">
               {selectedVoice && (
-                <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-4 p-4 bg-accent/50 rounded-lg border border-border">
                   <div className="flex-shrink-0">
-                    <div className="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center">
-                      <Volume2 className="h-6 w-6 text-white" />
+                    <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
+                      <Volume2 className="h-6 w-6 text-primary-foreground" />
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900">{selectedVoice.name}</h4>
-                    <p className="text-sm text-gray-600">
+                    <h4 className="font-semibold text-foreground">{selectedVoice.name}</h4>
+                    <p className="text-sm text-muted-foreground">
                       {selectedVoice.gender} • {selectedVoice.accent} • {selectedVoice.age}
                     </p>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={handleVoicePreview}>
                     <Play className="h-4 w-4 mr-2" />
                     Preview
                   </Button>
@@ -425,24 +468,24 @@ export default function AgentDetail() {
               )}
 
               {showVoiceLibrary && (
-                <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto p-2 border rounded-lg">
+                <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto p-2 border border-border rounded-lg bg-background">
                   {ELEVENLABS_VOICES.map((voice) => (
                     <div
                       key={voice.id}
                       onClick={() => isEditing && setSelectedVoice(voice)}
                       className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
                         selectedVoice?.id === voice.id
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-primary bg-accent'
+                          : 'border-border hover:border-primary/50 hover:bg-accent/30'
                       } ${!isEditing ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                          <span className="text-white font-bold text-sm">{voice.name[0]}</span>
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center flex-shrink-0">
+                          <span className="text-primary-foreground font-bold text-sm">{voice.name[0]}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h5 className="font-medium text-gray-900 text-sm">{voice.name}</h5>
-                          <p className="text-xs text-gray-600 truncate">
+                          <h5 className="font-medium text-foreground text-sm">{voice.name}</h5>
+                          <p className="text-xs text-muted-foreground truncate">
                             {voice.gender} • {voice.accent}
                           </p>
                         </div>
@@ -457,7 +500,7 @@ export default function AgentDetail() {
           {/* Prompt Engineering */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-gray-900">
+              <CardTitle className="flex items-center gap-2 text-foreground">
                 <MessageSquare className="h-5 w-5" />
                 System Prompt & Script
               </CardTitle>
@@ -468,10 +511,10 @@ export default function AgentDetail() {
             <CardContent className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-muted-foreground">
                     Agent Script / Instructions
                   </label>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {(editedAgent.script || '').length} characters
                   </span>
                 </div>
@@ -482,13 +525,13 @@ export default function AgentDetail() {
                   disabled={!isEditing}
                   rows={10}
                   placeholder="Enter the script or instructions for your voice agent..."
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 font-mono text-sm"
+                  className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted font-mono text-sm"
                 />
               </div>
 
               {isEditing && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground mb-2">
                     Dynamic Variables
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -496,10 +539,10 @@ export default function AgentDetail() {
                       <button
                         key={item.var}
                         onClick={() => insertVariable(item.var)}
-                        className="text-left p-2 border border-gray-200 rounded hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                        className="text-left p-2 border border-border rounded hover:bg-accent hover:border-primary/50 transition-colors"
                       >
                         <code className="text-xs font-mono text-blue-600">{item.var}</code>
-                        <p className="text-xs text-gray-600 mt-1">{item.description}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{item.description}</p>
                       </button>
                     ))}
                   </div>
@@ -514,7 +557,7 @@ export default function AgentDetail() {
           {/* Test Call Interface */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-gray-900">
+              <CardTitle className="flex items-center gap-2 text-foreground">
                 <Phone className="h-5 w-5" />
                 Test Call
               </CardTitle>
@@ -522,7 +565,7 @@ export default function AgentDetail() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Phone Number
                 </label>
                 <input
@@ -530,7 +573,7 @@ export default function AgentDetail() {
                   value={testPhoneNumber}
                   onChange={(e) => setTestPhoneNumber(e.target.value)}
                   placeholder="+1234567890"
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-input rounded px-3 py-2 text-white dark:text-white placeholder:text-muted-foreground disabled:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background"
                 />
               </div>
               <Button
@@ -541,7 +584,7 @@ export default function AgentDetail() {
                 <Phone className="h-4 w-4 mr-2" />
                 {testCallMutation.isPending ? 'Initiating...' : 'Make Test Call'}
               </Button>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 This will place a real call to the number above using your current agent configuration.
               </p>
             </CardContent>
@@ -550,14 +593,14 @@ export default function AgentDetail() {
           {/* Advanced Configuration */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-gray-900">
+              <CardTitle className="flex items-center gap-2 text-foreground">
                 <Zap className="h-5 w-5" />
                 Advanced Settings
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Temperature (Creativity)
                 </label>
                 <input
@@ -573,9 +616,9 @@ export default function AgentDetail() {
                   disabled={!isEditing}
                   className="w-full"
                 />
-                <div className="flex justify-between text-xs text-gray-600 mt-1">
+                <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>Precise (0)</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-foreground">
                     {editedAgent.configuration?.temperature || 0.8}
                   </span>
                   <span>Creative (2)</span>
@@ -583,7 +626,7 @@ export default function AgentDetail() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Max Duration (seconds)
                 </label>
                 <input
@@ -596,12 +639,12 @@ export default function AgentDetail() {
                   disabled={!isEditing}
                   min="30"
                   max="600"
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                  className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-muted-foreground mb-1">
                   Language
                 </label>
                 <select
@@ -611,7 +654,7 @@ export default function AgentDetail() {
                     configuration: { ...editedAgent.configuration, language: e.target.value }
                   })}
                   disabled={!isEditing}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                  className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
                 >
                   <option value="en">English</option>
                   <option value="es">Spanish</option>
@@ -627,7 +670,7 @@ export default function AgentDetail() {
       {/* Recent Calls with Conversation View */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-gray-900">
+          <CardTitle className="flex items-center gap-2 text-foreground">
             <TrendingUp className="h-5 w-5" />
             Recent Calls & Conversations
           </CardTitle>
@@ -645,14 +688,14 @@ export default function AgentDetail() {
                 return (
                   <div key={call._id} className="border rounded-lg overflow-hidden">
                     {/* Call Header */}
-                    <div className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
                       <div className="flex items-center gap-4 flex-1">
                         <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                           <Phone className="h-5 w-5 text-blue-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-gray-900">{call.callerName || call.phoneNumber || call.callerPhone || 'Unknown'}</p>
-                          <p className="text-sm text-gray-600">
+                          <p className="font-medium text-foreground">{call.callerName || call.phoneNumber || call.callerPhone || 'Unknown'}</p>
+                          <p className="text-sm text-muted-foreground">
                             {formatDateTime(call.createdAt)} • {formatDuration(call.duration)}
                           </p>
                         </div>
@@ -700,11 +743,11 @@ export default function AgentDetail() {
 
                     {/* Expanded Conversation View */}
                     {isExpanded && hasTranscript && (
-                      <div className="border-t bg-gray-50 p-4">
-                        <div className="bg-white rounded-lg p-4 max-h-96 overflow-y-auto">
+                      <div className="border-t bg-muted/50 p-4">
+                        <div className="bg-card rounded-lg p-4 max-h-96 overflow-y-auto border border-border">
                           <div className="flex items-center gap-2 mb-4 pb-3 border-b">
                             <MessageSquare className="h-5 w-5 text-blue-600" />
-                            <h4 className="font-semibold text-gray-900">Call Transcript</h4>
+                            <h4 className="font-semibold text-foreground">Call Transcript</h4>
                           </div>
                           <div className="space-y-3">
                             {transcript.map((item, idx) => {
@@ -715,14 +758,14 @@ export default function AgentDetail() {
                                 <div key={idx} className={`flex ${isAgent ? 'justify-start' : 'justify-end'}`}>
                                   <div className={`max-w-[80%] ${isAgent ? '' : 'flex flex-col items-end'}`}>
                                     <div className="flex items-center gap-2 mb-1">
-                                      <span className="text-xs font-medium text-gray-500 uppercase">
+                                      <span className="text-xs font-medium text-muted-foreground uppercase">
                                         {isAgent ? agent.name || 'Agent' : 'Customer'}
                                       </span>
                                     </div>
                                     <div className={`rounded-lg px-4 py-2 ${
                                       isAgent
-                                        ? 'bg-blue-100 text-gray-900'
-                                        : 'bg-gray-200 text-gray-900'
+                                        ? 'bg-primary/20 text-foreground'
+                                        : 'bg-muted text-foreground'
                                     }`}>
                                       <p className="text-sm">{item.message || item.text || item.content}</p>
                                     </div>
@@ -737,8 +780,8 @@ export default function AgentDetail() {
                         {(call.sentiment || call.leadsCapured) && (
                           <div className="grid grid-cols-2 gap-4 mt-4">
                             {call.sentiment && (
-                              <div className="bg-white rounded-lg p-3 border">
-                                <p className="text-xs font-medium text-gray-500 mb-1">Sentiment</p>
+                              <div className="bg-card rounded-lg p-3 border border-border">
+                                <p className="text-xs font-medium text-muted-foreground mb-1">Sentiment</p>
                                 <Badge variant={
                                   call.sentiment === 'positive' ? 'success' :
                                   call.sentiment === 'negative' ? 'destructive' :
@@ -749,8 +792,8 @@ export default function AgentDetail() {
                               </div>
                             )}
                             {call.leadsCapured?.qualified && (
-                              <div className="bg-white rounded-lg p-3 border">
-                                <p className="text-xs font-medium text-gray-500 mb-1">Lead Status</p>
+                              <div className="bg-card rounded-lg p-3 border border-border">
+                                <p className="text-xs font-medium text-muted-foreground mb-1">Lead Status</p>
                                 <Badge variant="success">Qualified</Badge>
                               </div>
                             )}
@@ -761,9 +804,9 @@ export default function AgentDetail() {
 
                     {/* No Transcript Message */}
                     {isExpanded && !hasTranscript && (
-                      <div className="border-t bg-gray-50 p-4 text-center">
+                      <div className="border-t bg-muted/50 p-4 text-center">
                         <MessageSquare className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600">No transcript available for this call</p>
+                        <p className="text-sm text-muted-foreground">No transcript available for this call</p>
                       </div>
                     )}
                   </div>
@@ -773,8 +816,8 @@ export default function AgentDetail() {
           ) : (
             <div className="text-center py-12">
               <PhoneCall className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-600 font-medium">No calls yet</p>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-muted-foreground font-medium">No calls yet</p>
+              <p className="text-sm text-muted-foreground mt-1">
                 Make a test call to see it appear here
               </p>
             </div>

@@ -9,7 +9,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Download, Phone } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Plus, Download, Phone, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { formatDateTime, formatCurrency, formatPhoneNumber } from '@/lib/utils';
 
 export default function Leads() {
@@ -51,18 +52,28 @@ export default function Leads() {
     },
   });
 
+  const [callSuccess, setCallSuccess] = useState(false);
+  const [callError, setCallError] = useState(null);
+
   const callMutation = useMutation({
     mutationFn: (data) => callApi.initiateCall(data),
     onSuccess: () => {
       queryClient.invalidateQueries(['leads']);
       queryClient.invalidateQueries(['calls']);
-      setIsCallOpen(false);
-      setSelectedLead(null);
-      setSelectedAgent('none');
-      alert('Call initiated successfully!');
+      setCallSuccess(true);
+      setCallError(null);
+
+      // Auto-close dialog after 2 seconds with success message
+      setTimeout(() => {
+        setIsCallOpen(false);
+        setSelectedLead(null);
+        setSelectedAgent('none');
+        setCallSuccess(false);
+      }, 2000);
     },
     onError: (error) => {
-      alert(error.response?.data?.message || 'Failed to initiate call');
+      setCallError(error.response?.data?.message || 'Failed to initiate call');
+      setCallSuccess(false);
     },
   });
 
@@ -110,7 +121,14 @@ export default function Leads() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
+          <p className="text-muted-foreground font-medium">Loading leads...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -242,56 +260,149 @@ export default function Leads() {
         </CardContent>
       </Card>
 
-      <Dialog open={isCallOpen} onOpenChange={setIsCallOpen}>
-        <DialogContent>
+      <Dialog open={isCallOpen} onOpenChange={(open) => {
+        setIsCallOpen(open);
+        if (!open) {
+          setCallSuccess(false);
+          setCallError(null);
+          setSelectedAgent('none');
+        }
+      }}>
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Initiate Call</DialogTitle>
+            <DialogTitle className="flex items-center gap-2">
+              <Phone className="h-5 w-5 text-blue-600" />
+              Initiate Call
+            </DialogTitle>
             <DialogDescription>
               Select an agent to call {selectedLead?.name}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
+            {/* Success Message */}
+            {callSuccess && (
+              <Alert className="bg-green-500/10 border-green-500/50">
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                <AlertDescription className="text-foreground ml-2">
+                  Call initiated successfully! The agent will contact {selectedLead?.name} shortly.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {/* Error Message */}
+            {callError && (
+              <Alert className="bg-red-500/10 border-red-500/50">
+                <AlertCircle className="h-4 w-4 text-red-500" />
+                <AlertDescription className="text-foreground ml-2">
+                  {callError}
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {/* Lead Information Card */}
             <div className="space-y-2">
-              <Label>Lead Information</Label>
-              <div className="p-3 bg-muted rounded-md">
-                <p className="font-medium">{selectedLead?.name}</p>
-                <p className="text-sm text-muted-foreground">{selectedLead?.phone}</p>
-                <p className="text-sm text-muted-foreground">{selectedLead?.email}</p>
+              <Label className="text-sm font-semibold">Lead Information</Label>
+              <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 rounded-lg">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <p className="font-semibold text-lg text-foreground">{selectedLead?.name}</p>
+                    <p className="text-sm text-muted-foreground flex items-center gap-2">
+                      <Phone className="h-3 w-3" />
+                      {formatPhoneNumber(selectedLead?.phone)}
+                    </p>
+                    <p className="text-sm text-muted-foreground">{selectedLead?.email}</p>
+                  </div>
+                  <Badge variant={selectedLead?.qualified ? 'success' : 'secondary'}>
+                    {selectedLead?.qualified ? 'Qualified' : 'New'}
+                  </Badge>
+                </div>
               </div>
             </div>
+
+            {/* Agent Selection */}
             <div className="space-y-2">
-              <Label>Select Agent</Label>
-              <Select value={selectedAgent} onValueChange={setSelectedAgent}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose an agent" />
+              <Label className="text-sm font-semibold">Select Voice Agent</Label>
+              <Select
+                value={selectedAgent}
+                onValueChange={(value) => {
+                  setSelectedAgent(value);
+                  setCallError(null);
+                }}
+                disabled={callMutation.isPending}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Choose an agent to make the call" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">Select an agent</SelectItem>
+                  <SelectItem value="none" disabled>Select an agent</SelectItem>
                   {(agents || [])
                     .filter((agent, index, self) =>
-                      // Remove duplicates based on elevenLabsAgentId (unique ElevenLabs ID)
                       index === self.findIndex((a) => a.elevenLabsAgentId === agent.elevenLabsAgentId)
                     )
                     .map((agent) => (
                     <SelectItem key={agent._id} value={agent._id}>
-                      {agent.name} ({agent.type?.replace('_', ' ') || 'Voice Agent'})
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{agent.name}</span>
+                          <span className="text-xs text-muted-foreground">
+                            ({agent.type?.replace('_', ' ') || 'Custom'})
+                          </span>
+                        </div>
+                        {agent.voiceName && (
+                          <span className="text-xs text-primary">
+                            Voice: {agent.voiceName}
+                          </span>
+                        )}
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
+
+            {/* No agents warning */}
             {(agents || []).length === 0 && (
-              <p className="text-sm text-amber-600">
-                No agents available. Please create an agent first in the Agents page.
-              </p>
+              <Alert className="bg-amber-500/10 border-amber-500/50">
+                <AlertCircle className="h-4 w-4 text-amber-500" />
+                <AlertDescription className="text-foreground ml-2">
+                  No agents available. Please create an agent first in the Agents page.
+                </AlertDescription>
+              </Alert>
             )}
-            <Button
-              onClick={handleInitiateCall}
-              className="w-full"
-              disabled={callMutation.isPending || !selectedAgent || selectedAgent === 'none'}
-            >
-              {callMutation.isPending ? 'Initiating Call...' : 'Initiate Call'}
-            </Button>
+
+            {/* Call Button */}
+            <div className="flex gap-2 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => setIsCallOpen(false)}
+                className="flex-1"
+                disabled={callMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleInitiateCall}
+                className="flex-1"
+                disabled={callMutation.isPending || !selectedAgent || selectedAgent === 'none' || callSuccess}
+              >
+                {callMutation.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Initiating...
+                  </>
+                ) : callSuccess ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                    Call Initiated
+                  </>
+                ) : (
+                  <>
+                    <Phone className="h-4 w-4 mr-2" />
+                    Initiate Call
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

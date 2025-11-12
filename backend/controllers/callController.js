@@ -151,8 +151,39 @@ export const initiateCall = async (req, res) => {
     }
 
     // Add user/company context
-    dynamicVariables.company_name = user.companyName || user.name || 'our company';
+    // Fix: User model has 'company' field, not 'companyName'
+    dynamicVariables.company_name = user.company || 'our company';
     dynamicVariables.agent_type = agent.type;
+
+    // Replace template variables in the agent's script and first message
+    // This ensures personalized prompts for each call
+    let personalizedScript = agent.script || '';
+    let personalizedFirstMessage = agent.firstMessage || '';
+
+    // Helper function to safely escape regex special characters and handle null/undefined
+    const escapeRegex = (str) => {
+      return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    };
+
+    const safeStringify = (value) => {
+      if (value === null || value === undefined) return '';
+      if (typeof value === 'number' && value === 0) return '0';
+      return String(value);
+    };
+
+    // Replace all {{variable}} placeholders with actual values
+    Object.keys(dynamicVariables).forEach(key => {
+      const safeValue = safeStringify(dynamicVariables[key]);
+      // Only replace if we have a non-empty value to avoid leaving empty spaces
+      if (safeValue) {
+        const placeholder = new RegExp(`\\{\\{${escapeRegex(key)}\\}\\}`, 'g');
+        personalizedScript = personalizedScript.replace(placeholder, safeValue);
+        personalizedFirstMessage = personalizedFirstMessage.replace(placeholder, safeValue);
+      }
+    });
+
+    console.log('📝 Personalized script preview:', personalizedScript.substring(0, Math.min(200, personalizedScript.length)));
+    console.log('📝 Personalized first message:', personalizedFirstMessage);
 
     // Make the call using PLATFORM credentials
     const agentPhoneNumberId = process.env.ELEVENLABS_PHONE_NUMBER_ID || 'phnum_1801k7xb68cefjv89rv10f90qykv';
@@ -164,7 +195,9 @@ export const initiateCall = async (req, res) => {
         phoneNumber,
         agentPhoneNumberId,
         `${process.env.API_URL || 'http://localhost:5000'}/api/webhooks/elevenlabs/call-completed`,
-        dynamicVariables
+        dynamicVariables,
+        personalizedScript,
+        personalizedFirstMessage
       );
     } catch (error) {
       console.error('Failed to initiate call with ElevenLabs:', error.message);

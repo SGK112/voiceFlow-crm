@@ -41,7 +41,7 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-muted/50 px-4">
           <Card className="w-full max-w-2xl">
             <CardHeader>
               <CardTitle className="text-2xl text-red-600">

@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Phone, BarChart, Mic, MessageSquare, Sparkles } from 'lucide-react';
+import { Plus, Phone, BarChart, Mic, Sparkles, CheckCircle2, TrendingUp, Clock } from 'lucide-react';
 import AIPromptHelper from '@/components/AIPromptHelper';
 
 const AGENT_TYPES = {
@@ -129,7 +129,7 @@ ALWAYS: Be understanding and never blame the customer`,
   },
   custom: {
     name: 'Custom Agent',
-    color: 'bg-gray-500',
+    color: 'bg-muted/500',
     icon: '⚙️',
     description: 'Create your own custom agent',
     defaultScript: `You are a helpful AI assistant for {{company_name}}.
@@ -183,21 +183,33 @@ export default function Agents() {
 
   const createMutation = useMutation({
     mutationFn: (data) => agentApi.createAgent(data),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries(['agents']);
-      setIsCreateOpen(false);
-      setStep(1);
-      setFormData({
-        type: 'lead_gen',
-        name: '',
-        script: AGENT_TYPES.lead_gen.defaultScript,
-        firstMessage: AGENT_TYPES.lead_gen.firstMessage,
-        voiceId: 'EXAVITQu4vr4xnSDxMaL',
-        voiceName: 'Sarah'
-      });
-      // Navigate to the agent detail page
-      if (response.data?._id) {
-        navigate(`/app/agents/${response.data._id}`);
+    onSuccess: async (response) => {
+      try {
+        // Use refetchQueries to ensure the query completes before UI updates
+        await queryClient.refetchQueries(['agents']);
+
+        // Clean up form state
+        setIsCreateOpen(false);
+        setStep(1);
+        setFormData({
+          type: 'lead_gen',
+          name: '',
+          script: AGENT_TYPES.lead_gen.defaultScript,
+          firstMessage: AGENT_TYPES.lead_gen.firstMessage,
+          voiceId: 'EXAVITQu4vr4xnSDxMaL',
+          voiceName: 'Sarah'
+        });
+
+        // Navigate to the agent detail page after the cache is updated
+        if (response.data?._id) {
+          navigate(`/app/agents/${response.data._id}`);
+        }
+      } catch (error) {
+        console.error('Error refreshing agents list:', error);
+        // Still navigate even if refetch fails
+        if (response.data?._id) {
+          navigate(`/app/agents/${response.data._id}`);
+        }
       }
     },
     onError: (error) => {
@@ -262,7 +274,7 @@ export default function Agents() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading agents...</p>
+          <p className="text-muted-foreground">Loading agents...</p>
         </div>
       </div>
     );
@@ -464,57 +476,99 @@ export default function Agents() {
 
       {/* Agents Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-        {(agents || []).map((agent) => (
-          <Card key={agent._id} className="relative hover:shadow-lg transition-shadow text-center sm:text-left">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${AGENT_TYPES[agent.type]?.color || 'bg-gray-500'}`} />
-                  <CardTitle className="text-lg">{agent.name}</CardTitle>
+        {(agents || []).map((agent) => {
+          const successRate = agent.performance?.totalCalls > 0
+            ? ((agent.performance.successfulCalls / agent.performance.totalCalls) * 100)
+            : 0;
+          const isHighPerformer = successRate >= 70;
+
+          return (
+            <Card
+              key={agent._id}
+              className={`relative hover:shadow-xl transition-all duration-200 text-center sm:text-left border-l-4 ${
+                agent.enabled ? AGENT_TYPES[agent.type]?.color || 'border-gray-500' : 'border-input'
+              }`}
+            >
+              {/* Status Badge */}
+              {agent.enabled && (
+                <div className="absolute top-3 right-3">
+                  <Badge variant="success" className="text-xs flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    Active
+                  </Badge>
                 </div>
-                <Switch
-                  checked={agent.enabled}
-                  onCheckedChange={(checked) => toggleMutation.mutate({ id: agent._id, enabled: checked })}
-                />
-              </div>
-              <CardDescription className="capitalize">
-                {AGENT_TYPES[agent.type]?.name || agent.type.replace('_', ' ')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Total Calls</span>
-                  <span className="font-medium">{agent.performance?.totalCalls || 0}</span>
+              )}
+
+              <CardHeader className="pb-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    {/* Agent Icon */}
+                    <div className={`w-12 h-12 rounded-full ${AGENT_TYPES[agent.type]?.color || 'bg-muted/500'} bg-opacity-20 flex items-center justify-center text-2xl`}>
+                      {AGENT_TYPES[agent.type]?.icon || '⚙️'}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg font-bold">{agent.name}</CardTitle>
+                      <CardDescription className="capitalize text-xs mt-1">
+                        {AGENT_TYPES[agent.type]?.name || agent.type.replace('_', ' ')}
+                      </CardDescription>
+                    </div>
+                  </div>
+                  <Switch
+                    checked={agent.enabled}
+                    onCheckedChange={(checked) => toggleMutation.mutate({ id: agent._id, enabled: checked })}
+                  />
                 </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Success Rate</span>
-                  <span className="font-medium">
-                    {agent.performance?.totalCalls > 0
-                      ? ((agent.performance.successfulCalls / agent.performance.totalCalls) * 100).toFixed(1)
-                      : 0}%
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Leads Generated</span>
-                  <span className="font-medium">{agent.performance?.leadsGenerated || 0}</span>
+              </CardHeader>
+
+              <CardContent>
+                {/* Performance Stats */}
+                <div className="space-y-3 mb-4">
+                  {/* Total Calls */}
+                  <div className="flex items-center justify-between p-2 bg-blue-50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-blue-600" />
+                      <span className="text-sm font-medium text-muted-foreground">Total Calls</span>
+                    </div>
+                    <span className="font-bold text-blue-600">{agent.performance?.totalCalls || 0}</span>
+                  </div>
+
+                  {/* Success Rate */}
+                  <div className={`flex items-center justify-between p-2 rounded-lg ${
+                    isHighPerformer ? 'bg-green-50' : 'bg-muted/50'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className={`h-4 w-4 ${isHighPerformer ? 'text-green-600' : 'text-muted-foreground'}`} />
+                      <span className="text-sm font-medium text-muted-foreground">Success Rate</span>
+                    </div>
+                    <span className={`font-bold ${isHighPerformer ? 'text-green-600' : 'text-muted-foreground'}`}>
+                      {successRate.toFixed(1)}%
+                    </span>
+                  </div>
+
+                  {/* Leads Generated */}
+                  <div className="flex items-center justify-between p-2 bg-purple-50 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-purple-600" />
+                      <span className="text-sm font-medium text-muted-foreground">Leads</span>
+                    </div>
+                    <span className="font-bold text-purple-600">{agent.performance?.leadsGenerated || 0}</span>
+                  </div>
                 </div>
 
-                <div className="pt-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => navigate(`/app/agents/${agent._id}`)}
-                  >
-                    <BarChart className="h-4 w-4 mr-2" />
-                    View Details
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                {/* Action Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full hover:bg-blue-50 hover:border-blue-300 transition-colors"
+                  onClick={() => navigate(`/app/agents/${agent._id}`)}
+                >
+                  <BarChart className="h-4 w-4 mr-2" />
+                  View Details
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Empty State */}
