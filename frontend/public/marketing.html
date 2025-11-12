@@ -42,12 +42,15 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
             font-size: 24px;
             font-weight: 700;
             color: #2563eb;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .nav-menu {
@@ -435,10 +438,20 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .navbar-container {
+                padding: 12px 16px;
+            }
+            .logo {
+                font-size: 18px;
+            }
+            .btn {
+                padding: 8px 14px;
+                font-size: 14px;
+            }
             .hero h1 { font-size: 36px; }
             .hero p { font-size: 18px; }
             .section-title h2 { font-size: 32px; }
-            .nav-menu { gap: 16px; }
+            .nav-menu { gap: 12px; }
             .nav-link { display: none; }
             .pricing-card.featured::before { font-size: 11px; padding: 3px 12px; }
         }
