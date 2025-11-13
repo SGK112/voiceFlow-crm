@@ -1,14 +1,10 @@
 import OpenAI from 'openai';
 import jwt from 'jsonwebtoken';
 import emailService from '../services/emailService.js';
-import twilio from 'twilio';
+import ElevenLabsService from '../services/elevenLabsService.js';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
-
-// Initialize Twilio client
-const twilioClient = process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
-  ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
-  : null;
+const elevenLabsService = new ElevenLabsService();
 
 // Enhanced knowledge base for better responses
 const KNOWLEDGE_BASE = {
@@ -622,7 +618,7 @@ This inquiry was automatically captured by VoiceFlow CRM
   }
 };
 
-// Request a voice demo call
+// Request a voice demo call using ElevenLabs batch calling
 export const requestVoiceDemo = async (req, res) => {
   try {
     const { phoneNumber } = req.body;
@@ -635,14 +631,6 @@ export const requestVoiceDemo = async (req, res) => {
       });
     }
 
-    // Check if Twilio is configured
-    if (!twilioClient) {
-      return res.status(503).json({
-        error: 'Voice demo temporarily unavailable',
-        message: 'Please try the text chat or contact us at help.remodely@gmail.com'
-      });
-    }
-
     // Format phone number (ensure it has + prefix for international format)
     let formattedNumber = phoneNumber.trim();
     if (!formattedNumber.startsWith('+')) {
@@ -650,40 +638,40 @@ export const requestVoiceDemo = async (req, res) => {
       formattedNumber = '+1' + formattedNumber.replace(/\D/g, '');
     }
 
-    console.log(`Initiating voice demo call to ${formattedNumber}`);
+    // Use the prebuilt support agent for demo (or whichever agent you want for demo)
+    const demoAgentId = process.env.ELEVENLABS_LEAD_GEN_AGENT_ID || 'agent_9701k9xptd0kfr383djx5zk7300x';
+    const agentPhoneNumberId = process.env.ELEVENLABS_PHONE_NUMBER_ID;
 
-    // Create TwiML that connects to ElevenLabs agent
-    const twimlUrl = `${process.env.API_URL || 'http://localhost:5001'}/api/public/voice-demo-twiml`;
+    if (!agentPhoneNumberId) {
+      return res.status(503).json({
+        error: 'Voice demo temporarily unavailable',
+        message: 'Please try the text chat or contact us at help.remodely@gmail.com'
+      });
+    }
 
-    // Initiate outbound call
-    const call = await twilioClient.calls.create({
-      to: formattedNumber,
-      from: process.env.TWILIO_PHONE_NUMBER,
-      url: twimlUrl,
-      method: 'POST',
-      statusCallback: `${process.env.API_URL}/api/webhooks/twilio/call-status`,
-      statusCallbackMethod: 'POST',
-      statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed']
-    });
+    console.log(`📞 Initiating ElevenLabs voice demo call to ${formattedNumber}`);
 
-    console.log(`Voice demo call initiated: ${call.sid}`);
+    // Initiate call using ElevenLabs batch calling (same as CRM does)
+    const callData = await elevenLabsService.initiateCall(
+      demoAgentId,
+      formattedNumber,
+      agentPhoneNumberId,
+      null, // no webhook for public demo
+      {}, // no dynamic variables
+      null, // use agent's default script
+      null // use agent's default first message
+    );
+
+    console.log(`✅ Voice demo call initiated:`, callData.id || callData.call_id);
 
     res.json({
       success: true,
-      message: 'Call initiated! You should receive a call shortly.',
-      callSid: call.sid
+      message: 'Call initiated! You should receive a call from our AI agent shortly.',
+      callId: callData.id || callData.call_id
     });
 
   } catch (error) {
     console.error('Voice demo call error:', error);
-
-    // Handle Twilio-specific errors
-    if (error.code) {
-      return res.status(400).json({
-        error: 'Invalid phone number',
-        message: 'Please check your phone number and try again. Make sure to include the country code.'
-      });
-    }
 
     res.status(500).json({
       error: 'Failed to initiate call',
@@ -692,53 +680,3 @@ export const requestVoiceDemo = async (req, res) => {
   }
 };
 
-// Generate TwiML for voice demo call
-export const getVoiceDemoTwiML = async (req, res) => {
-  try {
-    // Use ElevenLabs phone number integration
-    const elevenLabsPhoneNumber = process.env.ELEVENLABS_PHONE_NUMBER_ID;
-
-    if (!elevenLabsPhoneNumber) {
-      // Fallback to simple voice message
-      const twiml = `<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Say voice="Polly.Joanna">
-    Thank you for trying VoiceFlow CRM! This is a demo of our AI voice capabilities.
-    Our voice agents can handle customer calls 24/7, qualify leads, and book appointments automatically.
-    To learn more, please visit voiceflowcrm.com or contact us at help.remodely@gmail.com. Thank you!
-  </Say>
-  <Hangup/>
-</Response>`;
-
-      res.type('text/xml');
-      return res.send(twiml);
-    }
-
-    // Connect to ElevenLabs agent via phone number
-    const twiml = `<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Say voice="Polly.Joanna">Connecting you to our AI agent. Please wait.</Say>
-  <Dial>+${elevenLabsPhoneNumber}</Dial>
-  <Say voice="Polly.Joanna">Thank you for trying our demo. Visit voiceflowcrm.com to learn more.</Say>
-</Response>`;
-
-    res.type('text/xml');
-    res.send(twiml);
-
-  } catch (error) {
-    console.error('TwiML generation error:', error);
-
-    // Fallback TwiML
-    const twiml = `<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Say voice="Polly.Joanna">
-    Thank you for your interest in VoiceFlow CRM.
-    Please visit voiceflowcrm.com or email help.remodely@gmail.com for more information.
-  </Say>
-  <Hangup/>
-</Response>`;
-
-    res.type('text/xml');
-    res.send(twiml);
-  }
-};
