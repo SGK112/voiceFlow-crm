@@ -571,55 +571,57 @@
         }
 
         /* AI Assistant Widget */
-        .ai-assistant-trigger {
+        .ai-assistant-tab {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            border: none;
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+            color: white;
+            padding: 20px 12px;
+            border-radius: 12px 0 0 12px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            transition: all 0.3s;
             z-index: 999;
+            box-shadow: -4px 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 1px;
         }
 
-        .ai-assistant-trigger:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 32px rgba(59, 130, 246, 0.5);
+        .ai-assistant-tab:hover {
+            padding-right: 16px;
+            box-shadow: -6px 6px 16px rgba(59, 130, 246, 0.4);
         }
 
-        .ai-assistant-trigger.active {
-            background: #ef4444;
+        .ai-assistant-tab.active {
+            right: 400px;
         }
 
         .ai-assistant-container {
             position: fixed;
-            bottom: 0;
+            top: 0;
             right: 0;
             width: 400px;
-            height: 600px;
+            height: 100vh;
             z-index: 998;
             transform: translateX(100%);
             transition: transform 0.3s ease-in-out;
             box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+            background: white;
         }
 
         .ai-assistant-container.active {
             transform: translateX(0);
         }
 
-        /* Hide default widget positioning */
+        /* Widget iframe styling */
         elevenlabs-convai {
-            position: static !important;
-            width: 100% !important;
-            height: 100% !important;
+            display: block;
+            width: 100%;
+            height: 100%;
         }
 
         /* Responsive */
@@ -677,13 +679,13 @@
             }
             .ai-assistant-container {
                 width: 100%;
-                height: 100%;
             }
-            .ai-assistant-trigger {
-                width: 56px;
-                height: 56px;
-                bottom: 20px;
-                right: 20px;
+            .ai-assistant-tab.active {
+                right: 100%;
+            }
+            .ai-assistant-tab {
+                font-size: 12px;
+                padding: 16px 10px;
             }
         }
     </style>
@@ -908,10 +910,10 @@
         <p>© 2025 Remodely.ai. All rights reserved.</p>
     </footer>
 
-    <!-- AI Assistant Toggle Button -->
-    <button class="ai-assistant-trigger" id="aiAssistantTrigger" aria-label="Toggle AI Assistant">
-        💬
-    </button>
+    <!-- AI Assistant Tab -->
+    <div class="ai-assistant-tab" id="aiAssistantTab">
+        TRY OUR AI VOICE AGENT
+    </div>
 
     <!-- AI Assistant Widget Container -->
     <div class="ai-assistant-container" id="aiAssistantContainer">
@@ -922,31 +924,28 @@
     <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
     <script>
         // Toggle AI Assistant
-        const trigger = document.getElementById('aiAssistantTrigger');
+        const tab = document.getElementById('aiAssistantTab');
         const container = document.getElementById('aiAssistantContainer');
 
-        trigger.addEventListener('click', function() {
+        tab.addEventListener('click', function() {
             const isActive = container.classList.contains('active');
 
             if (isActive) {
                 // Close
                 container.classList.remove('active');
-                trigger.classList.remove('active');
-                trigger.textContent = '💬';
+                tab.classList.remove('active');
             } else {
                 // Open
                 container.classList.add('active');
-                trigger.classList.add('active');
-                trigger.textContent = '✕';
+                tab.classList.add('active');
             }
         });
 
-        // Close when clicking outside (optional)
+        // Close when clicking outside
         document.addEventListener('click', function(event) {
-            if (!container.contains(event.target) && event.target !== trigger && container.classList.contains('active')) {
+            if (!container.contains(event.target) && event.target !== tab && container.classList.contains('active')) {
                 container.classList.remove('active');
-                trigger.classList.remove('active');
-                trigger.textContent = '💬';
+                tab.classList.remove('active');
             }
         });
     </script>
