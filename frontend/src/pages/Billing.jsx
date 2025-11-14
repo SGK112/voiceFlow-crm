@@ -82,8 +82,14 @@ const PLANS = [
   },
 ];
 
-// Initialize Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+// Initialize Stripe with error handling
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+console.log('Stripe Key Present:', !!stripePublishableKey);
+console.log('Stripe Key Length:', stripePublishableKey?.length || 0);
+
+const stripePromise = stripePublishableKey
+  ? loadStripe(stripePublishableKey)
+  : Promise.reject(new Error('Stripe publishable key not configured'));
 
 export default function Billing() {
   const { user } = useAuth();
