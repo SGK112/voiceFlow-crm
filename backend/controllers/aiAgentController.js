@@ -265,9 +265,6 @@ export const chatWithAgent = async (req, res) => {
     } else {
       const result = await aiAgentService.chat(enhancedAgent, messages);
 
-      // Add context information to response
-      result.contextsUsed = contextsUsed;
-
       // Update analytics
       agent.analytics.totalMessages += 1;
       agent.analytics.totalConversations += 1;
@@ -281,7 +278,17 @@ export const chatWithAgent = async (req, res) => {
       //   result.usage.outputTokens
       // );
 
-      res.json(result);
+      // Return in the format expected by the frontend
+      res.json({
+        message: {
+          role: 'assistant',
+          content: result.response
+        },
+        usage: result.usage,
+        model: result.model,
+        provider: result.provider,
+        contextsUsed: contextsUsed
+      });
     }
   } catch (error) {
     console.error('Chat with agent error:', error);
