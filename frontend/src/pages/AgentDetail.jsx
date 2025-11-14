@@ -15,6 +15,7 @@ import {
   Mic,
   Save,
   Play,
+  Pause,
   Volume2,
   Edit,
   TrendingUp,
@@ -54,6 +55,46 @@ const DYNAMIC_VARIABLES = [
   { var: '{{current_time}}', description: 'Current time' },
 ];
 
+// Language options with flag country codes (ISO 3166-1 alpha-2)
+const LANGUAGE_OPTIONS = [
+  { code: 'en', name: 'English', flag: 'us' },
+  { code: 'es', name: 'Spanish', nativeName: 'Español', flag: 'es' },
+  { code: 'fr', name: 'French', nativeName: 'Français', flag: 'fr' },
+  { code: 'de', name: 'German', nativeName: 'Deutsch', flag: 'de' },
+  { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: 'it' },
+  { code: 'pt', name: 'Portuguese', nativeName: 'Português', flag: 'pt' },
+  { code: 'pl', name: 'Polish', nativeName: 'Polski', flag: 'pl' },
+  { code: 'nl', name: 'Dutch', nativeName: 'Nederlands', flag: 'nl' },
+  { code: 'zh', name: 'Chinese', nativeName: '中文', flag: 'cn' },
+  { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: 'jp' },
+  { code: 'ko', name: 'Korean', nativeName: '한국어', flag: 'kr' },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: 'in' },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: 'sa' },
+  { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia', flag: 'id' },
+  { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu', flag: 'my' },
+  { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', flag: 'in' },
+  { code: 'fil', name: 'Filipino', nativeName: 'Tagalog', flag: 'ph' },
+  { code: 'ru', name: 'Russian', nativeName: 'Русский', flag: 'ru' },
+  { code: 'uk', name: 'Ukrainian', nativeName: 'Українська', flag: 'ua' },
+  { code: 'cs', name: 'Czech', nativeName: 'Čeština', flag: 'cz' },
+  { code: 'sk', name: 'Slovak', nativeName: 'Slovenčina', flag: 'sk' },
+  { code: 'da', name: 'Danish', nativeName: 'Dansk', flag: 'dk' },
+  { code: 'sv', name: 'Swedish', nativeName: 'Svenska', flag: 'se' },
+  { code: 'no', name: 'Norwegian', nativeName: 'Norsk', flag: 'no' },
+  { code: 'fi', name: 'Finnish', nativeName: 'Suomi', flag: 'fi' },
+  { code: 'el', name: 'Greek', nativeName: 'Ελληνικά', flag: 'gr' },
+  { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', flag: 'tr' },
+  { code: 'ro', name: 'Romanian', nativeName: 'Română', flag: 'ro' },
+  { code: 'bg', name: 'Bulgarian', nativeName: 'Български', flag: 'bg' },
+  { code: 'hr', name: 'Croatian', nativeName: 'Hrvatski', flag: 'hr' },
+  { code: 'sr', name: 'Serbian', nativeName: 'Српски', flag: 'rs' },
+  { code: 'he', name: 'Hebrew', nativeName: 'עברית', flag: 'il' },
+  { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt', flag: 'vn' },
+  { code: 'th', name: 'Thai', nativeName: 'ไทย', flag: 'th' },
+  { code: 'bn', name: 'Bengali', nativeName: 'বাংলা', flag: 'bd' },
+  { code: 'hu', name: 'Hungarian', nativeName: 'Magyar', flag: 'hu' },
+];
+
 export default function AgentDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -61,11 +102,14 @@ export default function AgentDetail() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [showVoiceLibrary, setShowVoiceLibrary] = useState(false);
+  const [showLanguagePicker, setShowLanguagePicker] = useState(false);
   const [testPhoneNumber, setTestPhoneNumber] = useState('');
   const [testLeadId, setTestLeadId] = useState('');
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [editedAgent, setEditedAgent] = useState(null);
   const [expandedCallId, setExpandedCallId] = useState(null);
+  const [isPlayingPreview, setIsPlayingPreview] = useState(false);
+  const [currentAudio, setCurrentAudio] = useState(null);
 
   const { data: agent, isLoading } = useQuery({
     queryKey: ['agent', id],
@@ -83,10 +127,10 @@ export default function AgentDetail() {
     if (agent) {
       const agentWithDefaults = {
         ...agent,
-        configuration: agent.configuration || {
-          temperature: 0.8,
-          maxDuration: 300,
-          language: 'en'
+        configuration: {
+          temperature: agent.configuration?.temperature ?? 0.8,
+          maxDuration: agent.configuration?.maxDuration ?? 300,
+          language: agent.configuration?.language ?? 'en'
         },
         enabled: agent.enabled ?? false
       };
@@ -165,7 +209,16 @@ export default function AgentDetail() {
   };
 
   const handleVoicePreview = async () => {
+    // If audio is currently playing, pause it
+    if (isPlayingPreview && currentAudio) {
+      currentAudio.pause();
+      setIsPlayingPreview(false);
+      setCurrentAudio(null);
+      return;
+    }
+
     try {
+      setIsPlayingPreview(true);
       // Use ElevenLabs Text-to-Speech API to generate a preview
       const previewText = "Hello! This is a preview of my voice. I'm excited to help you with your calls.";
       const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice.id}`, {
@@ -189,15 +242,29 @@ export default function AgentDetail() {
         const audioBlob = await response.blob();
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
+
+        setCurrentAudio(audio);
         audio.play();
 
-        // Clean up the object URL after playing
-        audio.onended = () => URL.revokeObjectURL(audioUrl);
+        // Clean up when audio ends
+        audio.onended = () => {
+          URL.revokeObjectURL(audioUrl);
+          setIsPlayingPreview(false);
+          setCurrentAudio(null);
+        };
+
+        // Handle any errors during playback
+        audio.onerror = () => {
+          setIsPlayingPreview(false);
+          setCurrentAudio(null);
+        };
       } else {
+        setIsPlayingPreview(false);
         alert(`Voice: ${selectedVoice.name}\n${selectedVoice.gender} • ${selectedVoice.accent} • ${selectedVoice.age}\n\nNote: Audio preview requires ElevenLabs API key`);
       }
     } catch (error) {
       console.error('Voice preview error:', error);
+      setIsPlayingPreview(false);
       alert(`Voice: ${selectedVoice.name}\n${selectedVoice.gender} • ${selectedVoice.accent} • ${selectedVoice.age}`);
     }
   };
@@ -306,7 +373,20 @@ export default function AgentDetail() {
                 <Save className="h-4 w-4 mr-2" />
                 {updateAgentMutation.isPending ? 'Saving...' : 'Save Changes'}
               </Button>
-              <Button onClick={() => { setIsEditing(false); setEditedAgent(agent); }} variant="outline">
+              <Button onClick={() => {
+                setIsEditing(false);
+                setEditedAgent({
+                  ...agent,
+                  configuration: {
+                    temperature: agent.configuration?.temperature ?? 0.8,
+                    maxDuration: agent.configuration?.maxDuration ?? 300,
+                    language: agent.configuration?.language ?? 'en'
+                  },
+                  enabled: agent.enabled ?? false
+                });
+                const voice = ELEVENLABS_VOICES.find(v => v.id === agent.voiceId);
+                setSelectedVoice(voice || ELEVENLABS_VOICES[0]);
+              }} variant="outline">
                 Cancel
               </Button>
             </>
@@ -522,9 +602,23 @@ export default function AgentDetail() {
                       {selectedVoice.gender} • {selectedVoice.accent} • {selectedVoice.age}
                     </p>
                   </div>
-                  <Button variant="outline" size="sm" onClick={handleVoicePreview}>
-                    <Play className="h-4 w-4 mr-2" />
-                    Preview
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleVoicePreview}
+                    className={isPlayingPreview ? 'bg-green-50 border-green-500 text-green-700 hover:bg-green-100' : ''}
+                  >
+                    {isPlayingPreview ? (
+                      <>
+                        <Pause className="h-4 w-4 mr-2" />
+                        Pause
+                      </>
+                    ) : (
+                      <>
+                        <Play className="h-4 w-4 mr-2" />
+                        Preview
+                      </>
+                    )}
                   </Button>
                 </div>
               )}
@@ -636,10 +730,24 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                 </label>
                 <select
                   value={testLeadId}
-                  onChange={(e) => setTestLeadId(e.target.value)}
+                  onChange={(e) => {
+                    const leadId = e.target.value;
+                    setTestLeadId(leadId);
+
+                    // Auto-populate phone number when lead is selected
+                    if (leadId) {
+                      const selectedLead = leads?.find(lead => lead._id === leadId);
+                      if (selectedLead?.phone) {
+                        setTestPhoneNumber(selectedLead.phone);
+                      }
+                    } else {
+                      // Clear phone number if "No lead" is selected
+                      setTestPhoneNumber('');
+                    }
+                  }}
                   className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background"
                 >
-                  <option value="">No lead (use phone number only)</option>
+                  <option value="">No lead (enter phone manually)</option>
                   {leads?.map((lead) => (
                     <option key={lead._id} value={lead._id}>
                       {lead.name} - {lead.phone}
@@ -647,9 +755,23 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                   ))}
                 </select>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Select a lead to use their data for variable personalization
+                  Select a lead to auto-fill their phone number and use their data for personalization
                 </p>
               </div>
+
+              {testLeadId && leads?.find(lead => lead._id === testLeadId) && (
+                <div className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-3">
+                  <h5 className="text-xs font-semibold text-blue-900 dark:text-blue-100 mb-2">Lead Information:</h5>
+                  <div className="space-y-1 text-xs text-blue-800 dark:text-blue-200">
+                    <p><strong>Name:</strong> {leads.find(lead => lead._id === testLeadId)?.name}</p>
+                    <p><strong>Email:</strong> {leads.find(lead => lead._id === testLeadId)?.email || 'N/A'}</p>
+                    <p><strong>Phone:</strong> {leads.find(lead => lead._id === testLeadId)?.phone}</p>
+                    {leads.find(lead => lead._id === testLeadId)?.company && (
+                      <p><strong>Company:</strong> {leads.find(lead => lead._id === testLeadId)?.company}</p>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-muted-foreground mb-1">
@@ -662,6 +784,9 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                   placeholder="+1234567890"
                   className="w-full border border-input rounded px-3 py-2 text-foreground placeholder:text-muted-foreground disabled:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background"
                 />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {testLeadId ? 'Auto-filled from selected lead (you can edit if needed)' : 'Enter phone number manually'}
+                </p>
               </div>
               <Button
                 onClick={handleTestCall}
@@ -695,18 +820,21 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                   min="0"
                   max="2"
                   step="0.1"
-                  value={editedAgent.configuration?.temperature || 0.8}
+                  value={editedAgent.configuration?.temperature ?? 0.8}
                   onChange={(e) => setEditedAgent({
                     ...editedAgent,
-                    configuration: { ...editedAgent.configuration, temperature: parseFloat(e.target.value) }
+                    configuration: {
+                      ...editedAgent.configuration,
+                      temperature: parseFloat(e.target.value)
+                    }
                   })}
                   disabled={!isEditing}
-                  className="w-full"
+                  className={`w-full ${!isEditing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 />
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>Precise (0)</span>
                   <span className="font-medium text-foreground">
-                    {editedAgent.configuration?.temperature || 0.8}
+                    {editedAgent.configuration?.temperature ?? 0.8}
                   </span>
                   <span>Creative (2)</span>
                 </div>
@@ -718,36 +846,84 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                 </label>
                 <input
                   type="number"
-                  value={editedAgent.configuration?.maxDuration || 300}
+                  value={editedAgent.configuration?.maxDuration ?? 300}
                   onChange={(e) => setEditedAgent({
                     ...editedAgent,
-                    configuration: { ...editedAgent.configuration, maxDuration: parseInt(e.target.value) }
+                    configuration: {
+                      ...editedAgent.configuration,
+                      maxDuration: parseInt(e.target.value) || 300
+                    }
                   })}
                   disabled={!isEditing}
                   min="30"
                   max="600"
-                  className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                  className="w-full border border-input rounded px-3 py-2 text-foreground bg-background focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">
-                  Language
-                </label>
-                <select
-                  value={editedAgent.configuration?.language || 'en'}
-                  onChange={(e) => setEditedAgent({
-                    ...editedAgent,
-                    configuration: { ...editedAgent.configuration, language: e.target.value }
-                  })}
-                  disabled={!isEditing}
-                  className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
-                >
-                  <option value="en">English</option>
-                  <option value="es">Spanish</option>
-                  <option value="fr">French</option>
-                  <option value="de">German</option>
-                </select>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium text-muted-foreground">
+                    Language
+                  </label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowLanguagePicker(!showLanguagePicker)}
+                    disabled={!isEditing}
+                  >
+                    {showLanguagePicker ? 'Hide' : 'Browse'} Languages
+                  </Button>
+                </div>
+
+                {/* Selected Language Display */}
+                {(() => {
+                  const selectedLang = LANGUAGE_OPTIONS.find(lang => lang.code === (editedAgent.configuration?.language ?? 'en'));
+                  return selectedLang && (
+                    <div className="flex items-center gap-3 p-3 bg-accent/50 rounded-lg border border-border mb-3">
+                      <span className={`fi fi-${selectedLang.flag} text-3xl rounded`}></span>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-foreground">{selectedLang.name}</h4>
+                        {selectedLang.nativeName && (
+                          <p className="text-sm text-muted-foreground">{selectedLang.nativeName}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Language Grid Picker */}
+                {showLanguagePicker && (
+                  <div className="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto p-2 border border-border rounded-lg bg-background">
+                    {LANGUAGE_OPTIONS.map((lang) => (
+                      <div
+                        key={lang.code}
+                        onClick={() => isEditing && setEditedAgent({
+                          ...editedAgent,
+                          configuration: {
+                            ...editedAgent.configuration,
+                            language: lang.code
+                          }
+                        })}
+                        className={`p-2.5 rounded-lg border-2 cursor-pointer transition-all ${
+                          (editedAgent.configuration?.language ?? 'en') === lang.code
+                            ? 'border-primary bg-accent'
+                            : 'border-border hover:border-primary/50 hover:bg-accent/30'
+                        } ${!isEditing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <span className={`fi fi-${lang.flag} text-2xl rounded flex-shrink-0`}></span>
+                          <div className="flex-1 min-w-0">
+                            <h5 className="font-medium text-foreground text-sm truncate">{lang.name}</h5>
+                            {lang.nativeName && (
+                              <p className="text-xs text-muted-foreground truncate">{lang.nativeName}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

@@ -51,6 +51,15 @@ import diagnosticRoutes from './routes/diagnostic.js';
 import knowledgeBaseRoutes from './routes/knowledgeBase.js';
 import publicChatRoutes from './routes/publicChat.js';
 import integrationRoutes from './routes/integrations.js';
+import agentLibraryRoutes from './routes/agentLibrary.js';
+import businessProfileRoutes from './routes/businessProfile.js';
+import communityAgentRoutes from './routes/communityAgents.js';
+import invoiceRoutes from './routes/invoices.js';
+import extensionRoutes from './routes/extensions.js';
+import quickbooksRoutes from './routes/quickbooks.js';
+import marketplaceRoutes from './routes/marketplace.js';
+import userIntegrationRoutes from './routes/userIntegrations.js';
+import phoneNumberRoutes from './routes/phoneNumbers.js';
 import { startOverageBillingCron } from './jobs/monthlyOverageBilling.js';
 
 const app = express();
@@ -120,6 +129,15 @@ app.use('/api/diagnostic', diagnosticRoutes);
 app.use('/api/knowledge-base', knowledgeBaseRoutes);
 app.use('/api/public', publicChatRoutes);
 app.use('/api/integrations', integrationRoutes);
+app.use('/api/agent-library', agentLibraryRoutes);
+app.use('/api/business-profile', businessProfileRoutes);
+app.use('/api/community-agents', communityAgentRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/extensions', extensionRoutes);
+app.use('/api/quickbooks', quickbooksRoutes);
+app.use('/api/marketplace', marketplaceRoutes);
+app.use('/api/user-integrations', userIntegrationRoutes);
+app.use('/api/phone-numbers', phoneNumberRoutes);
 
 app.use('/api', apiLimiter);
 
@@ -141,7 +159,20 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+// Global error handlers to prevent crashes
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  console.error('Stack:', error.stack);
+  // Don't exit - log and continue
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise);
+  console.error('Reason:', reason);
+  // Don't exit - log and continue
+});
+
+const server = app.listen(PORT, () => {
   console.log(`
   ╔════════════════════════════════════════╗
   ║   VoiceFlow CRM Server Running         ║
@@ -152,7 +183,39 @@ app.listen(PORT, () => {
   `);
 
   // Start monthly overage billing cron job
-  startOverageBillingCron();
+  try {
+    startOverageBillingCron();
+  } catch (error) {
+    console.error('⚠️  Failed to start cron job:', error.message);
+  }
+});
+
+// Handle server errors
+server.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use.`);
+    console.error('   Try: lsof -ti:${PORT} | xargs kill');
+    process.exit(1);
+  } else {
+    console.error('❌ Server error:', error);
+  }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('\n⚠️  SIGTERM received. Closing server gracefully...');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('\n⚠️  SIGINT received. Closing server gracefully...');
+  server.close(() => {
+    console.log('✅ Server closed');
+    process.exit(0);
+  });
 });
 
 export default app;

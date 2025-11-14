@@ -1008,7 +1008,7 @@
         .hybrid-chat-header {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: #fff;
-            padding: 20px;
+            padding: 18px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -1016,6 +1016,8 @@
             box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
             position: relative;
             overflow: hidden;
+            min-height: 70px;
+            flex-shrink: 0;
         }
 
         .hybrid-chat-header::before {
@@ -1036,6 +1038,8 @@
             gap: 12px;
             position: relative;
             z-index: 1;
+            flex: 1;
+            min-width: 0;
         }
 
         .header-icon {
@@ -1054,7 +1058,9 @@
         .header-text {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
         }
 
         .hybrid-chat-header h3 {
@@ -2130,8 +2136,13 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
-                    <h3>Complete CRM & Pipeline</h3>
-                    <p>Manage contacts, deals, projects, and tasks. Visual pipeline, automated follow-ups, and deal tracking in one platform.</p>
+                    <h3>Unified Business Pipeline</h3>
+                    <p>Manage deals, projects, and invoices in one cohesive workflow. Track opportunities from lead to payment with visual kanban boards, automated stage transitions, and real-time revenue tracking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Team Messaging & Collaboration</h3>
+                    <p>Built-in messaging with Slack integration. Create channels for teams, customers, contractors, and vendors. Sync conversations across platforms and keep everyone connected in real-time.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📅</div>
@@ -2890,12 +2901,27 @@
 
                 if (response.ok) {
                     voiceStatusMessage.className = 'voice-status-message success';
-                    voiceStatusMessage.textContent = `✅ Success! Calling ${name} now. You should receive a call from our AI agent in a few seconds!`;
+                    voiceStatusMessage.innerHTML = `
+                        <div style="text-align: center;">
+                            <div style="font-size: 24px; margin-bottom: 8px;">📞 ✨</div>
+                            <div style="font-weight: 700; font-size: 16px; margin-bottom: 6px;">Calling You Now!</div>
+                            <div style="font-size: 14px; opacity: 0.9;">Hi ${name}! Your phone should ring in 5-10 seconds.</div>
+                            <div style="font-size: 13px; opacity: 0.8; margin-top: 8px;">🎙️ Sarah, our AI assistant, will introduce herself and give you an amazing demo of our voice AI platform!</div>
+                        </div>
+                    `;
 
-                    // Clear form
-                    demoNameInput.value = '';
-                    demoEmailInput.value = '';
-                    demoPhoneInput.value = '';
+                    // Animate button to show success
+                    btnIcon.textContent = '✅';
+                    btnText.textContent = 'Call Initiated!';
+
+                    // Clear form after 3 seconds
+                    setTimeout(() => {
+                        demoNameInput.value = '';
+                        demoEmailInput.value = '';
+                        demoPhoneInput.value = '';
+                        btnIcon.textContent = '📞';
+                        btnText.textContent = 'Call Me Now';
+                    }, 3000);
                 } else {
                     throw new Error(data.message || 'Failed to initiate call');
                 }

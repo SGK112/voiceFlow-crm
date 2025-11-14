@@ -1,25 +1,20 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Phone, Users, PhoneCall, Workflow, CreditCard, Settings, Target, TrendingUp, CheckSquare, Bot, Plug, Calendar, FileText, ChevronLeft, ChevronRight, X, Activity, Briefcase } from 'lucide-react';
+import { LayoutDashboard, Phone, Users, PhoneCall, Workflow, CreditCard, Settings, Target, TrendingUp, CheckSquare, Bot, Plug, Calendar, FileText, ChevronLeft, ChevronRight, X, Activity, Briefcase, Library, Sparkles, ShoppingBag, DollarSign, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 
 const navigation = [
-  { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard },
-  { name: 'Voice Agents', href: '/app/agents', icon: Phone },
-  { name: 'AI Chat Agents', href: '/app/ai-agents', icon: Bot },
-  { name: 'Campaigns', href: '/app/campaigns', icon: Target },
-  { name: 'Calls', href: '/app/calls', icon: PhoneCall },
-  { name: 'Leads', href: '/app/leads', icon: Users },
-  { name: 'Deals', href: '/app/deals', icon: TrendingUp },
-  { name: 'Tasks', href: '/app/tasks', icon: CheckSquare },
-  { name: 'Projects', href: '/app/projects', icon: Briefcase },
-  { name: 'Workflows', href: '/app/workflows', icon: Workflow },
-  { name: 'Calendar', href: '/app/calendar', icon: Calendar },
-  { name: 'Invoices', href: '/app/invoices', icon: FileText },
-  { name: 'Usage', href: '/app/usage', icon: Activity },
-  { name: 'Billing', href: '/app/billing', icon: CreditCard },
-  { name: 'Integrations', href: '/app/integrations', icon: Plug },
-  { name: 'Settings', href: '/app/settings', icon: Settings },
+  { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard, tourId: 'dashboard' },
+  { name: 'AI Agents', href: '/app/agents', icon: Bot, tourId: 'agents' },
+  { name: 'Leads', href: '/app/leads', icon: Users, tourId: 'leads' },
+  { name: 'Business', href: '/app/business', icon: Briefcase, tourId: 'business' },
+  { name: 'Messages', href: '/app/messages', icon: MessageSquare, tourId: 'messages' },
+  { name: 'Tasks', href: '/app/tasks', icon: CheckSquare, tourId: 'tasks' },
+  { name: 'Campaigns', href: '/app/campaigns', icon: Target, tourId: 'campaigns' },
+  { name: 'Calls', href: '/app/conversations', icon: PhoneCall, tourId: 'calls' },
+  { name: 'Workflows', href: '/app/workflows', icon: Workflow, tourId: 'workflows' },
+  { name: 'Phone Numbers', href: '/app/phone-numbers', icon: Phone, tourId: 'phone-numbers' },
+  { name: 'Settings', href: '/app/settings', icon: Settings, tourId: 'settings' },
 ];
 
 export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }) {
@@ -73,14 +68,15 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
             'overflow-hidden transition-all duration-300 flex flex-col items-center lg:items-start w-full',
             isCollapsed ? 'w-0 opacity-0' : 'opacity-100'
           )}>
-            <h1 className="text-xl sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent whitespace-nowrap flex items-center gap-2">
-              <span className="text-2xl sm:text-xl lg:text-2xl">🎙️</span> Remodely.ai
+            <h1 className="text-xl sm:text-xl lg:text-2xl font-bold whitespace-nowrap flex items-center gap-2">
+              <span className="text-2xl">🎙️</span>
+              <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">Remodely.ai</span>
             </h1>
-            <p className="text-sm sm:text-sm text-muted-foreground whitespace-nowrap mt-0.5">VoiceFlow CRM</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap mt-0.5">VoiceFlow CRM</p>
           </div>
 
           {isCollapsed && (
-            <div className="w-10 h-10 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center font-bold text-xl sm:text-xl">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-2xl shadow-md">
               🎙️
             </div>
           )}
@@ -115,6 +111,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
               <Link
                 key={item.name}
                 to={item.href}
+                data-tour={item.tourId}
                 className={cn(
                   'flex items-center gap-3 rounded-lg text-sm font-medium transition-all relative group',
                   isCollapsed ? 'px-3 py-3 justify-center' : 'px-4 py-3',

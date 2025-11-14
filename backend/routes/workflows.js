@@ -10,11 +10,13 @@ import {
   getPrebuiltTemplates
 } from '../controllers/workflowController.js';
 import { protect, checkSubscription } from '../middleware/auth.js';
+import { requirePlan } from '../middleware/subscriptionGate.js';
 
 const router = express.Router();
 
 router.get('/', protect, getWorkflows);
-router.post('/', protect, createWorkflow);
+// Requires Starter plan or higher to create workflows
+router.post('/', protect, requirePlan('starter'), createWorkflow);
 router.get('/templates', protect, getPrebuiltTemplates);
 router.get('/:id', protect, getWorkflowById);
 router.patch('/:id', protect, updateWorkflow);

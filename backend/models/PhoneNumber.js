@@ -1,116 +1,74 @@
 import mongoose from 'mongoose';
 
 const phoneNumberSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
+  },
   phoneNumber: {
     type: String,
     required: true,
-    unique: true,
-    index: true
+    unique: true
   },
-  provider: {
+  twilioSid: {
     type: String,
-    enum: ['twilio', 'elevenlabs', 'vapi'],
-    default: 'twilio'
-  },
-  providerId: {
-    type: String, // SID from Twilio, ID from other providers
-    required: true
+    required: true,
+    unique: true
   },
   type: {
     type: String,
-    enum: ['inbound', 'outbound', 'both'],
-    default: 'both'
+    enum: ['purchased', 'ported'],
+    default: 'purchased'
   },
   status: {
     type: String,
-    enum: ['active', 'inactive', 'suspended'],
+    enum: ['active', 'inactive', 'porting', 'failed'],
     default: 'active'
   },
-  currentlyAssignedTo: {
-    type: String, // 'campaign:{campaignId}' or 'agent:{agentId}' or null
-    default: null
+  assignedAgent: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Agent'
   },
-  capabilities: {
-    voice: {
-      type: Boolean,
-      default: true
-    },
-    sms: {
-      type: Boolean,
-      default: false
-    },
-    mms: {
-      type: Boolean,
-      default: false
-    }
+  assignedAgentName: String,
+  portRequestSid: String,
+  currentProvider: String,
+  accountNumber: String,
+  callsReceived: {
+    type: Number,
+    default: 0
   },
-  configuration: {
-    voiceUrl: String,
-    voiceFallbackUrl: String,
-    statusCallbackUrl: String,
-    smsUrl: String,
-    smsFallbackUrl: String
+  callsMade: {
+    type: Number,
+    default: 0
   },
-  usage: {
-    totalCalls: {
-      type: Number,
-      default: 0
-    },
-    totalMinutes: {
-      type: Number,
-      default: 0
-    },
-    totalCost: {
-      type: Number,
-      default: 0
-    },
-    lastUsed: Date
+  smsReceived: {
+    type: Number,
+    default: 0
+  },
+  smsSent: {
+    type: Number,
+    default: 0
   },
   monthlyCost: {
     type: Number,
-    default: 2.00 // Twilio phone number cost
+    default: 2.00
   },
-  metadata: {
-    type: Map,
-    of: String
+  stripeSubscriptionItemId: String,
+  friendlyName: String,
+  capabilities: {
+    voice: { type: Boolean, default: true },
+    sms: { type: Boolean, default: true },
+    mms: { type: Boolean, default: true }
   }
 }, {
   timestamps: true
 });
 
-phoneNumberSchema.index({ status: 1, currentlyAssignedTo: 1 });
-
-// Method to check if number is available
-phoneNumberSchema.methods.isAvailable = function() {
-  return this.status === 'active' && !this.currentlyAssignedTo;
-};
-
-// Method to assign to campaign or agent
-phoneNumberSchema.methods.assignTo = async function(resourceType, resourceId) {
-  if (!this.isAvailable()) {
-    throw new Error('Phone number is not available');
-  }
-  this.currentlyAssignedTo = `${resourceType}:${resourceId}`;
-  await this.save();
-};
-
-// Method to release assignment
-phoneNumberSchema.methods.release = async function() {
-  this.currentlyAssignedTo = null;
-  await this.save();
-};
-
-// Static method to get available number
-phoneNumberSchema.statics.getAvailableNumber = async function(type = 'both') {
-  return await this.findOne({
-    status: 'active',
-    currentlyAssignedTo: null,
-    $or: [
-      { type: type },
-      { type: 'both' }
-    ]
-  });
-};
+phoneNumberSchema.index({ userId: 1, status: 1 });
+phoneNumberSchema.index({ phoneNumber: 1 });
+phoneNumberSchema.index({ twilioSid: 1 });
 
 const PhoneNumber = mongoose.model('PhoneNumber', phoneNumberSchema);
 

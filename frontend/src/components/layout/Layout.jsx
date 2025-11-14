@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+// import OnboardingTour from '../onboarding/OnboardingTour';
 
 export default function Layout() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -9,6 +10,7 @@ export default function Layout() {
 
   return (
     <div className="flex h-screen bg-background">
+      {/* <OnboardingTour /> */}
       <Sidebar
         isCollapsed={isCollapsed}
         setIsCollapsed={setIsCollapsed}

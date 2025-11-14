@@ -35,7 +35,7 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader>
-          <CardTitle className="text-2xl">Welcome to VoiceFlow</CardTitle>
+          <CardTitle className="text-2xl">Welcome to VoiceFlow CRM</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>
         </CardHeader>
         <CardContent>

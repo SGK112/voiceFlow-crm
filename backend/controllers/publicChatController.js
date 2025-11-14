@@ -661,8 +661,8 @@ export const requestVoiceDemo = async (req, res) => {
       demo_type: 'marketing_website_demo'
     };
 
-    // Personalized first message
-    const personalizedFirstMessage = `Hi ${name}! Thanks for requesting a demo of our AI voice agent. I'm Sarah, and I'm here to show you how our voice AI can help automate your business communications. How are you doing today?`;
+    // Personalized first message - clarify that Sarah is the AI agent's name
+    const personalizedFirstMessage = `Hi ${name}! Thanks for requesting a demo. My name is Sarah, and I'm an AI voice agent from Remodely dot A I. I'm here to show you how voice AI like me can help automate your business communications. How are you doing today?`;
 
     // Initiate call using ElevenLabs batch calling (same as CRM does)
     const callData = await elevenLabsService.initiateCall(

@@ -6,7 +6,7 @@ const getOAuth2Client = () => {
   return new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/google/callback`
+    `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/integration/callback`
   );
 };
 
@@ -80,7 +80,7 @@ export const googleAuthStart = async (req, res) => {
       access_type: 'offline',
       scope: scopes,
       prompt: 'consent',
-      state: req.user._id.toString() // Pass user ID in state
+      state: JSON.stringify({ userId: req.user._id.toString(), service: 'google' }) // Pass user ID and service in state
     });
 
     res.json({ authUrl });
@@ -288,8 +288,9 @@ export const slackAuthStart = async (req, res) => {
     ].join(',');
 
     const redirectUri = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/integration/callback`;
+    const state = JSON.stringify({ userId: req.user._id.toString(), service: 'slack' });
 
-    const authUrl = `https://slack.com/oauth/v2/authorize?client_id=${process.env.SLACK_CLIENT_ID}&scope=${scopes}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${req.user._id.toString()}`;
+    const authUrl = `https://slack.com/oauth/v2/authorize?client_id=${process.env.SLACK_CLIENT_ID}&scope=${scopes}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}`;
 
     res.json({ authUrl });
   } catch (error) {

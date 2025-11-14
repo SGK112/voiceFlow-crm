@@ -12,7 +12,18 @@ export default function IntegrationCallback() {
     const handleCallback = async () => {
       const code = searchParams.get('code');
       const error = searchParams.get('error');
-      const service = searchParams.get('service') || 'google'; // Default to google
+      const stateParam = searchParams.get('state');
+
+      // Extract service from state parameter (JSON encoded)
+      let service = 'google'; // Default to google
+      if (stateParam) {
+        try {
+          const state = JSON.parse(stateParam);
+          service = state.service || 'google';
+        } catch (e) {
+          console.error('Failed to parse state parameter:', e);
+        }
+      }
 
       if (error) {
         console.error('OAuth error:', error);
@@ -30,7 +41,7 @@ export default function IntegrationCallback() {
       try {
         // Send the authorization code to backend
         const response = await api.get(`/integrations/${service}/callback`, {
-          params: { code }
+          params: { code, state: stateParam }
         });
 
         if (response.data.success) {

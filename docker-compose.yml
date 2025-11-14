@@ -73,27 +73,34 @@ services:
   #   networks:
   #     - voiceflow-network
 
-  # n8n is now using cloud instance (remodely.app.n8n.cloud)
-  # Uncomment below only for local development or self-hosted n8n
-  # n8n:
-  #   image: n8nio/n8n
-  #   container_name: voiceflow-n8n
-  #   restart: unless-stopped
-  #   ports:
-  #     - "5678:5678"
-  #   environment:
-  #     - N8N_BASIC_AUTH_ACTIVE=true
-  #     - N8N_BASIC_AUTH_USER=admin
-  #     - N8N_BASIC_AUTH_PASSWORD=password
-  #     - N8N_HOST=localhost
-  #     - N8N_PORT=5678
-  #     - N8N_PROTOCOL=http
-  #     - NODE_ENV=production
-  #     - WEBHOOK_URL=http://localhost:5678/
-  #   volumes:
-  #     - n8n_data:/home/node/.n8n
-  #   networks:
-  #     - voiceflow-network
+  # n8n - Self-hosted workflow automation
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: voiceflow-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=Remodely2025!
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://localhost:5678
+      - GENERIC_TIMEZONE=America/New_York
+      - N8N_ENCRYPTION_KEY=RemodelyCRM2025SecretKey123456789
+      - N8N_METRICS=true
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - voiceflow-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
 
 volumes:
   mongodb_data:

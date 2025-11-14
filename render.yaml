@@ -48,6 +48,9 @@ services:
       - key: CLIENT_URL
         value: https://voiceflow-crm.onrender.com
 
+      - key: FRONTEND_URL
+        value: https://voiceflow-crm.onrender.com
+
       - key: API_URL
         value: https://voiceflow-crm.onrender.com
 
@@ -69,6 +72,16 @@ services:
         value: 710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com
 
       - key: GOOGLE_CLIENT_SECRET
+        sync: false
+
+      # Slack OAuth (Backend)
+      - key: SLACK_CLIENT_ID
+        value: 9864194828387.9888319164593
+
+      - key: SLACK_CLIENT_SECRET
+        sync: false
+
+      - key: SLACK_WEBHOOK
         sync: false
 
       # ElevenLabs - SET IN RENDER DASHBOARD

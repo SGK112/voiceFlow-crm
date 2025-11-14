@@ -43,7 +43,15 @@ const n8nWorkflowSchema = new mongoose.Schema({
   failureCount: {
     type: Number,
     default: 0
-  }
+  },
+  // Marketplace-specific fields
+  marketplaceId: {
+    type: String,
+    index: true,
+    sparse: true // Only marketplace workflows have this
+  },
+  category: String, // crm, construction, communication, etc.
+  tags: [String] // For search and filtering
 }, {
   timestamps: true
 });

@@ -195,4 +195,22 @@ export const campaignApi = {
   addContact: (id, data) => api.post(`/campaigns/${id}/contacts`, data),
 };
 
+export const communityAgentApi = {
+  // Marketplace
+  getMarketplace: (params) => api.get('/community-agents/marketplace', { params }),
+  getTemplateDetails: (slug) => api.get(`/community-agents/marketplace/${slug}`),
+
+  // Installation management
+  installTemplate: (templateId, setupAnswers) => api.post(`/community-agents/${templateId}/install`, { setupAnswers }),
+  uninstallTemplate: (templateId) => api.delete(`/community-agents/${templateId}/uninstall`),
+  rateTemplate: (templateId, rating, review) => api.post(`/community-agents/${templateId}/rate`, { rating, review }),
+
+  // Creator management
+  getMyTemplates: () => api.get('/community-agents/my-templates'),
+  createTemplate: (data) => api.post('/community-agents/create', data),
+  updateTemplate: (id, data) => api.put(`/community-agents/${id}`, data),
+  submitForReview: (id) => api.post(`/community-agents/${id}/submit`),
+  getCreatorRevenue: () => api.get('/community-agents/creator/revenue'),
+};
+
 export default api;
