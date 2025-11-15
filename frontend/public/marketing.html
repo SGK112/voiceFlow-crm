@@ -1784,7 +1784,7 @@
             bottom: 0;
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(4px);
-            z-index: 10000;
+            z-index: 10001; /* Higher than chat widget (10000) to appear on top */
             animation: fadeIn 0.3s ease-out;
         }
 
@@ -2555,11 +2555,6 @@
     <footer class="footer">
         <p>© 2025 VoiceFlow CRM. All rights reserved.</p>
     </footer>
-
-    <!-- Chat Popup Label -->
-    <div class="chat-popup-label" id="chatPopupLabel">
-        💬 Need help? Chat with our AI!
-    </div>
 
     <!-- AI Chat Toggle Button -->
     <button class="ai-chat-toggle" id="aiChatToggle" aria-label="Toggle AI Assistant">
