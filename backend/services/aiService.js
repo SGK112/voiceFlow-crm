@@ -182,6 +182,147 @@ Make it sound natural for a phone conversation, not scripted.`;
   }
 
   /**
+   * Help configure a specific workflow node
+   */
+  async configureNode(nodeType, userRequest, currentConfig = {}, context = {}) {
+    if (!this.isAvailable()) {
+      throw new Error('AI service not available.');
+    }
+
+    const nodeDescriptions = {
+      trigger: 'Webhook trigger - starts the workflow when an event occurs',
+      save_lead: 'Saves customer information to the CRM database',
+      send_sms: 'Sends an SMS text message to a phone number',
+      send_email: 'Sends an email message',
+      notify_team: 'Sends a notification to team on Slack',
+      wait: 'Pauses workflow execution for a specified duration',
+      condition: 'Branches workflow based on conditional logic',
+      custom_code: 'Runs custom JavaScript code',
+      n8n_connect: 'Connects to external n8n workflow'
+    };
+
+    const prompt = `You are helping a user configure a workflow automation node.
+
+Node Type: ${nodeType}
+Description: ${nodeDescriptions[nodeType] || 'Workflow node'}
+User Request: ${userRequest}
+Current Configuration: ${JSON.stringify(currentConfig, null, 2)}
+
+The user is asking for help with: "${userRequest}"
+
+Please provide a helpful response that:
+1. Explains what this node does in simple terms
+2. Suggests appropriate parameter values based on their request
+3. Returns ONLY a JSON object with the suggested configuration
+
+Return format:
+{
+  "explanation": "Brief explanation of what this configuration will do",
+  "parameters": {
+    // Suggested parameter values for this node type
+  },
+  "tips": "Any helpful tips or best practices"
+}
+
+For reference, here are common parameter patterns:
+- Variables use {{$json.fieldName}} syntax
+- Phone numbers should be in E.164 format: +1234567890
+- Email addresses should be validated
+- Messages can include dynamic variables like {{$json.name}}
+
+Return ONLY valid JSON, no markdown formatting.`;
+
+    const response = await this.chat(prompt, { maxTokens: 1000, temperature: 0.7 });
+
+    try {
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+    } catch (e) {
+      console.error('Failed to parse node configuration JSON:', e);
+      // Fallback response
+      return {
+        explanation: response,
+        parameters: {},
+        tips: 'Try being more specific about what you want this step to do.'
+      };
+    }
+
+    throw new Error('AI did not return valid configuration JSON');
+  }
+
+  /**
+   * Generate a workflow from natural language description
+   */
+  async generateWorkflow(description, workflowType = 'general', context = {}) {
+    if (!this.isAvailable()) {
+      throw new Error('AI service not available.');
+    }
+
+    const prompt = `You are an expert workflow automation designer. Generate a complete workflow based on this description:
+
+Description: ${description}
+Workflow Type: ${workflowType}
+Company: ${context.companyName || 'Company'}
+Industry: ${context.industry || 'General'}
+
+Available node types:
+1. TRIGGER nodes: webhook (when something happens), schedule (time-based)
+2. ACTION nodes: save_lead (save to CRM), send_sms (text message), send_email (email), notify_team (Slack), custom HTTP request
+3. LOGIC nodes: wait (delay), condition (if/then), custom_code (JavaScript)
+
+Generate a workflow with these specifications:
+- Start with ONE trigger node
+- Add 2-6 action/logic nodes that accomplish the goal
+- Each node should have realistic parameters
+- Use variables like {{$json.name}}, {{$json.email}}, {{$json.phone}} to pass data between nodes
+
+Return ONLY valid JSON in this exact format (no markdown, no explanation):
+{
+  "name": "Workflow Name",
+  "description": "Brief description",
+  "nodes": [
+    {
+      "id": "trigger",
+      "type": "trigger",
+      "label": "When This Happens",
+      "position": {"x": 100, "y": 100},
+      "parameters": {}
+    },
+    {
+      "id": "action1",
+      "type": "save_lead",
+      "label": "Save Lead",
+      "position": {"x": 350, "y": 100},
+      "parameters": {
+        "name": "{{$json.name}}",
+        "phone": "{{$json.phone}}",
+        "email": "{{$json.email}}"
+      }
+    }
+  ],
+  "connections": [
+    {"from": "trigger", "to": "action1"}
+  ]
+}`;
+
+    const response = await this.chat(prompt, { maxTokens: 2500, temperature: 0.7 });
+
+    try {
+      const jsonMatch = response.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+    } catch (e) {
+      console.error('Failed to parse workflow JSON:', e);
+      throw new Error('Failed to generate valid workflow structure');
+    }
+
+    throw new Error('AI did not return valid workflow JSON');
+  }
+
+  /**
    * Chat with AI provider (unified interface)
    */
   async chat(prompt, options = {}) {

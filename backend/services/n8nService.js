@@ -1,27 +1,39 @@
 import axios from 'axios';
 
 class N8nService {
-  constructor(webhookUrl = process.env.N8N_WEBHOOK_URL, apiKey = process.env.N8N_API_KEY) {
-    this.webhookUrl = webhookUrl || 'http://localhost:5678/webhook';
-    this.apiKey = apiKey;
+  constructor() {
+    this.webhookUrl = process.env.N8N_WEBHOOK_URL || 'http://localhost:5678/webhook';
+    this.apiUrl = process.env.N8N_API_URL || 'http://localhost:5678';
+    this.apiKey = process.env.N8N_API_KEY;
+    this.basicAuthUser = process.env.N8N_BASIC_AUTH_USER;
+    this.basicAuthPassword = process.env.N8N_BASIC_AUTH_PASSWORD;
 
-    // N8N Cloud API URL is different from webhook URL
-    // Extract base domain and construct API URL
-    let apiBaseUrl = 'http://localhost:5678';
-    if (this.webhookUrl.includes('n8n.cloud')) {
-      // Convert webhook URL to API URL
-      // https://remodely.app.n8n.cloud/webhook -> https://remodely.app.n8n.cloud/api/v1
-      apiBaseUrl = this.webhookUrl.replace('/webhook', '/api/v1');
-    } else {
-      apiBaseUrl = this.webhookUrl.replace('/webhook', '');
+    // Determine auth method
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+
+    let auth = null;
+
+    if (this.apiKey) {
+      headers['X-N8N-API-KEY'] = this.apiKey;
+    } else if (this.basicAuthUser && this.basicAuthPassword) {
+      // Use basic auth for self-hosted n8n
+      auth = {
+        username: this.basicAuthUser,
+        password: this.basicAuthPassword
+      };
     }
 
     this.client = axios.create({
-      baseURL: apiBaseUrl,
-      headers: {
-        'X-N8N-API-KEY': this.apiKey,
-        'Content-Type': 'application/json'
-      }
+      baseURL: this.apiUrl,
+      headers,
+      auth
+    });
+
+    console.log('✅ N8N Service initialized:', {
+      apiUrl: this.apiUrl,
+      authMethod: this.apiKey ? 'API Key' : (auth ? 'Basic Auth' : 'None')
     });
   }
 

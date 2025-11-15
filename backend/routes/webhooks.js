@@ -8,6 +8,12 @@ import {
   handleElevenLabsForward,
   handleElevenLabsOutbound
 } from '../controllers/twilioWebhookController.js';
+import {
+  sendSignupLinkAction,
+  handlePostCallFollowUp,
+  handleConversationEvent,
+  testWebhook
+} from '../controllers/elevenLabsWebhookController.js';
 import { webhookLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
@@ -16,6 +22,13 @@ const router = express.Router();
 router.post('/elevenlabs', webhookLimiter, handleElevenLabsWebhook);
 router.post('/elevenlabs/call-completed', webhookLimiter, handleCallCompletion);
 router.post('/elevenlabs/call-event', webhookLimiter, handleCallEvent);
+
+// ElevenLabs real-time action webhooks
+router.post('/elevenlabs/send-signup-link', sendSignupLinkAction);
+router.post('/elevenlabs/post-call-followup', handlePostCallFollowUp);
+router.post('/elevenlabs/conversation-event', handleConversationEvent);
+router.get('/elevenlabs/test', testWebhook);
+router.post('/elevenlabs/test', testWebhook);
 
 // Twilio webhooks
 router.post('/twilio/voice', handleTwilioVoice);

@@ -150,6 +150,16 @@ class ElevenLabsService {
         hasPersonalizedFirstMessage: !!personalizedFirstMessage
       });
 
+      // DEBUG: Log the full request body to verify what we're sending
+      console.log('🔍 Full request body:');
+      console.log('  - Agent ID:', requestBody.agent_id);
+      console.log('  - Has override:', !!requestBody.conversation_config_override);
+      if (requestBody.conversation_config_override) {
+        console.log('  - Override prompt length:', requestBody.conversation_config_override.agent?.prompt?.prompt?.length || 0);
+        console.log('  - Override first_message:', requestBody.conversation_config_override.agent?.first_message || 'none');
+        console.log('  - First 200 chars of prompt:', requestBody.conversation_config_override.agent?.prompt?.prompt?.substring(0, 200));
+      }
+
       const response = await this.client.post('/convai/batch-calling/submit', requestBody);
 
       if (!response.data) {

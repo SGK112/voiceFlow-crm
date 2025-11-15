@@ -52,6 +52,7 @@ export const createWorkflow = async (req, res) => {
       return res.status(400).json({ message: 'Workflow JSON is required' });
     }
 
+    // Create workflow in database first
     const workflow = await N8nWorkflow.create({
       userId: req.user._id,
       name: finalName || `Workflow ${Date.now()}`,
@@ -60,6 +61,31 @@ export const createWorkflow = async (req, res) => {
       workflowJson: finalWorkflowJson,
       triggerConditions: triggerConditions || {}
     });
+
+    // Try to push to n8n instance
+    try {
+      const n8nService = getN8nService();
+      const n8nResult = await n8nService.createWorkflow({
+        name: workflow.name,
+        nodes: finalWorkflowJson.nodes || [],
+        connections: finalWorkflowJson.connections || {},
+        settings: {
+          saveDataSuccessExecution: 'all',
+          saveDataErrorExecution: 'all'
+        },
+        active: false
+      });
+
+      if (n8nResult && n8nResult.id) {
+        // Save n8n workflow ID to database
+        workflow.n8nWorkflowId = n8nResult.id;
+        await workflow.save();
+        console.log('✅ Workflow created in n8n:', n8nResult.id);
+      }
+    } catch (n8nError) {
+      console.warn('⚠️ Could not create workflow in n8n (will work locally only):', n8nError.message);
+      // Continue - workflow still works locally even if n8n sync fails
+    }
 
     res.status(201).json(workflow);
   } catch (error) {
@@ -86,6 +112,26 @@ export const updateWorkflow = async (req, res) => {
     if (enabled !== undefined) workflow.enabled = enabled;
 
     await workflow.save();
+
+    // Try to update in n8n if workflow ID exists
+    if (workflow.n8nWorkflowId && (n8nWorkflow || workflowJson)) {
+      try {
+        const n8nService = getN8nService();
+        await n8nService.updateWorkflow(workflow.n8nWorkflowId, {
+          name: workflow.name,
+          nodes: workflow.workflowJson.nodes || [],
+          connections: workflow.workflowJson.connections || {},
+          settings: {
+            saveDataSuccessExecution: 'all',
+            saveDataErrorExecution: 'all'
+          }
+        });
+        console.log('✅ Workflow updated in n8n:', workflow.n8nWorkflowId);
+      } catch (n8nError) {
+        console.warn('⚠️ Could not update workflow in n8n:', n8nError.message);
+      }
+    }
+
     res.json(workflow);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -142,6 +188,17 @@ export const deleteWorkflow = async (req, res) => {
 
     if (!workflow) {
       return res.status(404).json({ message: 'Workflow not found' });
+    }
+
+    // Try to delete from n8n first
+    if (workflow.n8nWorkflowId) {
+      try {
+        const n8nService = getN8nService();
+        await n8nService.deleteWorkflow(workflow.n8nWorkflowId);
+        console.log('✅ Workflow deleted from n8n:', workflow.n8nWorkflowId);
+      } catch (n8nError) {
+        console.warn('⚠️ Could not delete workflow from n8n:', n8nError.message);
+      }
     }
 
     await workflow.deleteOne();

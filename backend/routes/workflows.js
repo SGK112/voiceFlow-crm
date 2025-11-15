@@ -15,8 +15,8 @@ import { requirePlan } from '../middleware/subscriptionGate.js';
 const router = express.Router();
 
 router.get('/', protect, getWorkflows);
-// Requires Starter plan or higher to create workflows
-router.post('/', protect, requirePlan('starter'), createWorkflow);
+// Workflow creation available for all users
+router.post('/', protect, createWorkflow);
 router.get('/templates', protect, getPrebuiltTemplates);
 router.get('/:id', protect, getWorkflowById);
 router.patch('/:id', protect, updateWorkflow);

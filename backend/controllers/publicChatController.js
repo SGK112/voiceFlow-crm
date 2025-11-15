@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import jwt from 'jsonwebtoken';
 import emailService from '../services/emailService.js';
 import ElevenLabsService from '../services/elevenLabsService.js';
+import TwilioService from '../services/twilioService.js';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
@@ -12,6 +13,14 @@ const getElevenLabsService = () => {
     elevenLabsServiceInstance = new ElevenLabsService(process.env.ELEVENLABS_API_KEY);
   }
   return elevenLabsServiceInstance;
+};
+
+let twilioServiceInstance = null;
+const getTwilioService = () => {
+  if (!twilioServiceInstance) {
+    twilioServiceInstance = new TwilioService();
+  }
+  return twilioServiceInstance;
 };
 
 // Enhanced knowledge base for better responses
@@ -674,12 +683,13 @@ export const requestVoiceDemo = async (req, res) => {
     };
 
     // Personalized script - VoiceFlow CRM sales demo
-    const personalizedScript = `You are a friendly, natural-sounding AI assistant for Remodelee AI. Your goal is to have a genuine conversation about how VoiceFlow CRM can help ${firstName}'s business.
+    // Note: Use {{customer_name}} for ElevenLabs dynamic variable substitution
+    const personalizedScript = `You are a friendly, natural-sounding AI assistant for Remodelee AI. Your goal is to have a genuine conversation about how VoiceFlow CRM can help {{customer_name}}'s business.
 
 **IMPORTANT: Sound like a real person, not a robot. Be conversational, warm, and authentic.**
 
 **AFTER THE GREETING:**
-After ${firstName} confirms who they are, say something natural like:
+After {{customer_name}} confirms who they are, say something natural like:
 "Awesome! Hey, I'm calling from Remodelee AI. You requested a demo, right? Well, here's the cool part - I'm actually one of the AI agents we build. Pretty realistic, huh? Anyway, I'd love to chat about how this could work for your business. What kind of work do you do?"
 
 **Alternative natural opening:**
@@ -687,7 +697,7 @@ After ${firstName} confirms who they are, say something natural like:
 
 **CONVERSATION STYLE - BE HUMAN:**
 - Talk like you're chatting with a friend, not reading a script
-- Use ${firstName}'s name naturally, like in real conversation (max 2-3 times)
+- Use {{customer_name}}'s name naturally, like in real conversation (max 2-3 times)
 - **IGNORE BACKGROUND NOISE** - TV, music, "thank you", "you're welcome" - if it's not clearly directed at you, keep going
 - Keep responses SHORT and conversational - 1-2 sentences, then ask a question
 - Use natural filler words: "Right!", "Totally!", "Yeah!", "I hear you!", "Makes sense!", "For sure!"
@@ -779,27 +789,59 @@ Natural response: "So the Professional plan is $299 a month - that's 5 agents, 1
 
 **Keep responses conversational - you're talking with them, not pitching at them.**
 
-**Your goal:** Have a genuine conversation and help ${firstName} see how this could solve their problems. If it's a good fit, get them to start the free trial. If not, no worries - part as friends and offer to send info.
+**Your goal:** Have a genuine conversation and help {{customer_name}} see how this could solve their problems. If it's a good fit, get them to start the free trial. If not, no worries - part as friends and offer to send info.
 
 **Above all: Sound like a real person having a real conversation. Be helpful, not pushy.**`;
 
-    // Initiate call using ElevenLabs batch calling with personalized first message
+    // Initiate call using ElevenLabs batch calling
+    // Agent configuration (first_message, prompt, language detection) is set at agent level
+    // Dynamic variables (customer_name, etc.) are passed per-call for personalization
+    // Configure webhook for client tool calls (SMS) and post-call events
+    const webhookUrl = `${process.env.WEBHOOK_URL}/api/webhooks/elevenlabs/conversation-event`;
+
     const callData = await getElevenLabsService().initiateCall(
       demoAgentId,
       formattedNumber,
       agentPhoneNumberId,
-      null, // no webhook for public demo
+      webhookUrl, // Webhook for tool calls and post-call events
       dynamicVariables,
-      personalizedScript, // send personalized script with customer name
-      `Hi, is this ${firstName}?` // personalized greeting to showcase dynamic capabilities
+      null, // Use agent's default prompt (configured at agent level)
+      null  // Use agent's default first_message: "Hi, am I speaking with {{customer_name}}?"
     );
 
     console.log(`✅ Voice demo call initiated:`, callData.id || callData.call_id);
 
-    // Send email confirmation to customer if email provided
+    // Note: SMS will be sent via webhook when agent triggers send_signup_link tool during call
+    // Post-call follow-up SMS and email will be sent after call ends via webhook
+
+    // Send lead notification to sales team
     if (email) {
       try {
-        // Send confirmation to customer
+        // Send lead notification to help.remodely@gmail.com
+        await emailService.sendEmail({
+          to: 'help.remodely@gmail.com',
+          subject: `🔥 New Demo Call - ${name}`,
+          text: `New voice demo call initiated:\n\nName: ${name}\nEmail: ${email}\nPhone: ${formattedNumber}\nCall ID: ${callData.id || callData.call_id}\n\nStatus: Call in progress\n\nMonitor for signup or appointment booking!`,
+          html: `
+            <h2>🔥 New Demo Call</h2>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Phone:</strong> ${formattedNumber}</p>
+            <p><strong>Call ID:</strong> ${callData.id || callData.call_id}</p>
+            <p><em>Call in progress - monitor for success!</em></p>
+          `
+        });
+        console.log(`✅ Lead notification sent to help.remodely@gmail.com`);
+      } catch (emailError) {
+        console.error('Failed to send lead notification:', emailError);
+        // Don't fail the request if email fails
+      }
+    }
+
+    // REMOVED: Immediate customer email - now only sends post-call via webhook
+    /*
+    if (email) {
+      try {
         await emailService.sendEmail({
           to: email,
           subject: `Your Remodely.ai Voice AI Demo is Calling You Now! 📞`,
@@ -881,26 +923,12 @@ Natural response: "So the Professional plan is $299 a month - that's 5 agents, 1
         });
         console.log(`✅ Confirmation email sent to customer: ${email}`);
 
-        // Also send notification to sales team
-        await emailService.sendEmail({
-          to: process.env.SMTP_FROM_EMAIL,
-          subject: `New Voice Demo Request - ${name}`,
-          text: `New voice demo request received:\n\nName: ${name}\nEmail: ${email}\nPhone: ${formattedNumber}\nCall ID: ${callData.id || callData.call_id}\n\nDemo call initiated via ElevenLabs.`,
-          html: `
-            <h2>New Voice Demo Request</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Phone:</strong> ${formattedNumber}</p>
-            <p><strong>Call ID:</strong> ${callData.id || callData.call_id}</p>
-            <p><em>Demo call initiated via ElevenLabs batch calling.</em></p>
-          `
-        });
-        console.log(`✅ Notification email sent to sales team`);
+        // (Old code - now handled by lead notification above)
       } catch (emailError) {
         console.error('Failed to send demo emails:', emailError);
-        // Don't fail the request if email fails
       }
     }
+    */
 
     res.json({
       success: true,

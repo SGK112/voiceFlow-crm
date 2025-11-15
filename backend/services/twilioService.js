@@ -1,10 +1,28 @@
 import twilio from 'twilio';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import PhoneNumber from '../models/PhoneNumber.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Ensure environment variables are loaded
+if (!process.env.TWILIO_ACCOUNT_SID) {
+  dotenv.config({ path: join(__dirname, '../../.env') });
+}
 
 class TwilioService {
   constructor() {
     this.accountSid = process.env.TWILIO_ACCOUNT_SID;
     this.authToken = process.env.TWILIO_AUTH_TOKEN;
+
+    if (!this.accountSid || !this.authToken) {
+      console.warn('⚠️  Twilio credentials not configured');
+      this.client = null;
+      return;
+    }
+
     this.client = twilio(this.accountSid, this.authToken);
   }
 
@@ -218,6 +236,46 @@ class TwilioService {
     } catch (error) {
       console.error('Error getting number usage:', error);
       throw new Error('Failed to get number usage: ' + error.message);
+    }
+  }
+
+  // Send SMS message
+  async sendSMS(to, body, from = null) {
+    try {
+      if (!this.client) {
+        throw new Error('Twilio client not initialized');
+      }
+
+      const fromNumber = from || process.env.TWILIO_PHONE_NUMBER;
+
+      const message = await this.client.messages.create({
+        body: body,
+        from: fromNumber,
+        to: to
+      });
+
+      console.log(`📱 SMS sent to ${to}: ${message.sid}`);
+      return message;
+    } catch (error) {
+      console.error('Error sending SMS:', error);
+      throw new Error('Failed to send SMS: ' + error.message);
+    }
+  }
+
+  // Send signup link via SMS
+  async sendSignupLink(to, customerName = null) {
+    try {
+      if (!this.client) {
+        throw new Error('Twilio client not initialized');
+      }
+
+      const greeting = customerName ? `Hi ${customerName}!` : 'Hi!';
+      const body = `${greeting} Thanks for your interest in VoiceFlow CRM! 🤖\n\nStart your FREE 14-day trial (no credit card needed):\nwww.remodely.ai/signup\n\nQuestions? Reply to this text!\n\n- Remodelee AI Team`;
+
+      return await this.sendSMS(to, body);
+    } catch (error) {
+      console.error('Error sending signup link:', error);
+      throw new Error('Failed to send signup link: ' + error.message);
     }
   }
 }

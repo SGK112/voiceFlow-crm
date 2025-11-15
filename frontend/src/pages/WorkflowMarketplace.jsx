@@ -175,7 +175,7 @@ export default function WorkflowMarketplace() {
       </div>
 
       {/* Category Chips */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+      <div className="flex gap-2 mb-6 overflow-x-scroll pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <button
           onClick={() => setSelectedCategory('all')}
           className={`px-4 py-2 rounded-full whitespace-nowrap transition-colors ${

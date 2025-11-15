@@ -5,6 +5,8 @@ import {
   improveScript,
   getScriptSuggestions,
   generateScript,
+  generateWorkflow,
+  configureNode,
   analyzeAgentPerformance,
   getCallInsights
 } from '../controllers/aiController.js';
@@ -21,6 +23,12 @@ router.get('/availability', checkAIAvailability);
 router.post('/improve-script', improveScript);
 router.post('/suggestions', getScriptSuggestions);
 router.post('/generate-script', generateScript);
+
+// Workflow generation
+router.post('/generate-workflow', generateWorkflow);
+
+// Node configuration assistance
+router.post('/configure-node', configureNode);
 
 // Analytics and insights
 router.get('/agent/:agentId/analyze', analyzeAgentPerformance);

@@ -1,4 +1,15 @@
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Ensure environment variables are loaded before initializing email service
+if (process.env.NODE_ENV !== 'production' && !process.env.SMTP_USER) {
+  dotenv.config({ path: join(__dirname, '../../.env') });
+}
 
 class EmailService {
   constructor() {
@@ -8,6 +19,13 @@ class EmailService {
 
   initialize() {
     try {
+      // Check if SMTP credentials are configured
+      if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+        console.warn('⚠️  SMTP credentials not configured - email functionality will be disabled');
+        this.transporter = null;
+        return;
+      }
+
       // Create transporter using Gmail SMTP with app password
       this.transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',

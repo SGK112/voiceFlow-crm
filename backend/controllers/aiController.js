@@ -89,6 +89,76 @@ export const getScriptSuggestions = async (req, res) => {
 /**
  * Generate a complete script from description
  */
+/**
+ * Configure a workflow node with AI assistance
+ */
+export const configureNode = async (req, res) => {
+  try {
+    if (!aiService.isAvailable()) {
+      return res.status(503).json({
+        message: 'AI service not available. Please configure an AI provider API key.'
+      });
+    }
+
+    const { nodeType, userRequest, currentConfig, context } = req.body;
+
+    if (!nodeType || !userRequest) {
+      return res.status(400).json({ message: 'Node type and user request are required' });
+    }
+
+    const configuration = await aiService.configureNode(
+      nodeType,
+      userRequest,
+      currentConfig || {},
+      context || {}
+    );
+
+    res.json({
+      configuration,
+      provider: aiService.activeProvider
+    });
+  } catch (error) {
+    console.error('Error configuring node:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Generate a workflow from natural language description
+ */
+export const generateWorkflow = async (req, res) => {
+  try {
+    if (!aiService.isAvailable()) {
+      return res.status(503).json({
+        message: 'AI service not available. Please configure an AI provider API key.'
+      });
+    }
+
+    const { description, workflowType, context } = req.body;
+
+    if (!description) {
+      return res.status(400).json({ message: 'Description is required' });
+    }
+
+    // Get user context
+    const user = await User.findById(req.user._id);
+    const fullContext = {
+      companyName: user.companyName || context?.companyName,
+      industry: context?.industry
+    };
+
+    const workflow = await aiService.generateWorkflow(description, workflowType, fullContext);
+
+    res.json({
+      workflow,
+      provider: aiService.activeProvider
+    });
+  } catch (error) {
+    console.error('Error generating workflow:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const generateScript = async (req, res) => {
   try {
     if (!aiService.isAvailable()) {

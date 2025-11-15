@@ -637,12 +637,12 @@ export default function AgentDetail() {
                     >
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0">
-                          <span className="text-white font-bold text-sm">{voice.name[0]}</span>
+                          <span className="text-white font-bold text-sm">{voice?.name?.[0] || 'V'}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h5 className="font-medium text-foreground text-sm">{voice.name}</h5>
+                          <h5 className="font-medium text-foreground text-sm">{voice?.name || 'Unknown Voice'}</h5>
                           <p className="text-xs text-muted-foreground truncate">
-                            {voice.gender} • {voice.accent}
+                            {voice?.gender || 'N/A'} • {voice?.accent || 'N/A'}
                           </p>
                         </div>
                       </div>

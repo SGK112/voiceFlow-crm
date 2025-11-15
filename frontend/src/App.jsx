@@ -18,8 +18,7 @@ import Invoices from './pages/Invoices';
 import Deals from './pages/Deals';
 import Tasks from './pages/Tasks';
 import Campaigns from './pages/Campaigns';
-import Workflows from './pages/Workflows';
-import WorkflowBuilderNew from './components/WorkflowBuilderNew';
+import WorkflowStudio from './components/WorkflowStudio';
 import Settings from './pages/Settings';
 import PhoneNumbers from './pages/PhoneNumbers';
 import Home from './pages/Home';
@@ -84,9 +83,8 @@ function App() {
         <Route path="tasks" element={<Tasks />} />
         <Route path="campaigns" element={<Campaigns />} />
         <Route path="conversations" element={<Conversations />} />
-        <Route path="workflows" element={<Workflows />} />
-        <Route path="workflow-builder" element={<WorkflowBuilderNew />} />
-        <Route path="workflow-builder/:id" element={<WorkflowBuilderNew />} />
+        <Route path="workflows" element={<WorkflowStudio />} />
+        <Route path="workflows/:id" element={<WorkflowStudio />} />
         <Route path="marketplace" element={<WorkflowMarketplace />} />
         <Route path="phone-numbers" element={<PhoneNumbers />} />
         <Route path="settings" element={<Settings />} />
@@ -101,6 +99,8 @@ function App() {
         <Route path="projects" element={<Navigate to="/app/business" replace />} />
         <Route path="invoices" element={<Navigate to="/app/business" replace />} />
         <Route path="deals" element={<Navigate to="/app/business" replace />} />
+        <Route path="workflow-builder" element={<Navigate to="/app/workflows" replace />} />
+        <Route path="workflow-builder/:id" element={<Navigate to="/app/workflows/:id" replace />} />
       </Route>
 
       {/* Redirect old paths to new /app paths */}
