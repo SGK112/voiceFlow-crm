@@ -8,7 +8,14 @@ import TwilioService from '../services/twilioService.js';
 import csv from 'csv-parser';
 import { Readable } from 'stream';
 
-const elevenLabsService = new ElevenLabsService();
+// Lazy initialization to ensure env vars are loaded
+let elevenLabsServiceInstance = null;
+const getElevenLabsService = () => {
+  if (!elevenLabsServiceInstance) {
+    elevenLabsServiceInstance = new ElevenLabsService(process.env.ELEVENLABS_API_KEY);
+  }
+  return elevenLabsServiceInstance;
+};
 const twilioService = new TwilioService();
 
 // Get all campaigns for user

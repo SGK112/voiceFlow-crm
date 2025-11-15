@@ -4,7 +4,15 @@ import emailService from '../services/emailService.js';
 import ElevenLabsService from '../services/elevenLabsService.js';
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
-const elevenLabsService = new ElevenLabsService();
+
+// Lazy initialization to ensure env vars are loaded
+let elevenLabsServiceInstance = null;
+const getElevenLabsService = () => {
+  if (!elevenLabsServiceInstance) {
+    elevenLabsServiceInstance = new ElevenLabsService(process.env.ELEVENLABS_API_KEY);
+  }
+  return elevenLabsServiceInstance;
+};
 
 // Enhanced knowledge base for better responses
 const KNOWLEDGE_BASE = {
@@ -665,7 +673,7 @@ export const requestVoiceDemo = async (req, res) => {
     const personalizedFirstMessage = `Hi ${name}! Thanks for requesting a demo. I'm an AI voice agent from Remodely dot A I, and I'm here to show you how voice AI like me can help automate your business communications. How are you doing today?`;
 
     // Initiate call using ElevenLabs batch calling (same as CRM does)
-    const callData = await elevenLabsService.initiateCall(
+    const callData = await getElevenLabsService().initiateCall(
       demoAgentId,
       formattedNumber,
       agentPhoneNumberId,

@@ -5,8 +5,14 @@ import Lead from '../models/Lead.js';
 import Usage from '../models/Usage.js';
 import ElevenLabsService from '../services/elevenLabsService.js';
 
-// Use centralized ElevenLabs service with platform credentials
-const elevenLabsService = new ElevenLabsService();
+// Lazy initialization to ensure env vars are loaded
+let elevenLabsServiceInstance = null;
+const getElevenLabsService = () => {
+  if (!elevenLabsServiceInstance) {
+    elevenLabsServiceInstance = new ElevenLabsService(process.env.ELEVENLABS_API_KEY);
+  }
+  return elevenLabsServiceInstance;
+};
 
 export const getCalls = async (req, res) => {
   try {
@@ -190,7 +196,7 @@ export const initiateCall = async (req, res) => {
 
     let callData;
     try {
-      callData = await elevenLabsService.initiateCall(
+      callData = await getElevenLabsService().initiateCall(
         agent.elevenLabsAgentId,
         phoneNumber,
         agentPhoneNumberId,
