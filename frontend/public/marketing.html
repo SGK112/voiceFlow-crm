@@ -1002,291 +1002,157 @@
             font-size: 14px;
         }
 
-        /* AI Chat Toggle Button */
+        /* AI Chat Toggle Button - Professional Design */
         .ai-chat-toggle {
             position: fixed;
             bottom: 24px;
             right: 24px;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            width: 60px;
+            height: 60px;
+            background: #3b82f6;
             color: #fff;
-            border: 3px solid #fff;
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), 0 0 0 0 rgba(59, 130, 246, 0.4);
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            transition: all 0.3s;
+            font-size: 24px;
+            transition: all 0.2s ease;
             z-index: 10001;
-            animation: pulse-ring 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-ring {
-            0% {
-                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), 0 0 0 0 rgba(59, 130, 246, 0.4);
-            }
-            50% {
-                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), 0 0 0 10px rgba(59, 130, 246, 0);
-            }
-            100% {
-                box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), 0 0 0 0 rgba(59, 130, 246, 0);
-            }
+            padding: 0;
         }
 
         .ai-chat-toggle:hover {
-            transform: scale(1.15) rotate(5deg);
-            box-shadow: 0 8px 28px rgba(59, 130, 246, 0.6);
-            animation: none;
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+            background: #2563eb;
         }
 
-        .ai-chat-toggle::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 50%;
-            padding: 3px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .ai-chat-toggle:hover::before {
-            opacity: 1;
-            animation: rotate-border 3s linear infinite;
-        }
-
-        @keyframes rotate-border {
-            to {
-                transform: rotate(360deg);
-            }
+        .ai-chat-toggle:active {
+            transform: scale(0.95);
         }
 
         .ai-chat-toggle.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.8);
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .ai-chat-toggle:not(.hidden) {
+            animation: fadeInScale 0.3s ease-out 0.5s forwards;
+            opacity: 0;
+        }
+
+        /* Chat Toggle Popup Label - Removed for cleaner look */
+        .chat-popup-label {
             display: none;
         }
 
-        /* Chat Toggle Popup Label */
-        .chat-popup-label {
+        /* Hybrid Chat Widget - Professional Design */
+        .hybrid-chat-widget {
             position: fixed;
             bottom: 100px;
             right: 24px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-            z-index: 9999;
-            white-space: nowrap;
-            pointer-events: none;
-            display: none;
-            opacity: 1;
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-        }
-
-        .chat-popup-label:not(.hidden) {
-            animation: slideInBounce 0.6s ease-out, pulse 2s ease-in-out 0.6s infinite;
-        }
-
-        .chat-popup-label::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            right: 28px;
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 8px solid #2563eb;
-        }
-
-        .chat-popup-label.hidden {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .chat-popup-label.hidden-complete {
-            display: none;
-        }
-
-        @keyframes slideInBounce {
-            0% {
-                transform: translateX(120%);
-                opacity: 0;
-            }
-            60% {
-                transform: translateX(-10px);
-                opacity: 1;
-            }
-            80% {
-                transform: translateX(5px);
-            }
-            100% {
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        /* Hybrid Chat Widget */
-        .hybrid-chat-widget {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
             width: 400px;
-            height: 620px;
+            height: 600px;
             background: #fff;
-            border: 2px solid #3b82f6;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.2);
-            display: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            display: flex;
             flex-direction: column;
             overflow: hidden;
             z-index: 10000;
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s ease-out;
         }
 
         .hybrid-chat-widget.active {
-            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
         }
 
-        /* Widget Header */
+        /* Widget Header - Professional Design */
         .hybrid-chat-header {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: #3b82f6;
             color: #fff;
-            padding: 20px 22px;
+            padding: 18px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #3b82f6;
-            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
-            position: relative;
-            overflow: hidden;
-            min-height: 75px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             flex-shrink: 0;
-        }
-
-        .hybrid-chat-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
         }
 
         .hybrid-chat-header-content {
             display: flex;
             align-items: center;
-            gap: 14px;
-            position: relative;
-            z-index: 1;
+            gap: 12px;
             flex: 1;
-            min-width: 0;
         }
 
         .header-icon {
-            width: 38px;
-            height: 38px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            flex-shrink: 0;
+            font-size: 18px;
         }
 
         .header-text {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            flex: 1;
-            min-width: 0;
-            justify-content: center;
+            gap: 2px;
         }
 
         .hybrid-chat-header h3 {
             margin: 0;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            line-height: 1.3;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
         }
 
         .header-subtitle {
             font-size: 12px;
-            opacity: 0.9;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            line-height: 1.4;
-            display: flex;
-            align-items: center;
-        }
-
-        .header-status-dot {
-            width: 6px;
-            height: 6px;
-            background: #10b981;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 4px;
-            animation: pulse-dot 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.6;
-                transform: scale(1.2);
-            }
+            opacity: 0.85;
+            font-weight: 400;
         }
 
         .hybrid-chat-close {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             border: none;
             color: #fff;
             cursor: pointer;
-            font-size: 20px;
-            line-height: 1;
-            padding: 0;
-            width: 32px;
-            height: 32px;
+            font-size: 18px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 2;
+            transition: background 0.2s;
+            border-radius: 6px;
         }
 
         .hybrid-chat-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         /* Mode Toggle */
@@ -2256,52 +2122,60 @@
                                 </div>
                             </div>
                             <div class="phone-body">
-                                <!-- Active Call Card -->
+                                <!-- Active Call Card - Enhanced -->
                                 <div class="crm-card call-active">
                                     <div class="call-status-bar">
                                         <span class="pulse-dot"></span>
-                                        <span style="font-size: 11px; font-weight: 600;">AI Agent On Call</span>
-                                        <span style="font-size: 10px; opacity: 0.7;">0:42</span>
+                                        <span style="font-size: 11px; font-weight: 600;">AI Agent Active</span>
+                                        <span style="font-size: 10px; opacity: 0.7;">2:18</span>
                                     </div>
                                     <div class="crm-card-header">
-                                        <div class="crm-avatar" style="background: linear-gradient(135deg, #10b981, #059669);">🤖</div>
+                                        <div class="crm-avatar" style="background: linear-gradient(135deg, #10b981, #34d399);">🤖</div>
                                         <div class="crm-info">
-                                            <p class="crm-name">Sarah - Lead Gen Agent</p>
-                                            <p class="crm-detail">📞 (555) 234-5678</p>
+                                            <p class="crm-name">Marcus - General Contractor Agent</p>
+                                            <p class="crm-detail">📞 +1 (480) 555-2847</p>
                                         </div>
                                     </div>
                                     <div class="call-transcript">
-                                        <p style="font-size: 10px; opacity: 0.6; margin: 0 0 4px 0;">Live Transcript:</p>
-                                        <p style="font-size: 11px; margin: 0; line-height: 1.4;">"Hi! When are you looking to start your kitchen remodel?"</p>
+                                        <p style="font-size: 10px; opacity: 0.6; margin: 0 0 6px 0;">🎯 Live Transcript:</p>
+                                        <p style="font-size: 11px; margin: 0 0 6px 0; line-height: 1.5; color: #059669;">"Perfect! I can get you scheduled for Friday at 2 PM. That works great, right?"</p>
+                                        <div style="display: flex; gap: 4px; margin-top: 6px;">
+                                            <span style="background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 600;">HOT LEAD</span>
+                                            <span style="background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 600;">READY TO BOOK</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <!-- Workflow Automation Card -->
+                                <!-- Workflow Automation Card - Enhanced -->
                                 <div class="crm-card workflow-card">
-                                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-                                        <span style="font-size: 12px;">⚡</span>
-                                        <span style="font-size: 11px; font-weight: 600;">Workflow Running</span>
+                                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+                                        <span style="font-size: 13px;">⚡</span>
+                                        <span style="font-size: 11px; font-weight: 700; color: #3b82f6;">Auto-Workflow Active</span>
                                     </div>
                                     <div class="workflow-steps">
                                         <div class="workflow-step completed">
                                             <span class="step-check">✓</span>
-                                            <span class="step-text">Call answered</span>
+                                            <span class="step-text">Answered in 2 rings</span>
                                         </div>
                                         <div class="workflow-step completed">
                                             <span class="step-check">✓</span>
-                                            <span class="step-text">Lead qualified</span>
+                                            <span class="step-text">Lead qualified ($50K job)</span>
                                         </div>
                                         <div class="workflow-step active">
                                             <span class="step-loader">↻</span>
-                                            <span class="step-text">Booking appointment...</span>
+                                            <span class="step-text">Syncing to calendar...</span>
+                                        </div>
+                                        <div class="workflow-step">
+                                            <span class="step-number">4</span>
+                                            <span class="step-text">Send confirmation email</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Recent Leads -->
+                                <!-- Recent Activity - Enhanced -->
                                 <div class="crm-card">
                                     <div class="crm-card-header">
-                                        <div class="crm-avatar">JD</div>
+                                        <div class="crm-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">JD</div>
                                         <div class="crm-info">
                                             <p class="crm-name">John Davis</p>
                                             <p class="crm-detail">🏠 Kitchen Remodel · $45K</p>
@@ -2596,7 +2470,9 @@
 
     <!-- AI Chat Toggle Button -->
     <button class="ai-chat-toggle" id="aiChatToggle" aria-label="Toggle AI Assistant">
-        🎙️
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
     </button>
 
     <!-- Hybrid Chat Widget -->
@@ -2604,12 +2480,14 @@
         <!-- Header -->
         <div class="hybrid-chat-header">
             <div class="hybrid-chat-header-content">
-                <div class="header-icon">🤖</div>
+                <div class="header-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
                 <div class="header-text">
-                    <h3>AI Assistant</h3>
-                    <div class="header-subtitle">
-                        <span class="header-status-dot"></span>Online
-                    </div>
+                    <h3>Remodelee AI</h3>
+                    <div class="header-subtitle">We typically reply instantly</div>
                 </div>
             </div>
             <button class="hybrid-chat-close" id="chatClose" aria-label="Close">×</button>
@@ -2617,16 +2495,15 @@
 
         <!-- Mode Toggle -->
         <div class="mode-toggle">
-            <button class="mode-btn active" id="chatModeBtn">💬 Chat</button>
-            <button class="mode-btn" id="voiceModeBtn">🎙️ Voice AI</button>
+            <button class="mode-btn active" id="chatModeBtn">Chat</button>
+            <button class="mode-btn" id="voiceModeBtn">Call Me</button>
         </div>
 
         <!-- Chat Mode -->
         <div class="chat-messages" id="chatMessages">
             <div class="chat-message">
-                <div class="message-avatar">🤖</div>
                 <div class="message-content">
-                    Hi! I'm your AI assistant. Ask me about VoiceFlow CRM's done-for-you agent services, pricing, or how we can build custom AI agents for your business!
+                    Hi! Ask me anything about VoiceFlow CRM - our pricing, features, or how we can help automate your business.
                 </div>
             </div>
         </div>
