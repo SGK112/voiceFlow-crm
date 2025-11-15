@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import api from '../services/api';
 import AIVoiceAgentWizard from '../components/AIVoiceAgentWizard';
+import AgentStudio from '../components/AgentStudio';
 
 export default function AgentsUnified() {
   const navigate = useNavigate();
@@ -30,6 +31,8 @@ export default function AgentsUnified() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all'); // 'all', 'voice', 'chat'
   const [showAIWizard, setShowAIWizard] = useState(false);
+  const [showAgentStudio, setShowAgentStudio] = useState(false);
+  const [selectedAgentForStudio, setSelectedAgentForStudio] = useState(null);
 
   useEffect(() => {
     fetchAgents();
@@ -368,8 +371,19 @@ export default function AgentsUnified() {
                         Manage
                       </button>
                       <button
+                        onClick={() => {
+                          setSelectedAgentForStudio(agent);
+                          setShowAgentStudio(true);
+                        }}
+                        className="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 text-xs"
+                        title="Advanced Node Configuration"
+                      >
+                        <Zap className="w-3.5 h-3.5" />
+                        Advanced
+                      </button>
+                      <button
                         onClick={() => deleteAgent(agent._id, agent.type)}
-                        className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1.5 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -399,6 +413,34 @@ export default function AgentsUnified() {
             setActiveTab('deployed'); // Switch to deployed tab to see the new agent
           }}
         />
+      )}
+
+      {/* Agent Studio - Advanced Node Configuration */}
+      {showAgentStudio && selectedAgentForStudio && (
+        <div className="fixed inset-0 z-50">
+          <AgentStudio
+            agentId={selectedAgentForStudio._id}
+            agentData={selectedAgentForStudio}
+            onSave={async (configuration) => {
+              try {
+                await api.put(`/agents/${selectedAgentForStudio._id}`, {
+                  configuration: configuration
+                });
+                alert('Agent configuration saved successfully!');
+                setShowAgentStudio(false);
+                setSelectedAgentForStudio(null);
+                fetchAgents();
+              } catch (error) {
+                console.error('Error saving agent configuration:', error);
+                alert('Failed to save configuration');
+              }
+            }}
+            onClose={() => {
+              setShowAgentStudio(false);
+              setSelectedAgentForStudio(null);
+            }}
+          />
+        </div>
       )}
     </div>
   );

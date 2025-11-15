@@ -1,0 +1,361 @@
+{
+  "templates": [
+    {
+      "id": "sms-assistant-basic",
+      "name": "AI SMS Assistant - Basic",
+      "description": "Intelligent SMS replies for customer inquiries. Perfect for businesses that want 24/7 text response.",
+      "category": "messaging",
+      "pricing": {
+        "setup_fee": 0,
+        "monthly_base": 39,
+        "per_sms": 0.02,
+        "recommended_plan": "starter"
+      },
+      "configuration": {
+        "message_template": "Hi {{customer_name}}! Thanks for your interest in {{company_name}}! 🤖\n\n{{custom_message}}\n\nQuestions? Reply to this text!\n\n- {{company_name}} Team",
+        "features": [
+          "AI-powered intelligent replies",
+          "24/7 automated responses",
+          "Lead qualification via text",
+          "STOP/START compliance built-in",
+          "Custom business context",
+          "Conversation logging"
+        ],
+        "integrations": ["twilio", "openai"],
+        "workflows": [
+          {
+            "trigger": "sms.received",
+            "actions": ["ai_analyze", "generate_reply", "send_sms", "log_conversation"]
+          }
+        ]
+      },
+      "setup_wizard": [
+        {
+          "step": 1,
+          "field": "company_name",
+          "label": "What's your company name?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "step": 2,
+          "field": "business_description",
+          "label": "Describe your business in one sentence",
+          "type": "textarea",
+          "placeholder": "We provide granite countertops and kitchen remodeling...",
+          "required": true
+        },
+        {
+          "step": 3,
+          "field": "services",
+          "label": "What services do you offer?",
+          "type": "text",
+          "placeholder": "Kitchen remodeling, bathroom renovation, countertops",
+          "required": true
+        },
+        {
+          "step": 4,
+          "field": "pricing_info",
+          "label": "Typical price range? (optional)",
+          "type": "text",
+          "placeholder": "$5,000 - $50,000",
+          "required": false
+        },
+        {
+          "step": 5,
+          "field": "signup_url",
+          "label": "Where should we send customers?",
+          "type": "url",
+          "placeholder": "https://yourwebsite.com/contact",
+          "required": true
+        },
+        {
+          "step": 6,
+          "field": "response_style",
+          "label": "Tone of voice for responses",
+          "type": "radio",
+          "options": ["Professional", "Friendly", "Casual"],
+          "default": "Friendly",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "mms-assistant-premium",
+      "name": "AI MMS Assistant - Premium (with Images)",
+      "description": "AI vision analyzes customer photos + sends branded images. Perfect for contractors, real estate, automotive.",
+      "category": "messaging",
+      "pricing": {
+        "setup_fee": 99,
+        "monthly_base": 79,
+        "per_mms_sent": 0.05,
+        "per_image_analyzed": 0.08,
+        "recommended_plan": "professional"
+      },
+      "configuration": {
+        "message_template": "Hi {{customer_name}}! Thanks for your interest in {{company_name}}! 🤖\n\n{{custom_message}}\n\nStart today:\n{{signup_url}}\n\nQuestions? Reply to this text!\n\n- {{company_name}} Team",
+        "default_image": "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80",
+        "features": [
+          "AI vision analyzes customer photos",
+          "Send branded images with quotes",
+          "Before/after photo sharing",
+          "Smart image-based responses",
+          "Material/condition identification",
+          "Project insights from photos",
+          "All SMS Assistant features included"
+        ],
+        "integrations": ["twilio", "openai-vision", "cloudinary"],
+        "workflows": [
+          {
+            "trigger": "mms.received",
+            "actions": [
+              "download_image",
+              "ai_vision_analyze",
+              "generate_contextual_reply",
+              "send_sms_or_mms",
+              "store_image_cloudinary",
+              "log_conversation"
+            ]
+          },
+          {
+            "trigger": "manual.send_branded_mms",
+            "actions": [
+              "get_branded_image",
+              "personalize_message",
+              "send_mms",
+              "log_activity"
+            ]
+          }
+        ]
+      },
+      "setup_wizard": [
+        {
+          "step": 1,
+          "field": "company_name",
+          "label": "What's your company name?",
+          "type": "text",
+          "required": true
+        },
+        {
+          "step": 2,
+          "field": "business_description",
+          "label": "Describe your business",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "step": 3,
+          "field": "image_types",
+          "label": "What kinds of images do customers send?",
+          "type": "multiselect",
+          "options": [
+            "Existing surfaces/countertops",
+            "Kitchen spaces",
+            "Bathroom spaces",
+            "Damage or problems",
+            "Properties/real estate",
+            "Vehicles/automotive",
+            "Before/after photos",
+            "Design inspiration"
+          ],
+          "required": true
+        },
+        {
+          "step": 4,
+          "field": "analysis_depth",
+          "label": "How detailed should image analysis be?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "basic",
+              "label": "Basic - Just acknowledge the image",
+              "price_modifier": 0
+            },
+            {
+              "value": "detailed",
+              "label": "Detailed - Analyze and provide insights",
+              "price_modifier": 10
+            },
+            {
+              "value": "expert",
+              "label": "Expert - Deep analysis with recommendations",
+              "price_modifier": 25
+            }
+          ],
+          "default": "detailed",
+          "required": true
+        },
+        {
+          "step": 5,
+          "field": "branded_images",
+          "label": "Upload branded images to send with quotes",
+          "type": "image_upload",
+          "multiple": true,
+          "max": 5,
+          "required": false,
+          "help_text": "We'll use these in MMS messages. Great for before/after, portfolio, or branded graphics."
+        },
+        {
+          "step": 6,
+          "field": "signup_url",
+          "label": "Where should we send customers?",
+          "type": "url",
+          "placeholder": "https://yourwebsite.com/quote",
+          "required": true
+        }
+      ]
+    },
+    {
+      "id": "demo-agent-mms-showcase",
+      "name": "Demo Agent - MMS Showcase",
+      "description": "Voice agent that demonstrates MMS capabilities during live calls. Perfect for sales demos.",
+      "category": "demo",
+      "pricing": {
+        "setup_fee": 0,
+        "monthly_base": 0,
+        "per_call": 0.15,
+        "per_mms": 0.05,
+        "note": "Included with Professional plan and above"
+      },
+      "configuration": {
+        "agent_type": "elevenlabs_voice",
+        "tools": [
+          {
+            "name": "send_signup_link",
+            "type": "client_tool",
+            "description": "Send MMS with image and signup link during the call",
+            "parameters": {
+              "phone_number": "string",
+              "customer_name": "string"
+            },
+            "webhook_handler": "/api/webhooks/elevenlabs/conversation-event",
+            "implementation": {
+              "service": "twilio",
+              "method": "sendMMSWithImage",
+              "message_template": "Hi {{customer_name}}! Thanks for your interest in VoiceFlow CRM! 🤖\n\nStart your FREE 14-day trial (no credit card needed):\nhttps://remodely.ai/signup\n\nQuestions? Reply to this text!\n\n- Remodelee AI Team",
+              "image_url": "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80",
+              "success_message": "MMS with signup link sent successfully"
+            }
+          }
+        ],
+        "prompt_template": "You are a CLOSER for {{company_name}}, showcasing VoiceFlow CRM.\n\n**YOU CAN SEND MMS IN REAL-TIME:**\nWhen the customer shows interest, you can ACTUALLY SEND THEM A TEXT MESSAGE WITH AN IMAGE using the send_signup_link tool.\n\n**OPENING:**\n\"Hi, is this {{customer_name}}? Perfect! I'm from {{company_name}}. You wanted to try VoiceFlow CRM, right? Let me tell you about it and send you the signup link with a visual - sound good?\"\n\n**WHEN THEY SHOW INTEREST:**\n\"Awesome! What's the best number to text you the signup link?\"\n[They give number]\n\"Perfect! Let me send that to you right now with a visual...\"\n[Use send_signup_link tool]\n\"Done! Just sent you an MMS with the VoiceFlow CRM signup link AND an image. Check your phone - you should see it now!\"\n\n**CLOSE:**\nAlways be closing. Get them to sign up.",
+        "voice_model": "eleven_flash_v2",
+        "max_duration": 300
+      }
+    }
+  ],
+  "pricing_calculator": {
+    "sms_assistant": {
+      "base_monthly": 39,
+      "included_sms": 100,
+      "overage_per_sms": 0.02,
+      "example_costs": {
+        "100_sms_month": 39,
+        "500_sms_month": 47,
+        "1000_sms_month": 57,
+        "2000_sms_month": 77
+      }
+    },
+    "mms_assistant": {
+      "base_monthly": 79,
+      "setup_fee_one_time": 99,
+      "included_mms_sent": 50,
+      "included_images_analyzed": 25,
+      "overage_per_mms_sent": 0.05,
+      "overage_per_image_analyzed": 0.08,
+      "example_costs": {
+        "basic_usage": {
+          "mms_sent": 50,
+          "images_analyzed": 25,
+          "total_monthly": 79,
+          "first_month_total": 178
+        },
+        "moderate_usage": {
+          "mms_sent": 200,
+          "images_analyzed": 100,
+          "overage_mms": 7.5,
+          "overage_analysis": 6.0,
+          "total_monthly": 92.5,
+          "first_month_total": 191.5
+        },
+        "heavy_usage": {
+          "mms_sent": 500,
+          "images_analyzed": 300,
+          "overage_mms": 22.5,
+          "overage_analysis": 22.0,
+          "total_monthly": 123.5,
+          "first_month_total": 222.5
+        }
+      }
+    }
+  },
+  "sales_pitch": {
+    "sms_assistant": {
+      "headline": "Never Miss a Text Again - AI Responds 24/7",
+      "pain_points": [
+        "Missing customer texts during work hours",
+        "Slow response times losing leads",
+        "Hiring someone just to answer texts",
+        "Inconsistent messaging to customers"
+      ],
+      "benefits": [
+        "Instant responses 24/7, even at 3 AM",
+        "Qualify leads automatically via text",
+        "Save $2,000+/month vs hiring staff",
+        "Consistent, professional responses",
+        "Works while you focus on real work"
+      ],
+      "roi_example": "Average contractor books 1 extra job/month from faster text responses = $5,000+ revenue vs $39/month cost = 128x ROI",
+      "target_customers": [
+        "Home service contractors (HVAC, plumbing, electrical)",
+        "Real estate agents",
+        "Automotive shops",
+        "Small business owners",
+        "Anyone who gets customer texts"
+      ]
+    },
+    "mms_assistant": {
+      "headline": "AI That Actually SEES Customer Photos & Responds Intelligently",
+      "pain_points": [
+        "Customers send photos, you're too busy to respond",
+        "No context when looking at project photos later",
+        "Manual photo organization nightmare",
+        "Can't send professional quotes with visuals via text"
+      ],
+      "benefits": [
+        "AI vision analyzes customer photos instantly",
+        "Intelligent responses based on what it sees",
+        "Send branded before/after photos with quotes",
+        "Auto-organize and store all project photos",
+        "Close deals faster with visual communication"
+      ],
+      "roi_example": "Book 2 extra jobs/month from professional MMS follow-ups with visuals = $10,000+ revenue vs $79-$123/month = 81-129x ROI",
+      "target_customers": [
+        "Contractors (countertops, flooring, roofing, siding)",
+        "Real estate agents (property photos)",
+        "Automotive (damage assessments, repairs)",
+        "Any visual/project-based business"
+      ],
+      "wow_factor": "Show them the demo - send an MMS during the call and watch their phone light up with a professional image. INSTANT buy-in."
+    }
+  },
+  "upsell_paths": {
+    "from_sms_to_mms": {
+      "trigger": "Customer asks 'Can you send pictures?'",
+      "pitch": "Absolutely! We have an MMS Assistant upgrade that can send branded images, analyze customer photos, and create visual quotes. It's $79/month and includes everything you have now PLUS image capabilities. Perfect for contractors. Want to add it?",
+      "conversion_rate_estimate": "35-40%"
+    },
+    "from_voice_only_to_sms": {
+      "trigger": "Customer has voice agent but no SMS",
+      "pitch": "Your voice agent is handling calls great! Did you know we can add 24/7 text responses for just $39/month? Your customers text you all the time, right? This would handle those automatically. Want me to add it?",
+      "conversion_rate_estimate": "55-60%"
+    },
+    "bundle_discount": {
+      "offer": "Voice Agent + SMS + MMS Bundle",
+      "regular_price": 617,
+      "bundle_price": 499,
+      "savings": 118,
+      "pitch": "Get everything - voice, SMS, and MMS - for $499/month instead of $617. That's $118/month savings for the complete communication suite."
+    }
+  }
+}

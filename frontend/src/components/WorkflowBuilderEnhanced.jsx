@@ -626,7 +626,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
     setEdges(newEdges);
   };
 
-  const saveWorkflow = async () => {
+  const saveWorkflow = async (shouldActivate = false) => {
     if (nodes.length === 0) {
       alert('Please add at least one step to your workflow');
       return;
@@ -641,21 +641,43 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
         type: 'custom',
         description: `Custom workflow with ${nodes.length} steps`,
         n8nWorkflow,
-        enabled: false
+        enabled: shouldActivate
       };
 
+      let savedWorkflow;
       if (workflowId) {
-        await api.put(`/workflows/${workflowId}`, workflowData);
-        alert('Workflow updated successfully!');
+        const response = await api.put(`/workflows/${workflowId}`, workflowData);
+        savedWorkflow = response.data;
+        alert(`✅ Workflow updated successfully!${shouldActivate ? '\n🚀 Workflow is now active!' : ''}`);
       } else {
-        await api.post('/workflows', workflowData);
-        alert('Workflow saved successfully!');
+        const response = await api.post('/workflows', workflowData);
+        savedWorkflow = response.data;
+
+        if (shouldActivate) {
+          // Activate the workflow immediately
+          await api.post(`/workflows/${savedWorkflow._id}/activate`);
+          alert('✅ Workflow created and activated successfully!\n🚀 Your workflow is now running!');
+        } else {
+          const activate = confirm('✅ Workflow created successfully!\n\nWould you like to activate it now?');
+          if (activate) {
+            await api.post(`/workflows/${savedWorkflow._id}/activate`);
+            alert('🚀 Workflow activated! It is now running.');
+          }
+        }
       }
 
       if (onSave) onSave();
     } catch (error) {
       console.error('Error saving workflow:', error);
-      alert('Failed to save workflow: ' + (error.response?.data?.message || error.message));
+      const errorMsg = error.response?.data?.message || error.message;
+      if (error.response?.status === 403) {
+        alert('❌ Permission denied. Please make sure you are logged in.\n\nError: ' + errorMsg);
+      } else if (error.response?.status === 401) {
+        alert('❌ Your session has expired. Please log in again.');
+        window.location.href = '/login';
+      } else {
+        alert('❌ Failed to save workflow:\n' + errorMsg);
+      }
     } finally {
       setSaving(false);
     }
@@ -773,12 +795,20 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
             <span className="hidden sm:inline">Add Step</span>
           </button>
           <button
-            onClick={saveWorkflow}
+            onClick={() => saveWorkflow(false)}
             disabled={saving || nodes.length === 0}
             className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm font-medium"
           >
             <Save className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save'}
+          </button>
+          <button
+            onClick={() => saveWorkflow(true)}
+            disabled={saving || nodes.length === 0}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-sm font-medium"
+          >
+            <Play className="w-4 h-4" />
+            <span className="hidden sm:inline">{saving ? 'Saving...' : 'Save & Activate'}</span>
           </button>
         </div>
       </div>

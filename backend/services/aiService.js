@@ -380,6 +380,180 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
     const result = await model.generateContent(prompt);
     return result.response.text();
   }
+
+  /**
+   * Analyze image with AI vision
+   * @param {string} imageUrl - URL of the image to analyze
+   * @param {string} prompt - Text prompt describing what to analyze
+   * @param {object} options - Optional parameters
+   * @returns {Promise<string>} - AI analysis of the image
+   */
+  async analyzeImage(imageUrl, prompt, options = {}) {
+    const maxTokens = options.maxTokens || 500;
+    const temperature = options.temperature || 0.7;
+
+    try {
+      switch (this.activeProvider) {
+        case 'openai':
+          return await this.analyzeImageOpenAI(imageUrl, prompt, maxTokens, temperature);
+
+        case 'anthropic':
+          return await this.analyzeImageAnthropic(imageUrl, prompt, maxTokens, temperature);
+
+        case 'google':
+          return await this.analyzeImageGoogle(imageUrl, prompt, maxTokens, temperature);
+
+        default:
+          throw new Error('No AI provider available for image analysis');
+      }
+    } catch (error) {
+      console.error('AI Vision Error:', error.message);
+      throw new Error(`Image analysis failed: ${error.message}`);
+    }
+  }
+
+  async analyzeImageOpenAI(imageUrl, prompt, maxTokens, temperature) {
+    // If it's a Twilio URL, we need to fetch and convert to base64
+    if (imageUrl.includes('api.twilio.com')) {
+      const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
+      const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+
+      // Fetch with Twilio basic auth
+      const authHeader = 'Basic ' + Buffer.from(`${twilioAccountSid}:${twilioAuthToken}`).toString('base64');
+      const imageResponse = await fetch(imageUrl, {
+        headers: { 'Authorization': authHeader }
+      });
+
+      const arrayBuffer = await imageResponse.arrayBuffer();
+      const imageBuffer = Buffer.from(arrayBuffer);
+      const base64Image = imageBuffer.toString('base64');
+
+      // Use base64 data URL
+      const dataUrl = `data:image/jpeg;base64,${base64Image}`;
+
+      const response = await this.providers.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              { type: 'text', text: prompt },
+              { type: 'image_url', image_url: { url: dataUrl } }
+            ]
+          }
+        ],
+        max_tokens: maxTokens,
+        temperature: temperature
+      });
+      return response.choices[0].message.content;
+    }
+
+    // For public URLs, use directly
+    const response = await this.providers.openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: prompt },
+            { type: 'image_url', image_url: { url: imageUrl } }
+          ]
+        }
+      ],
+      max_tokens: maxTokens,
+      temperature: temperature
+    });
+    return response.choices[0].message.content;
+  }
+
+  async analyzeImageAnthropic(imageUrl, prompt, maxTokens, temperature) {
+    // Fetch the image and convert to base64 for Anthropic
+    let imageResponse;
+    if (imageUrl.includes('api.twilio.com')) {
+      const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
+      const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+      const authHeader = 'Basic ' + Buffer.from(`${twilioAccountSid}:${twilioAuthToken}`).toString('base64');
+      imageResponse = await fetch(imageUrl, {
+        headers: { 'Authorization': authHeader }
+      });
+    } else {
+      imageResponse = await fetch(imageUrl);
+    }
+
+    const arrayBuffer = await imageResponse.arrayBuffer();
+    const imageBuffer = Buffer.from(arrayBuffer);
+    const base64Image = imageBuffer.toString('base64');
+
+    // Detect media type from URL or default to jpeg
+    const mediaType = imageUrl.match(/\.(png|jpg|jpeg|gif|webp)$/i)?.[1] || 'jpeg';
+    const mediaTypeMap = {
+      'png': 'image/png',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'gif': 'image/gif',
+      'webp': 'image/webp'
+    };
+
+    const response = await this.providers.anthropic.messages.create({
+      model: 'claude-3-5-haiku-20241022',
+      max_tokens: maxTokens,
+      temperature: temperature,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: {
+                type: 'base64',
+                media_type: mediaTypeMap[mediaType.toLowerCase()] || 'image/jpeg',
+                data: base64Image
+              }
+            },
+            { type: 'text', text: prompt }
+          ]
+        }
+      ]
+    });
+    return response.content[0].text;
+  }
+
+  async analyzeImageGoogle(imageUrl, prompt, maxTokens, temperature) {
+    // Fetch the image for Google
+    let imageResponse;
+    if (imageUrl.includes('api.twilio.com')) {
+      const twilioAccountSid = process.env.TWILIO_ACCOUNT_SID;
+      const twilioAuthToken = process.env.TWILIO_AUTH_TOKEN;
+      const authHeader = 'Basic ' + Buffer.from(`${twilioAccountSid}:${twilioAuthToken}`).toString('base64');
+      imageResponse = await fetch(imageUrl, {
+        headers: { 'Authorization': authHeader }
+      });
+    } else {
+      imageResponse = await fetch(imageUrl);
+    }
+
+    const arrayBuffer = await imageResponse.arrayBuffer();
+    const imageBuffer = Buffer.from(arrayBuffer);
+
+    const model = this.providers.google.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      generationConfig: {
+        maxOutputTokens: maxTokens,
+        temperature: temperature
+      }
+    });
+
+    const result = await model.generateContent([
+      prompt,
+      {
+        inlineData: {
+          data: imageBuffer.toString('base64'),
+          mimeType: 'image/jpeg'
+        }
+      }
+    ]);
+    return result.response.text();
+  }
 }
 
 export default AIService;

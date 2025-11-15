@@ -185,8 +185,13 @@ class TwilioService {
 
     // Connect to ElevenLabs Conversational AI via WebSocket
     const connect = response.connect();
+
+    // Include webhook URL for client tool callbacks (SMS, email, etc.)
+    const webhookUrl = process.env.WEBHOOK_URL || process.env.NGROK_URL;
+    const conversationEventUrl = `${webhookUrl}/api/webhooks/elevenlabs/conversation-event`;
+
     connect.stream({
-      url: `wss://api.elevenlabs.io/v1/convai/conversation?agent_id=${elevenLabsAgentId}`,
+      url: `wss://api.elevenlabs.io/v1/convai/conversation?agent_id=${elevenLabsAgentId}&callback_url=${encodeURIComponent(conversationEventUrl)}`,
       parameters: {
         api_key: process.env.ELEVENLABS_API_KEY
       }
@@ -277,6 +282,42 @@ class TwilioService {
       console.error('Error sending signup link:', error);
       throw new Error('Failed to send signup link: ' + error.message);
     }
+  }
+
+  // Send MMS message with media attachments
+  async sendMMS(to, body, mediaUrls = [], from = null) {
+    try {
+      if (!this.client) {
+        throw new Error('Twilio client not initialized');
+      }
+
+      // Use messaging service for A2P compliance
+      const messagingServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID || 'MGa86452ccc15de86eee32177817a09d90';
+
+      const messageParams = {
+        body: body,
+        messagingServiceSid: messagingServiceSid,
+        to: to
+      };
+
+      // Add media URLs if provided
+      if (mediaUrls && mediaUrls.length > 0) {
+        messageParams.mediaUrl = Array.isArray(mediaUrls) ? mediaUrls : [mediaUrls];
+      }
+
+      const message = await this.client.messages.create(messageParams);
+
+      console.log(`📱 MMS sent to ${to}: ${message.sid} (${mediaUrls.length} media)`);
+      return message;
+    } catch (error) {
+      console.error('Error sending MMS:', error);
+      throw new Error('Failed to send MMS: ' + error.message);
+    }
+  }
+
+  // Send MMS with single image
+  async sendMMSWithImage(to, body, imageUrl, from = null) {
+    return await this.sendMMS(to, body, [imageUrl], from);
   }
 }
 

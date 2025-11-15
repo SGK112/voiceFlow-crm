@@ -236,3 +236,280 @@ export const handleElevenLabsOutbound = async (req, res) => {
     res.send(response.toString());
   }
 };
+
+// Handle incoming SMS/MMS messages with AI
+export const handleTwilioSms = async (req, res) => {
+  try {
+    const { From, To, Body, MessageSid, NumMedia } = req.body;
+    const numMedia = parseInt(NumMedia) || 0;
+
+    console.log(`📱 Incoming ${numMedia > 0 ? 'MMS' : 'SMS'} from ${From} to ${To}`);
+    console.log(`   Message: "${Body}"`);
+    console.log(`   SID: ${MessageSid}`);
+
+    // Log media attachments if present
+    if (numMedia > 0) {
+      console.log(`   📎 Media attachments: ${numMedia}`);
+      for (let i = 0; i < numMedia; i++) {
+        const mediaUrl = req.body[`MediaUrl${i}`];
+        const mediaType = req.body[`MediaContentType${i}`];
+        console.log(`      ${i + 1}. ${mediaType}: ${mediaUrl}`);
+      }
+    }
+
+    // Parse the message for required responses (STOP/START)
+    const lowerBody = Body.toLowerCase().trim();
+
+    const MessagingResponse = twilio.twiml.MessagingResponse;
+    const response = new MessagingResponse();
+
+    // Handle required STOP/START (compliance)
+    if (lowerBody.includes('stop') || lowerBody.includes('unsubscribe')) {
+      console.log('   User requested to stop messages');
+      response.message('You have been unsubscribed. Reply START to resubscribe.');
+      res.type('text/xml');
+      res.send(response.toString());
+      return;
+    }
+    else if (lowerBody.includes('start') || lowerBody.includes('subscribe')) {
+      console.log('   User requested to start messages');
+      response.message('Welcome back! You will now receive messages from VoiceFlow CRM.');
+      res.type('text/xml');
+      res.send(response.toString());
+      return;
+    }
+
+    // Check if customer wants a call
+    const wantsCall = lowerBody.match(/call me|call back|speak to someone|talk to|voice|phone call|schedule.*call|get.*call|have.*call/i);
+
+    if (wantsCall) {
+      console.log('   🎯 Customer requested a call - initiating voice demo');
+
+      // Trigger ElevenLabs voice call
+      try {
+        const demoAgentId = 'agent_9701k9xptd0kfr383djx5zk7300x';
+        const agentPhoneNumberId = process.env.ELEVENLABS_PHONE_NUMBER_ID;
+        const webhookUrl = process.env.WEBHOOK_URL || 'https://f66af302a875.ngrok-free.app';
+
+        if (!agentPhoneNumberId) {
+          console.log('   ⚠️ No ElevenLabs phone number configured');
+          response.message('I\'d love to call you! For now, you can chat with our AI agent at remodely.ai or text me questions here.');
+          res.type('text/xml');
+          res.send(response.toString());
+          return;
+        }
+
+        // Extract name from previous messages if available (fallback to "there")
+        const customerName = 'there'; // Could be enhanced to store customer name
+
+        console.log(`📞 Initiating ElevenLabs voice call to ${From}`);
+
+        const dynamicVariables = {
+          customer_name: customerName,
+          lead_phone: From,
+          company_name: 'Remodelee AI',
+          trigger_source: 'sms_request'
+        };
+
+        // Call ElevenLabs API to initiate outbound call
+        const elevenLabsApiKey = process.env.ELEVENLABS_API_KEY;
+        const callResponse = await fetch('https://api.elevenlabs.io/v1/convai/conversation/start_session', {
+          method: 'POST',
+          headers: {
+            'xi-api-key': elevenLabsApiKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            agent_id: demoAgentId,
+            agent_phone_number_id: agentPhoneNumberId,
+            customer_phone_number: From,
+            conversational_config_override: {
+              agent: {
+                prompt: {
+                  prompt: `You are a friendly AI assistant from Remodelee AI calling ${customerName}. They just texted asking for a call about VoiceFlow CRM.
+
+**YOUR GOAL:** Have a natural conversation about how VoiceFlow CRM can help their business.
+
+**OPENING:**
+"Hi ${customerName}! This is the AI assistant from Remodelee AI. You just texted asking for a call - I'm here to tell you about VoiceFlow CRM! Is now a good time?"
+
+**KEY POINTS:**
+- VoiceFlow CRM = AI voice agents for contractors that never miss calls
+- 24/7 coverage, handles appointment booking & lead qualification
+- FREE 14-day trial (no credit card needed)
+- $299/month after trial - pays for itself with 1 extra job
+
+**CONVERSATIONAL FLOW:**
+1. Confirm it's a good time to talk
+2. Ask what brought them to text us
+3. Explain how VoiceFlow CRM can help based on their needs
+4. Offer to send signup link via MMS with image (use send_signup_link tool)
+5. Answer questions naturally
+
+**IF THEY ASK FOR THE LINK:**
+Get their number and use the send_signup_link tool to send MMS with professional image.
+
+Be warm, natural, and helpful. Keep it under 2 minutes unless they have questions.`
+                }
+              }
+            },
+            webhook_url: `${webhookUrl}/api/webhooks/elevenlabs/conversation-event`
+          })
+        });
+
+        if (callResponse.ok) {
+          const callData = await callResponse.json();
+          console.log(`✅ Voice call initiated: ${callData.conversation_id || 'ID pending'}`);
+
+          response.message('Perfect! My AI voice agent is calling you right now to discuss VoiceFlow CRM. Answer and chat! 📞');
+        } else {
+          const errorData = await callResponse.text();
+          console.error(`❌ Failed to initiate call: ${errorData}`);
+          response.message('I\'d love to call you! Text "DEMO" and I\'ll get you connected, or visit remodely.ai/signup to start your free trial!');
+        }
+
+        res.type('text/xml');
+        res.send(response.toString());
+        return;
+
+      } catch (callError) {
+        console.error('❌ Error initiating voice call:', callError);
+        response.message('I\'d love to call you! For now, try our AI chat at remodely.ai or text me questions here.');
+        res.type('text/xml');
+        res.send(response.toString());
+        return;
+      }
+    }
+
+    // Use AI for all other responses
+    console.log('   Generating AI response...');
+
+    const { default: AIService } = await import('../services/aiService.js');
+    const aiService = new AIService();
+
+    let aiMessage;
+
+    // If MMS with images, analyze the image
+    if (numMedia > 0) {
+      const imageUrl = req.body[`MediaUrl0`];
+      const mediaType = req.body[`MediaContentType0`];
+
+      // Check if it's an image
+      if (mediaType && mediaType.startsWith('image/')) {
+        console.log('   Analyzing image with AI vision...');
+
+        const visionPrompt = `You are analyzing an image sent to VoiceFlow CRM (AI voice agent platform for contractors).
+
+The customer sent this image along with the message: "${Body || '(no text)'}"
+
+Analyze the image and provide a helpful, brief response (under 160 characters) that:
+1. Acknowledges what you see in the image
+2. Relates it to VoiceFlow CRM services if relevant
+3. Offers helpful next steps or directs them to signup
+
+Keep it conversational, text-friendly, and brief.`;
+
+        try {
+          aiMessage = await aiService.analyzeImage(imageUrl, visionPrompt, {
+            temperature: 0.7,
+            maxTokens: 200
+          });
+
+          console.log(`   AI Vision Response: "${aiMessage}"`);
+        } catch (visionError) {
+          console.error('   Vision analysis failed:', visionError.message);
+          aiMessage = `Thanks for the image! I'd love to help. VoiceFlow CRM provides AI voice agents for contractors. Try free: remodely.ai/signup`;
+        }
+      } else {
+        // Non-image media (video, audio, etc.)
+        aiMessage = `Thanks for sharing! For best results, text or call us. Learn more about VoiceFlow CRM: remodely.ai/signup`;
+      }
+    } else {
+      // Regular text-only SMS
+      const systemPrompt = `You are a helpful SMS assistant for VoiceFlow CRM, an AI voice agent platform for contractors.
+
+Your job is to respond to customer text messages professionally and helpfully.
+
+Key info about VoiceFlow CRM:
+- AI voice agents that answer calls 24/7 for contractors
+- FREE 14-day trial (no credit card required)
+- $299/month after trial
+- Signup at: remodely.ai/signup
+- Handles: appointment booking, lead qualification, missed calls
+- **IMPORTANT:** You can trigger a LIVE voice call! If customer wants to talk, tell them to text "call me"
+
+Response rules:
+- Keep responses SHORT (under 160 characters when possible)
+- Be friendly and conversational
+- If they ask about features, briefly explain and point to signup
+- If they have questions, answer helpfully
+- If they seem interested, suggest either:
+  1. Signup link (remodely.ai/signup)
+  2. OR offer them a voice call (say "Want me to call you? Just text 'call me'")
+- Always stay in character as VoiceFlow CRM assistant
+- Use text-friendly language (contractions, casual tone)
+- Don't use emojis unless the customer uses them first
+- If conversation is getting long, offer to call them for a voice demo
+
+Examples:
+- "What's this about?" → "VoiceFlow CRM helps contractors never miss a call! AI answers 24/7, books appointments. Want me to call you?"
+- "How much?" → "$299/mo after a FREE 14-day trial (no card needed). Want a quick call to see how it works?"
+- "Tell me more" → "AI voice agent handles your calls when you're busy. Books appointments, qualifies leads. I can call you right now to explain!"
+- "Sounds interesting" → "Awesome! Want to try it free at remodely.ai/signup OR I can call you right now to walk you through it?"
+
+User message: ${Body}`;
+
+      const aiResponse = await aiService.chat(systemPrompt, {
+        temperature: 0.7,
+        maxTokens: 150
+      });
+
+      aiMessage = aiResponse.trim();
+      console.log(`   AI Response: "${aiMessage}"`);
+    }
+
+    response.message(aiMessage);
+
+    res.type('text/xml');
+    res.send(response.toString());
+
+    console.log('✅ AI SMS response sent');
+
+  } catch (error) {
+    console.error('❌ Error handling SMS:', error);
+
+    const MessagingResponse = twilio.twiml.MessagingResponse;
+    const response = new MessagingResponse();
+    response.message('Thanks for your message! Visit remodely.ai/signup to try VoiceFlow CRM free for 14 days!');
+
+    res.type('text/xml');
+    res.send(response.toString());
+  }
+};
+
+// Handle SMS fallback
+export const handleTwilioSmsFallback = async (req, res) => {
+  try {
+    const { From, To, ErrorCode } = req.body;
+
+    console.log(`❌ SMS Fallback triggered`);
+    console.log(`   From: ${From}, To: ${To}`);
+    console.log(`   Error Code: ${ErrorCode}`);
+
+    const MessagingResponse = twilio.twiml.MessagingResponse;
+    const response = new MessagingResponse();
+    response.message('We apologize for the inconvenience. Please contact support@remodely.ai for assistance.');
+
+    res.type('text/xml');
+    res.send(response.toString());
+
+  } catch (error) {
+    console.error('❌ Error in SMS fallback:', error);
+
+    const MessagingResponse = twilio.twiml.MessagingResponse;
+    const response = new MessagingResponse();
+
+    res.type('text/xml');
+    res.send(response.toString());
+  }
+};

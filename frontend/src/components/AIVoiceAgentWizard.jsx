@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { X, Wand2, Mic, Phone, Bot, ChevronRight, Sparkles, Check, Search, Filter, Play, Sliders, Upload, MessageSquare, Brain, Book, Zap } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { X, Wand2, Mic, Phone, Bot, ChevronRight, Sparkles, Check, Search, Filter, Play, Sliders, Upload, MessageSquare, Brain, Book, Zap, Star, Trash2, Copy, RefreshCw } from 'lucide-react';
 import api from '../services/api';
 
 const AGENT_TEMPLATES = [
@@ -272,7 +272,42 @@ const VOICE_MODELS = [
   { id: 'eleven_monolingual_v1', name: 'Monolingual v1', description: 'High quality English only' },
 ];
 
+const SUPPORTED_LANGUAGES = [
+  { code: 'en', name: 'English', flag: '🇺🇸', nativeName: 'English' },
+  { code: 'es', name: 'Spanish', flag: '🇪🇸', nativeName: 'Español' },
+  { code: 'fr', name: 'French', flag: '🇫🇷', nativeName: 'Français' },
+  { code: 'de', name: 'German', flag: '🇩🇪', nativeName: 'Deutsch' },
+  { code: 'it', name: 'Italian', flag: '🇮🇹', nativeName: 'Italiano' },
+  { code: 'pt', name: 'Portuguese', flag: '🇵🇹', nativeName: 'Português' },
+  { code: 'pl', name: 'Polish', flag: '🇵🇱', nativeName: 'Polski' },
+  { code: 'nl', name: 'Dutch', flag: '🇳🇱', nativeName: 'Nederlands' },
+  { code: 'zh', name: 'Chinese', flag: '🇨🇳', nativeName: '中文' },
+  { code: 'ja', name: 'Japanese', flag: '🇯🇵', nativeName: '日本語' },
+  { code: 'ko', name: 'Korean', flag: '🇰🇷', nativeName: '한국어' },
+  { code: 'hi', name: 'Hindi', flag: '🇮🇳', nativeName: 'हिन्दी' },
+  { code: 'ar', name: 'Arabic', flag: '🇸🇦', nativeName: 'العربية' },
+  { code: 'ru', name: 'Russian', flag: '🇷🇺', nativeName: 'Русский' },
+  { code: 'tr', name: 'Turkish', flag: '🇹🇷', nativeName: 'Türkçe' },
+  { code: 'sv', name: 'Swedish', flag: '🇸🇪', nativeName: 'Svenska' },
+  { code: 'da', name: 'Danish', flag: '🇩🇰', nativeName: 'Dansk' },
+  { code: 'fi', name: 'Finnish', flag: '🇫🇮', nativeName: 'Suomi' },
+  { code: 'no', name: 'Norwegian', flag: '🇳🇴', nativeName: 'Norsk' },
+  { code: 'cs', name: 'Czech', flag: '🇨🇿', nativeName: 'Čeština' },
+  { code: 'ro', name: 'Romanian', flag: '🇷🇴', nativeName: 'Română' },
+  { code: 'uk', name: 'Ukrainian', flag: '🇺🇦', nativeName: 'Українська' },
+  { code: 'el', name: 'Greek', flag: '🇬🇷', nativeName: 'Ελληνικά' },
+  { code: 'bg', name: 'Bulgarian', flag: '🇧🇬', nativeName: 'Български' },
+  { code: 'hr', name: 'Croatian', flag: '🇭🇷', nativeName: 'Hrvatski' },
+  { code: 'sk', name: 'Slovak', flag: '🇸🇰', nativeName: 'Slovenčina' },
+  { code: 'ta', name: 'Tamil', flag: '🇮🇳', nativeName: 'தமிழ்' },
+  { code: 'id', name: 'Indonesian', flag: '🇮🇩', nativeName: 'Bahasa Indonesia' },
+  { code: 'ms', name: 'Malay', flag: '🇲🇾', nativeName: 'Bahasa Melayu' },
+  { code: 'vi', name: 'Vietnamese', flag: '🇻🇳', nativeName: 'Tiếng Việt' },
+];
+
 export default function AIVoiceAgentWizard({ onClose, onCreate }) {
+  const fileInputRef = useRef(null);
+
   const [step, setStep] = useState(1);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -281,6 +316,9 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
   const [selectedVoice, setSelectedVoice] = useState(ELEVENLABS_VOICES[0]);
   const [customPrompt, setCustomPrompt] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Voice Source Selection
+  const [voiceSource, setVoiceSource] = useState('preset'); // 'preset', 'clone', 'design', 'cloned'
 
   // Voice filtering and search
   const [voiceSearch, setVoiceSearch] = useState('');
@@ -296,6 +334,27 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
     useSpeakerBoost: true,
     model: 'eleven_turbo_v2_5'
   });
+
+  // Language Settings
+  const [enableLanguageDetection, setEnableLanguageDetection] = useState(true);
+  const [primaryLanguage, setPrimaryLanguage] = useState('en');
+  const [supportedLanguages, setSupportedLanguages] = useState(['en']);
+
+  // Voice Cloning
+  const [cloneName, setCloneName] = useState('');
+  const [cloneDescription, setCloneDescription] = useState('');
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [cloneType, setCloneType] = useState('instant'); // 'instant' or 'professional'
+  const [cloningInProgress, setCloningInProgress] = useState(false);
+  const [clonedVoices, setClonedVoices] = useState([]);
+
+  // Voice Design
+  const [designGender, setDesignGender] = useState('female');
+  const [designAge, setDesignAge] = useState('young');
+  const [designAccent, setDesignAccent] = useState('american');
+  const [designDescription, setDesignDescription] = useState('');
+  const [generatedVoices, setGeneratedVoices] = useState([]);
+  const [generatingVoice, setGeneratingVoice] = useState(false);
 
   // Knowledge Base & Training
   const [knowledgeBase, setKnowledgeBase] = useState('');
@@ -406,6 +465,11 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
         voiceSettings: voiceSettings,
         knowledgeBase: knowledgeBase,
         trainingExamples: trainingExamples,
+        languageSettings: {
+          enableLanguageDetection,
+          primaryLanguage,
+          supportedLanguages
+        },
         enabled: false,
         type: 'voice',
       };
@@ -427,6 +491,120 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
   const handlePreviewVoice = (voice) => {
     // TODO: Implement voice preview using ElevenLabs API
     alert(`Preview for ${voice.name} - Coming soon!`);
+  };
+
+  // Voice Cloning Handlers
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files);
+    setUploadedFiles([...uploadedFiles, ...files]);
+  };
+
+  const removeFile = (index) => {
+    setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
+  };
+
+  const handleCloneVoice = async () => {
+    if (!cloneName || uploadedFiles.length === 0) {
+      alert('Please provide a name and at least one audio file');
+      return;
+    }
+
+    setCloningInProgress(true);
+    try {
+      const formData = new FormData();
+      formData.append('name', cloneName);
+      formData.append('description', cloneDescription);
+      formData.append('cloneType', cloneType);
+
+      uploadedFiles.forEach((file, index) => {
+        formData.append('files', file);
+      });
+
+      const response = await api.post('/elevenlabs/clone-voice', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      const newClonedVoice = response.data.voice;
+      setClonedVoices([...clonedVoices, newClonedVoice]);
+      setSelectedVoice(newClonedVoice);
+
+      // Reset form
+      setCloneName('');
+      setCloneDescription('');
+      setUploadedFiles([]);
+
+      alert(`Voice "${cloneName}" cloned successfully!`);
+      setVoiceSource('cloned'); // Switch to cloned voices tab
+    } catch (error) {
+      console.error('Error cloning voice:', error);
+      alert('Failed to clone voice. Please try again.');
+    } finally {
+      setCloningInProgress(false);
+    }
+  };
+
+  const handleDeleteClonedVoice = async (voiceId) => {
+    if (!confirm('Are you sure you want to delete this cloned voice?')) return;
+
+    try {
+      await api.delete(`/elevenlabs/voice/${voiceId}`);
+      setClonedVoices(clonedVoices.filter(v => v.id !== voiceId));
+      if (selectedVoice?.id === voiceId) {
+        setSelectedVoice(ELEVENLABS_VOICES[0]);
+      }
+      alert('Cloned voice deleted successfully');
+    } catch (error) {
+      console.error('Error deleting voice:', error);
+      alert('Failed to delete voice');
+    }
+  };
+
+  // Voice Design Handlers
+  const handleGenerateVoice = async () => {
+    if (!designDescription && designDescription.trim().length < 10) {
+      alert('Please provide a detailed description (at least 10 characters)');
+      return;
+    }
+
+    setGeneratingVoice(true);
+    try {
+      const response = await api.post('/elevenlabs/generate-voice', {
+        description: designDescription,
+        gender: designGender,
+        age: designAge,
+        accent: designAccent
+      });
+
+      const generatedVoice = response.data.voice;
+      setGeneratedVoices([...generatedVoices, generatedVoice]);
+      setSelectedVoice(generatedVoice);
+
+      alert('Voice generated successfully! Preview it below.');
+    } catch (error) {
+      console.error('Error generating voice:', error);
+      alert('Failed to generate voice. Please try again.');
+    } finally {
+      setGeneratingVoice(false);
+    }
+  };
+
+  const loadClonedVoices = async () => {
+    try {
+      const response = await api.get('/elevenlabs/voices');
+      setClonedVoices(response.data.voices || []);
+    } catch (error) {
+      console.error('Error loading cloned voices:', error);
+    }
+  };
+
+  const toggleLanguage = (langCode) => {
+    if (langCode === 'en') return; // English is always required
+
+    if (supportedLanguages.includes(langCode)) {
+      setSupportedLanguages(supportedLanguages.filter(code => code !== langCode));
+    } else {
+      setSupportedLanguages([...supportedLanguages, langCode]);
+    }
   };
 
   return (
@@ -537,109 +715,508 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
             </div>
           )}
 
-          {/* Step 2: Configure Voice (same as before but condensed) */}
+          {/* Step 2: Configure Voice */}
           {step === 2 && (
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Configure Voice</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">
-                Choose from 40+ ElevenLabs voices and customize settings
+                Choose from preset voices, clone your own, or design a custom voice
               </p>
 
-              {/* Voice Search and Filters */}
-              <div className="mb-4 space-y-3">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    type="text"
-                    placeholder="Search voices by name, tone, or accent..."
-                    value={voiceSearch}
-                    onChange={(e) => setVoiceSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm"
-                  />
-                </div>
-
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                  {VOICE_CATEGORIES.map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedVoiceCategory(category)}
-                      className={`px-3 py-1 rounded-full text-xs whitespace-nowrap transition-colors ${
-                        selectedVoiceCategory === category
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setSelectedGender('All')}
-                    className={`px-4 py-1.5 rounded-lg text-xs ${
-                      selectedGender === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                    }`}
-                  >
-                    All Genders
-                  </button>
-                  <button
-                    onClick={() => setSelectedGender('Male')}
-                    className={`px-4 py-1.5 rounded-lg text-xs ${
-                      selectedGender === 'Male' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                    }`}
-                  >
-                    Male
-                  </button>
-                  <button
-                    onClick={() => setSelectedGender('Female')}
-                    className={`px-4 py-1.5 rounded-lg text-xs ${
-                      selectedGender === 'Female' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                    }`}
-                  >
-                    Female
-                  </button>
-                </div>
+              {/* Voice Source Tabs */}
+              <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-700">
+                <button
+                  onClick={() => setVoiceSource('preset')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
+                    voiceSource === 'preset'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Star className="w-4 h-4" />
+                    Preset Voices
+                  </div>
+                </button>
+                <button
+                  onClick={() => setVoiceSource('clone')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
+                    voiceSource === 'clone'
+                      ? 'border-purple-600 text-purple-600'
+                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Copy className="w-4 h-4" />
+                    Clone Voice
+                  </div>
+                </button>
+                <button
+                  onClick={() => setVoiceSource('design')}
+                  className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
+                    voiceSource === 'design'
+                      ? 'border-green-600 text-green-600'
+                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Wand2 className="w-4 h-4" />
+                    Voice Design
+                  </div>
+                </button>
+                <button
+                  onClick={() => { setVoiceSource('cloned'); loadClonedVoices(); }}
+                  className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
+                    voiceSource === 'cloned'
+                      ? 'border-orange-600 text-orange-600'
+                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Mic className="w-4 h-4" />
+                    My Voices ({clonedVoices.length})
+                  </div>
+                </button>
               </div>
 
-              {/* Voice Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6 max-h-96 overflow-y-auto pr-2">
-                {filteredVoices.map((voice) => (
-                  <button
-                    key={voice.id}
-                    onClick={() => setSelectedVoice(voice)}
-                    className={`p-3 rounded-lg border-2 text-left transition-all ${
-                      selectedVoice?.id === voice.id
-                        ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-blue-400'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                        <span className="text-white font-bold text-sm">{voice.name[0]}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{voice.name}</h4>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handlePreviewVoice(voice);
-                            }}
-                            className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded"
-                          >
-                            <Play className="w-3 h-3 text-blue-600" />
-                          </button>
+              {/* Preset Voices Tab */}
+              {voiceSource === 'preset' && (
+                <>
+                  {/* Voice Search and Filters */}
+                  <div className="mb-4 space-y-3">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <input
+                        type="text"
+                        placeholder="Search voices by name, tone, or accent..."
+                        value={voiceSearch}
+                        onChange={(e) => setVoiceSearch(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm"
+                      />
+                    </div>
+
+                    <div className="flex gap-2 overflow-x-auto pb-2">
+                      {VOICE_CATEGORIES.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => setSelectedVoiceCategory(category)}
+                          className={`px-3 py-1 rounded-full text-xs whitespace-nowrap transition-colors ${
+                            selectedVoiceCategory === category
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          }`}
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setSelectedGender('All')}
+                        className={`px-4 py-1.5 rounded-lg text-xs ${
+                          selectedGender === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        All Genders
+                      </button>
+                      <button
+                        onClick={() => setSelectedGender('Male')}
+                        className={`px-4 py-1.5 rounded-lg text-xs ${
+                          selectedGender === 'Male' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        Male
+                      </button>
+                      <button
+                        onClick={() => setSelectedGender('Female')}
+                        className={`px-4 py-1.5 rounded-lg text-xs ${
+                          selectedGender === 'Female' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        Female
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Voice Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6 max-h-96 overflow-y-auto pr-2">
+                    {filteredVoices.map((voice) => (
+                      <button
+                        key={voice.id}
+                        onClick={() => setSelectedVoice(voice)}
+                        className={`p-3 rounded-lg border-2 text-left transition-all ${
+                          selectedVoice?.id === voice.id
+                            ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-blue-400'
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
+                            <span className="text-white font-bold text-sm">{voice.name[0]}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between mb-1">
+                              <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{voice.name}</h4>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handlePreviewVoice(voice);
+                                }}
+                                className="p-1 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded"
+                              >
+                                <Play className="w-3 h-3 text-blue-600" />
+                              </button>
+                            </div>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                              {voice.gender} • {voice.accent} • {voice.age}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-500 line-clamp-1">{voice.tone}</p>
+                          </div>
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
-                          {voice.gender} • {voice.accent} • {voice.age}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-500 line-clamp-1">{voice.tone}</p>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* Voice Cloning Tab */}
+              {voiceSource === 'clone' && (
+                <div className="space-y-6">
+                  <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                    <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-2 flex items-center gap-2">
+                      <Copy className="w-5 h-5" />
+                      Clone Your Voice
+                    </h4>
+                    <p className="text-sm text-purple-700 dark:text-purple-300 mb-3">
+                      Upload audio samples to create a custom voice clone. For best results, provide clear audio with minimal background noise.
+                    </p>
+                    <ul className="text-xs text-purple-600 dark:text-purple-400 space-y-1">
+                      <li>• Instant Clone: 1-2 minutes of audio, ready in seconds</li>
+                      <li>• Professional Clone: 30+ minutes of audio, higher quality</li>
+                      <li>• Supported formats: MP3, WAV, M4A, OGG</li>
+                    </ul>
+                  </div>
+
+                  {/* Clone Type Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Clone Type
+                    </label>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setCloneType('instant')}
+                        className={`flex-1 p-4 rounded-lg border-2 text-left transition-all ${
+                          cloneType === 'instant'
+                            ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20'
+                            : 'border-gray-200 dark:border-gray-700'
+                        }`}
+                      >
+                        <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Instant Clone</div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">1-2 min audio • Fast • Good quality</div>
+                      </button>
+                      <button
+                        onClick={() => setCloneType('professional')}
+                        className={`flex-1 p-4 rounded-lg border-2 text-left transition-all ${
+                          cloneType === 'professional'
+                            ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20'
+                            : 'border-gray-200 dark:border-gray-700'
+                        }`}
+                      >
+                        <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Professional Clone</div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">30+ min audio • Best quality • Premium</div>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Voice Name */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Voice Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={cloneName}
+                      onChange={(e) => setCloneName(e.target.value)}
+                      placeholder="e.g., My Voice, CEO Voice, Brand Voice"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+
+                  {/* Voice Description */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Description (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={cloneDescription}
+                      onChange={(e) => setCloneDescription(e.target.value)}
+                      placeholder="Brief description of this voice"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+
+                  {/* File Upload */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Upload Audio Samples *
+                    </label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="audio/*"
+                      multiple
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-full px-4 py-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-purple-400 transition-colors flex flex-col items-center gap-2"
+                    >
+                      <Upload className="w-8 h-8 text-gray-400" />
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Click to upload audio files</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">MP3, WAV, M4A, OGG</span>
+                    </button>
+
+                    {/* Uploaded Files List */}
+                    {uploadedFiles.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        {uploadedFiles.map((file, index) => (
+                          <div key={index} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700">
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <Mic className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                              <span className="text-sm text-gray-700 dark:text-gray-300 truncate">{file.name}</span>
+                              <span className="text-xs text-gray-500">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                            </div>
+                            <button
+                              onClick={() => removeFile(index)}
+                              className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Clone Button */}
+                  <button
+                    onClick={handleCloneVoice}
+                    disabled={!cloneName || uploadedFiles.length === 0 || cloningInProgress}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    {cloningInProgress ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        Cloning Voice...
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-5 h-5" />
+                        Clone Voice
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* Voice Design Tab */}
+              {voiceSource === 'design' && (
+                <div className="space-y-6">
+                  <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2 flex items-center gap-2">
+                      <Wand2 className="w-5 h-5" />
+                      AI Voice Design
+                    </h4>
+                    <p className="text-sm text-green-700 dark:text-green-300">
+                      Describe your ideal voice and let AI generate it for you. Customize attributes like age, gender, and accent for the perfect match.
+                    </p>
+                  </div>
+
+                  {/* Voice Description */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Voice Description *
+                    </label>
+                    <textarea
+                      value={designDescription}
+                      onChange={(e) => setDesignDescription(e.target.value)}
+                      rows={4}
+                      placeholder="Describe the voice you want... e.g., 'A warm, friendly female voice with a slight British accent, sounding confident but approachable, mid-30s age range'"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none"
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Be specific about tone, personality, age, and any unique characteristics
+                    </p>
+                  </div>
+
+                  {/* Voice Attributes */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Gender
+                      </label>
+                      <select
+                        value={designGender}
+                        onChange={(e) => setDesignGender(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                      >
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="neutral">Neutral</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Age
+                      </label>
+                      <select
+                        value={designAge}
+                        onChange={(e) => setDesignAge(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                      >
+                        <option value="young">Young (20s)</option>
+                        <option value="middle">Middle (30s-40s)</option>
+                        <option value="mature">Mature (50s+)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Accent
+                      </label>
+                      <select
+                        value={designAccent}
+                        onChange={(e) => setDesignAccent(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                      >
+                        <option value="american">American</option>
+                        <option value="british">British</option>
+                        <option value="australian">Australian</option>
+                        <option value="neutral">Neutral</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Generate Button */}
+                  <button
+                    onClick={handleGenerateVoice}
+                    disabled={!designDescription || designDescription.trim().length < 10 || generatingVoice}
+                    className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-lg hover:from-green-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    {generatingVoice ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 animate-spin" />
+                        Generating Voice...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="w-5 h-5" />
+                        Generate Voice
+                      </>
+                    )}
+                  </button>
+
+                  {/* Generated Voices */}
+                  {generatedVoices.length > 0 && (
+                    <div>
+                      <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Generated Voices</h5>
+                      <div className="grid grid-cols-2 gap-3">
+                        {generatedVoices.map((voice, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setSelectedVoice(voice)}
+                            className={`p-3 rounded-lg border-2 text-left transition-all ${
+                              selectedVoice?.id === voice.id
+                                ? 'border-green-600 bg-green-50 dark:bg-green-900/20'
+                                : 'border-gray-200 dark:border-gray-700 hover:border-green-400'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-2">
+                              <Wand2 className="w-4 h-4 text-green-600" />
+                              <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{voice.name}</span>
+                            </div>
+                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                              {voice.gender} • {voice.age} • {voice.accent}
+                            </p>
+                          </button>
+                        ))}
                       </div>
                     </div>
-                  </button>
-                ))}
-              </div>
+                  )}
+                </div>
+              )}
+
+              {/* Cloned Voices Library Tab */}
+              {voiceSource === 'cloned' && (
+                <div>
+                  {clonedVoices.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Mic className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No Cloned Voices Yet</h4>
+                      <p className="text-gray-600 dark:text-gray-400 mb-4">
+                        Create your first cloned voice using the "Clone Voice" tab
+                      </p>
+                      <button
+                        onClick={() => setVoiceSource('clone')}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                      >
+                        <Copy className="w-4 h-4" />
+                        Clone Voice
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {clonedVoices.map((voice) => (
+                        <div
+                          key={voice.id}
+                          className={`p-4 rounded-lg border-2 transition-all ${
+                            selectedVoice?.id === voice.id
+                              ? 'border-orange-600 bg-orange-50 dark:bg-orange-900/20'
+                              : 'border-gray-200 dark:border-gray-700'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-3 flex-1">
+                              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-purple-500 flex items-center justify-center flex-shrink-0">
+                                <span className="text-white font-bold">{voice.name[0]}</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h4 className="font-semibold text-gray-900 dark:text-gray-100">{voice.name}</h4>
+                                <p className="text-xs text-gray-600 dark:text-gray-400">{voice.description || 'Custom cloned voice'}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setSelectedVoice(voice)}
+                              className="flex-1 px-3 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm"
+                            >
+                              Use This Voice
+                            </button>
+                            <button
+                              onClick={() => handlePreviewVoice(voice)}
+                              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-sm"
+                            >
+                              <Play className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClonedVoice(voice.id)}
+                              className="px-3 py-2 border border-red-300 dark:border-red-600 text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-sm"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Advanced Voice Settings */}
               <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
@@ -757,6 +1334,88 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                           }`}
                         />
                       </button>
+                    </div>
+
+                    {/* Language Detection */}
+                    <div className="pt-4 border-t border-gray-200 dark:border-gray-600">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Auto Language Detection
+                          </label>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            Automatically detect and respond in caller's language
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => setEnableLanguageDetection(!enableLanguageDetection)}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                            enableLanguageDetection ? 'bg-green-600' : 'bg-gray-300 dark:bg-gray-600'
+                          }`}
+                        >
+                          <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                              enableLanguageDetection ? 'translate-x-6' : 'translate-x-1'
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      {/* Primary Language */}
+                      <div className="mb-3">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Primary Language
+                        </label>
+                        <select
+                          value={primaryLanguage}
+                          onChange={(e) => setPrimaryLanguage(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+                        >
+                          {SUPPORTED_LANGUAGES.map((lang) => (
+                            <option key={lang.code} value={lang.code}>
+                              {lang.flag} {lang.name} ({lang.nativeName})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Supported Languages */}
+                      {enableLanguageDetection && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Supported Languages ({supportedLanguages.length})
+                          </label>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                            Select languages your agent can understand and speak
+                          </p>
+                          <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-2 border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-900">
+                            {SUPPORTED_LANGUAGES.map((lang) => (
+                              <button
+                                key={lang.code}
+                                onClick={() => toggleLanguage(lang.code)}
+                                disabled={lang.code === 'en'}
+                                className={`flex items-center gap-2 px-3 py-2 rounded-lg text-left text-sm transition-all ${
+                                  supportedLanguages.includes(lang.code)
+                                    ? 'bg-green-100 dark:bg-green-900/30 border-2 border-green-500 text-gray-900 dark:text-gray-100'
+                                    : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-green-300'
+                                } ${lang.code === 'en' ? 'opacity-100 cursor-default' : 'cursor-pointer'}`}
+                              >
+                                <span className="text-lg">{lang.flag}</span>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium truncate">{lang.name}</div>
+                                  <div className="text-xs opacity-75 truncate">{lang.nativeName}</div>
+                                </div>
+                                {supportedLanguages.includes(lang.code) && (
+                                  <Check className="w-4 h-4 text-green-600 flex-shrink-0" />
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                            💡 Tip: Use Multilingual v2 model for best results with multiple languages
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -1058,6 +1717,49 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     </div>
                   </div>
                 )}
+
+                {/* Language Settings */}
+                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                    🌍 Language Settings
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-start gap-2">
+                      <span className="text-gray-600 dark:text-gray-400 min-w-[140px]">Auto Detection:</span>
+                      <span className={`font-medium ${enableLanguageDetection ? 'text-green-600' : 'text-gray-500'}`}>
+                        {enableLanguageDetection ? 'Enabled' : 'Disabled'}
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-gray-600 dark:text-gray-400 min-w-[140px]">Primary Language:</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">
+                        {SUPPORTED_LANGUAGES.find(l => l.code === primaryLanguage)?.flag} {SUPPORTED_LANGUAGES.find(l => l.code === primaryLanguage)?.name}
+                      </span>
+                    </div>
+                    {enableLanguageDetection && supportedLanguages.length > 1 && (
+                      <div className="flex items-start gap-2">
+                        <span className="text-gray-600 dark:text-gray-400 min-w-[140px]">Supported Languages:</span>
+                        <div className="flex-1">
+                          <div className="flex flex-wrap gap-1">
+                            {supportedLanguages.slice(0, 10).map(code => {
+                              const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
+                              return lang ? (
+                                <span key={code} className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-xs">
+                                  {lang.flag} {lang.name}
+                                </span>
+                              ) : null;
+                            })}
+                            {supportedLanguages.length > 10 && (
+                              <span className="inline-flex items-center px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded text-xs">
+                                +{supportedLanguages.length - 10} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           )}

@@ -754,6 +754,288 @@ Keep profile updated, respond to leads quickly, showcase best work, and engage t
 
 Houzz users are researching contractors - make a great impression.`;
     }
+  },
+
+  // ==========================================
+  // MESSAGING & COMMUNICATION AGENTS
+  // ==========================================
+
+  'sms-assistant': {
+    id: 'sms-assistant',
+    name: 'AI SMS Assistant',
+    description: 'Intelligent SMS replies powered by AI. Answers questions, qualifies leads, and drives signups.',
+    category: 'messaging',
+    icon: '💬',
+    color: '#10B981',
+
+    pricing: {
+      basePrice: 39,
+      billingCycle: 'monthly',
+      perMessagePrice: 0.02 // $0.02 per SMS reply
+    },
+
+    features: [
+      'AI-powered intelligent replies',
+      'Answers product questions',
+      'Qualifies leads via text',
+      'Shares pricing and availability',
+      'Sends signup links',
+      'STOP/START compliance built-in'
+    ],
+
+    targetUser: 'Contractors who want to respond to text messages 24/7 automatically',
+
+    setupQuestions: [
+      {
+        id: 'companyName',
+        type: 'text',
+        label: 'Company Name',
+        required: true
+      },
+      {
+        id: 'services',
+        type: 'text',
+        label: 'What services do you offer?',
+        placeholder: 'Granite countertops, kitchen remodeling',
+        required: true,
+        helpText: 'Brief description of what you do'
+      },
+      {
+        id: 'pricing',
+        type: 'text',
+        label: 'How should I explain pricing?',
+        placeholder: 'Free estimates, typical projects $5k-$15k',
+        required: false,
+        helpText: 'General pricing guidance'
+      },
+      {
+        id: 'signupUrl',
+        type: 'text',
+        label: 'Signup/Website URL',
+        placeholder: 'remodely.ai/signup',
+        required: true,
+        helpText: 'Where should I send interested customers?'
+      },
+      {
+        id: 'responseStyle',
+        type: 'radio',
+        label: 'Response style',
+        required: true,
+        options: [
+          { value: 'professional', label: 'Professional & Concise', description: 'Brief, to-the-point answers' },
+          { value: 'friendly', label: 'Friendly & Conversational', description: 'Warm, helpful tone (recommended)' },
+          { value: 'casual', label: 'Casual & Fun', description: 'Relaxed, emoji-friendly' }
+        ]
+      }
+    ],
+
+    requiredIntegrations: [
+      { service: 'twilio', purpose: 'Send/receive SMS messages' }
+    ],
+
+    optionalIntegrations: [
+      { service: 'openai', purpose: 'Enhanced AI responses' }
+    ],
+
+    generatePrompt: (answers, userInfo) => {
+      const styleGuide = {
+        professional: 'Be professional and concise. Keep responses under 160 characters. Focus on facts.',
+        friendly: 'Be friendly and conversational. Use contractions. Keep it text-friendly but warm.',
+        casual: 'Be casual and approachable. You can use emojis if appropriate. Keep it fun.'
+      };
+
+      return `You are a helpful SMS assistant for ${answers.companyName}.
+
+COMPANY INFO:
+- Services: ${answers.services}
+- Pricing: ${answers.pricing || 'Custom pricing based on project scope'}
+- Website: ${answers.signupUrl}
+
+YOUR JOB:
+Respond to customer text messages professionally and helpfully. Answer questions, qualify leads, and guide them to sign up or schedule.
+
+RESPONSE STYLE:
+${styleGuide[answers.responseStyle] || styleGuide.friendly}
+
+SAMPLE RESPONSES:
+Q: "What's this about?"
+A: "${answers.companyName} provides ${answers.services}. Want to learn more? ${answers.signupUrl}"
+
+Q: "How much does it cost?"
+A: "${answers.pricing || 'Pricing varies by project'}. We offer free estimates! ${answers.signupUrl}"
+
+Q: "Are you available?"
+A: "Yes! We'd love to help with your project. Check out ${answers.signupUrl} or text us your details."
+
+COMPLIANCE:
+- "STOP" → Unsubscribe them
+- "START" → Resubscribe them
+- Always respect customer preferences
+
+TONE: ${answers.responseStyle === 'professional' ? 'Professional, brief, helpful' : answers.responseStyle === 'casual' ? 'Casual, friendly, approachable' : 'Friendly, warm, conversational'}
+
+Keep responses SHORT (under 160 characters when possible) and always drive toward ${answers.signupUrl}.`;
+    },
+
+    workflows: [
+      {
+        trigger: 'sms.received',
+        name: 'Incoming SMS',
+        actions: [
+          { type: 'analyzeMessage', service: 'ai' },
+          { type: 'generateReply', service: 'ai' },
+          { type: 'sendSMS', service: 'twilio' },
+          { type: 'logConversation', service: 'database' }
+        ]
+      }
+    ]
+  },
+
+  'mms-assistant': {
+    id: 'mms-assistant',
+    name: 'AI MMS Assistant (Images)',
+    description: 'AI vision analyzes photos sent via text. Provides intelligent responses about project images.',
+    category: 'messaging',
+    icon: '📸',
+    color: '#8B5CF6',
+
+    pricing: {
+      basePrice: 59,
+      billingCycle: 'monthly',
+      perImagePrice: 0.05 // $0.05 per image analyzed
+    },
+
+    features: [
+      'AI vision analyzes customer photos',
+      'Identifies materials and conditions',
+      'Provides project insights',
+      'Sends images with quotes',
+      'Before/after photo sharing',
+      'Smart image responses'
+    ],
+
+    targetUser: 'Contractors who receive photos from customers via text',
+
+    setupQuestions: [
+      {
+        id: 'companyName',
+        type: 'text',
+        label: 'Company Name',
+        required: true
+      },
+      {
+        id: 'imageTypes',
+        type: 'multiselect',
+        label: 'What kinds of images do customers typically send?',
+        required: true,
+        options: [
+          { value: 'countertops', label: 'Existing countertops/surfaces' },
+          { value: 'kitchens', label: 'Kitchen spaces' },
+          { value: 'bathrooms', label: 'Bathroom spaces' },
+          { value: 'damage', label: 'Damage or problems' },
+          { value: 'measurements', label: 'Measurements/dimensions' },
+          { value: 'materials', label: 'Material samples' },
+          { value: 'inspiration', label: 'Inspiration/reference photos' }
+        ]
+      },
+      {
+        id: 'analysisDepth',
+        type: 'radio',
+        label: 'How detailed should image analysis be?',
+        required: true,
+        options: [
+          { value: 'basic', label: 'Basic - Just acknowledge the image', description: 'Quick, simple responses' },
+          { value: 'detailed', label: 'Detailed - Analyze and provide insights', description: 'Identify materials, conditions, recommendations (recommended)' },
+          { value: 'expert', label: 'Expert - Deep analysis with suggestions', description: 'Comprehensive analysis with project suggestions' }
+        ]
+      },
+      {
+        id: 'signupUrl',
+        type: 'text',
+        label: 'Signup/Website URL',
+        placeholder: 'remodely.ai/signup',
+        required: true
+      }
+    ],
+
+    requiredIntegrations: [
+      { service: 'twilio', purpose: 'Send/receive MMS messages' },
+      { service: 'openai-vision', purpose: 'Analyze images with AI' }
+    ],
+
+    optionalIntegrations: [
+      { service: 'cloudinary', purpose: 'Store and optimize images' }
+    ],
+
+    generatePrompt: (answers, userInfo) => {
+      const analysisGuidelines = {
+        basic: `Acknowledge the image briefly and ask how you can help.`,
+        detailed: `Analyze the image in detail. Identify materials, conditions, approximate size, and any issues. Provide helpful insights about the project.`,
+        expert: `Provide expert-level analysis. Identify materials, assess condition, estimate scope, suggest solutions, and recommend next steps.`
+      };
+
+      return `You are an AI vision assistant for ${answers.companyName}.
+
+CUSTOMERS SEND PHOTOS OF:
+${answers.imageTypes.map(t => '- ' + t).join('\n')}
+
+YOUR JOB:
+When customers send images via text, analyze them using AI vision and provide intelligent, helpful responses.
+
+ANALYSIS DEPTH:
+${analysisGuidelines[answers.analysisDepth]}
+
+IMAGE ANALYSIS PROCESS:
+1. Identify what's in the image (room type, materials, features)
+2. Assess condition and quality
+3. Note any visible issues or damage
+4. Estimate approximate size/scope
+5. Provide relevant insights for ${answers.companyName}'s services
+6. Direct them to: ${answers.signupUrl}
+
+SAMPLE RESPONSES:
+
+Customer sends photo of old kitchen:
+"I can see your current kitchen has laminate countertops and oak cabinets. The layout looks like about 15 sq ft of counter space. ${answers.companyName} specializes in upgrades like this! Want a free estimate? ${answers.signupUrl}"
+
+Customer sends photo of damaged countertop:
+"I see the chip damage near the sink. That's a common wear area. We can either repair it or help you upgrade to more durable material. Free estimate: ${answers.signupUrl}"
+
+Customer sends inspiration photo:
+"Beautiful! That's a popular granite pattern. We work with similar styles all the time. Want to see what we can do for your space? ${answers.signupUrl}"
+
+TONE:
+- Knowledgeable and helpful
+- Acknowledge what you see in their photo
+- Relate it to ${answers.companyName}'s services
+- Provide value even in your response
+- Always drive toward ${answers.signupUrl}
+
+Keep responses under 160 characters when possible, but can go longer for complex analysis.`;
+    },
+
+    workflows: [
+      {
+        trigger: 'mms.received',
+        name: 'Incoming MMS',
+        actions: [
+          { type: 'downloadImage', service: 'twilio' },
+          { type: 'analyzeImage', service: 'openai-vision' },
+          { type: 'generateReply', service: 'ai' },
+          { type: 'sendSMS', service: 'twilio' },
+          { type: 'storeImage', service: 'cloudinary', condition: 'integration.cloudinary.connected' },
+          { type: 'logConversation', service: 'database' }
+        ]
+      },
+      {
+        trigger: 'mms.send',
+        name: 'Send MMS',
+        actions: [
+          { type: 'prepareImage', service: 'cloudinary' },
+          { type: 'sendMMS', service: 'twilio' }
+        ]
+      }
+    ]
   }
 };
 

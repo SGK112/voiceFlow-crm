@@ -1,0 +1,228 @@
+{
+  "name": "ElevenLabs SMS/Email Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "elevenlabs-conversation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "\n// Extract conversation data from ElevenLabs webhook\nconst event = $input.item.json;\n\n// Get transcript from various event types\nlet transcript = '';\nlet conversationId = event.conversation_id || '';\nlet phoneNumber = '';\nlet customerName = '';\n\n// Extract transcript based on event type\nif (event.type === 'agent.spoke' || event.type === 'user.spoke') {\n  transcript = event.text || event.transcript || '';\n} else if (event.transcript) {\n  transcript = event.transcript;\n}\n\n// Try to extract phone number from transcript or metadata\nconst phoneMatch = transcript.match(/\\+?1?\\d{10}/);\nif (phoneMatch) {\n  phoneNumber = phoneMatch[0];\n}\n\n// Try to extract customer name from transcript\nconst nameMatch = transcript.match(/(?:my name is|I'm|I am)\\s+([A-Z][a-z]+)/i);\nif (nameMatch) {\n  customerName = nameMatch[1];\n}\n\nreturn {\n  json: {\n    conversationId,\n    transcript,\n    phoneNumber,\n    customerName,\n    rawEvent: event\n  }\n};\n"
+      },
+      "name": "Extract Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.transcript}}",
+              "operation": "regex",
+              "value2": "/(can you )?(text|send)( me)?( the)?( link| signup)?/i"
+            }
+          ]
+        }
+      },
+      "name": "Check for SMS Request",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://f66af302a875.ngrok-free.app/api/webhooks/elevenlabs/send-signup-link",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone_number",
+              "value": "={{$json.phoneNumber}}"
+            },
+            {
+              "name": "customer_name",
+              "value": "={{$json.customerName}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Send SMS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        850,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.rawEvent.type}}",
+              "value2": "conversation.ended"
+            }
+          ]
+        }
+      },
+      "name": "Check Conversation Ended",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        650,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://f66af302a875.ngrok-free.app/api/webhooks/elevenlabs/post-call-followup",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "conversation_id",
+              "value": "={{$json.conversationId}}"
+            },
+            {
+              "name": "customer_email",
+              "value": "={{$json.customerEmail}}"
+            },
+            {
+              "name": "customer_name",
+              "value": "={{$json.customerName}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        850,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\": \"success\", \"message\": \"Event processed\"}"
+      },
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Data": {
+      "main": [
+        [
+          {
+            "node": "Check for SMS Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Conversation Ended",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for SMS Request": {
+      "main": [
+        [
+          {
+            "node": "Send SMS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send SMS": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Conversation Ended": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "executionTimeout": 3600,
+    "timezone": "America/Denver"
+  },
+  "staticData": null,
+  "tags": [
+    "elevenlabs",
+    "sms",
+    "email",
+    "automation"
+  ]
+}

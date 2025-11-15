@@ -798,6 +798,7 @@ Natural response: "So the Professional plan is $299 a month - that's 5 agents, 1
     // Dynamic variables (customer_name, etc.) are passed per-call for personalization
     // Configure webhook for client tool calls (SMS) and post-call events
     const webhookUrl = `${process.env.WEBHOOK_URL}/api/webhooks/elevenlabs/conversation-event`;
+    console.log(`🔗 Using webhook URL: ${webhookUrl}`);
 
     const callData = await getElevenLabsService().initiateCall(
       demoAgentId,

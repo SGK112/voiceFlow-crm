@@ -1,0 +1,160 @@
+{
+  "name": "working-backup",
+  "description": "Backup of agent agent_9701k9xptd0kfr383djx5zk7300x",
+  "agent_id": "agent_9701k9xptd0kfr383djx5zk7300x",
+  "configuration": {
+    "conversation_config": {
+      "asr": {
+        "quality": "high",
+        "provider": "elevenlabs",
+        "user_input_audio_format": "pcm_16000",
+        "keywords": []
+      },
+      "turn": {
+        "turn_timeout": 8,
+        "initial_wait_time": null,
+        "silence_end_call_timeout": -1,
+        "soft_timeout_config": {
+          "timeout_seconds": -1,
+          "message": "Hhmmmm...yeah give me a second..."
+        },
+        "mode": "turn",
+        "turn_eagerness": "normal"
+      },
+      "tts": {
+        "model_id": "eleven_flash_v2",
+        "voice_id": "cjVigY5qzO86Huf0OWal",
+        "supported_voices": [],
+        "agent_output_audio_format": "pcm_16000",
+        "optimize_streaming_latency": 3,
+        "stability": 0.5,
+        "speed": 1,
+        "similarity_boost": 0.8,
+        "text_normalisation_type": "system_prompt",
+        "pronunciation_dictionary_locators": []
+      },
+      "conversation": {
+        "text_only": false,
+        "max_duration_seconds": 300,
+        "client_events": [
+          "audio",
+          "interruption",
+          "agent_response",
+          "user_transcript",
+          "agent_response_correction",
+          "agent_tool_response"
+        ]
+      },
+      "language_presets": {},
+      "vad": {
+        "background_voice_detection": true
+      },
+      "agent": {
+        "first_message": "Hi, is this {{customer_name}}?",
+        "language": "en",
+        "dynamic_variables": {
+          "dynamic_variable_placeholders": {}
+        },
+        "disable_first_message_interruptions": true,
+        "prompt": {
+          "prompt": "You are a CLOSER for Remodelee AI, selling VoiceFlow CRM. Your ONE goal: Get {{customer_name}} to sign up for the FREE trial of VoiceFlow CRM.\n\n**CONTEXT - WHERE THEY CAME FROM:**\nThis person requested information about VoiceFlow CRM. They might have come from:\n- Facebook/Instagram ad\n- Email campaign\n- Google ad\n- Partner referral\n- Website form\n- SMS campaign\n\n**BRANDING:**\n- **Company:** Remodelee AI (that's us)\n- **Product:** VoiceFlow CRM (what we're selling)\n- Say: \"I'm from Remodelee AI\" and \"I'm calling about VoiceFlow CRM\"\n\n**YOU CAN SEND SMS IN REAL-TIME:**\nWhen they show interest, you can ACTUALLY SEND THEM A TEXT MESSAGE using the send_signup_link tool.\n\n**OPENING (Adapt to context):**\n\"Hi, is this {{customer_name}}? Great! I'm calling from Remodelee AI about VoiceFlow CRM. You requested information, right?\"\n\n**Alternative if they seem confused:**\n\"Hi {{customer_name}}! I'm from Remodelee AI. You filled out a form about getting AI agents for your business - does that ring a bell?\"\n\n**DISCOVERY - FIND THEIR PAIN:**\n\"Quick question - what made you interested in VoiceFlow CRM? Was it:\n- Missing calls when you're busy?\n- Need help managing leads?\n- Want to automate follow-ups?\n- Something else?\"\n\n**PITCH - MATCH TO THEIR PAIN:**\nFor missed calls: \"Perfect! VoiceFlow CRM gives you AI agents that answer 24/7. Never miss another lead!\"\n\nFor lead management: \"That's exactly what we solve. VoiceFlow CRM automatically qualifies leads and books appointments!\"\n\nFor follow-ups: \"We've got you covered. VoiceFlow CRM sends SMS and email follow-ups automatically!\"\n\n**SEND THE LINK:**\nWhen they're interested:\n\"Awesome! What's the best number to text you the signup link?\"\n[They give number]\n\"Perfect! Sending it now...\"\n[Use send_signup_link tool]\n\"Done! Just texted you the link. It's also www.remodely.ai/signup. Takes 2 minutes to get started!\"\n\n**KEY POINTS:**\n- 24/7 AI voice agents (like me!)\n- Automated lead qualification\n- Appointment booking\n- Full CRM included\n- $299/month Pro plan\n- FREE 14-day trial, no credit card\n\n**HANDLING OBJECTIONS:**\n\n\"How much is it?\"\n→ \"$299/month for Pro. But try it FREE for 14 days first. No credit card needed. If you book one extra job, it pays for itself!\"\n\n\"I need to think about it\"\n→ \"I get it! But it's free to try. Why not test it for 2 weeks and decide then? No risk. Want me to text you the link?\"\n\n\"I'm too busy right now\"\n→ \"Perfect! That's WHY you need VoiceFlow CRM - it handles calls when you're busy. The signup takes 2 minutes. Can I text you the link?\"\n\n\"How does it work?\"\n→ \"Super simple! You get AI agents that answer calls, qualify leads, book appointments. Everything's automated. Want to try it free?\"\n\n**ALWAYS BE CLOSING:**\n- Every response ends with an action\n- Get their phone number\n- Send the SMS link in real-time\n- Close for the signup\n\n**EXAMPLE FLOW:**\nAgent: \"Hi, is this Mike?\"\nMike: \"Yeah\"\nAgent: \"Great! I'm from Remodelee AI about VoiceFlow CRM. You requested info, right?\"\nMike: \"Oh yeah, I filled out something\"\nAgent: \"Perfect! What made you interested - missing calls when you're on jobs?\"\nMike: \"Yeah, all the time\"\nAgent: \"That's exactly what we fix. VoiceFlow CRM gives you AI agents that answer 24/7. Want to try it free?\"\nMike: \"How much is it?\"\nAgent: \"$299/month. But try it FREE for 14 days first, no credit card. Sound good?\"\nMike: \"Yeah, sure\"\nAgent: \"Awesome! What number should I text you the signup link?\"\nMike: \"480-555-1234\"\nAgent: \"Perfect! Sending it now...\"\n[Uses send_signup_link tool]\nAgent: \"Done! Just texted you the link. Check your phone and takes 2 minutes to sign up!\"\n\n**CLOSE EVERY RESPONSE. ABC - ALWAYS BE CLOSING.**",
+          "llm": "gemini-2.5-flash",
+          "reasoning_effort": null,
+          "thinking_budget": null,
+          "temperature": 0,
+          "max_tokens": -1,
+          "tool_ids": [
+            "tool_2801ka4dwk2dfn2r16rqz76m2nhq"
+          ],
+          "built_in_tools": {
+            "end_call": null,
+            "language_detection": null,
+            "transfer_to_agent": null,
+            "transfer_to_number": null,
+            "skip_turn": null,
+            "play_keypad_touch_tone": null,
+            "voicemail_detection": null
+          },
+          "mcp_server_ids": [],
+          "native_mcp_server_ids": [],
+          "knowledge_base": [],
+          "custom_llm": null,
+          "ignore_default_personality": false,
+          "rag": {
+            "enabled": false,
+            "embedding_model": "e5_mistral_7b_instruct",
+            "max_vector_distance": 0.6,
+            "max_documents_length": 50000,
+            "max_retrieved_rag_chunks_count": 20
+          },
+          "timezone": "America/Denver",
+          "backup_llm_config": {
+            "preference": "default"
+          },
+          "tools": [
+            {
+              "type": "client",
+              "name": "send_signup_link",
+              "description": "Send VoiceFlow CRM signup link via SMS. Use when customer provides their phone number.",
+              "response_timeout_secs": 20,
+              "disable_interruptions": false,
+              "force_pre_tool_speech": false,
+              "assignments": [],
+              "tool_call_sound": null,
+              "tool_call_sound_behavior": "auto",
+              "parameters": {
+                "type": "object",
+                "required": [
+                  "phone_number",
+                  "customer_name"
+                ],
+                "description": "",
+                "properties": {
+                  "phone_number": {
+                    "type": "string",
+                    "description": "Customer's phone number (with country code, e.g., +14805551234)",
+                    "enum": null,
+                    "is_system_provided": false,
+                    "dynamic_variable": "",
+                    "constant_value": ""
+                  },
+                  "customer_name": {
+                    "type": "string",
+                    "description": "Customer's name",
+                    "enum": null,
+                    "is_system_provided": false,
+                    "dynamic_variable": "",
+                    "constant_value": ""
+                  }
+                }
+              },
+              "expects_response": false,
+              "dynamic_variables": {
+                "dynamic_variable_placeholders": {}
+              },
+              "execution_mode": "immediate"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "backend_configuration": {
+    "webhook_url": "https://f66af302a875.ngrok-free.app",
+    "auto_sms_on_call_start": false,
+    "sms_via_webhook_only": true,
+    "notes": "Configure backend based on this agent's tool usage"
+  },
+  "testing_instructions": {
+    "how_to_test": [
+      "1. Use restore-from-template.js to apply this configuration",
+      "2. Test the agent according to its specific behavior",
+      "3. Update these instructions based on agent purpose"
+    ],
+    "expected_behavior": "Update with expected behavior",
+    "wow_factor": "Update with what makes this agent impressive"
+  },
+  "created": "2025-11-15",
+  "last_tested": "2025-11-15",
+  "status": "WORKING ✅"
+}

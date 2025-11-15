@@ -3,12 +3,12 @@ import emailService from '../services/emailService.js';
 
 const twilioService = new TwilioService();
 
-// Handle agent action: Send signup link via SMS during call
+// Handle agent action: Send signup link via MMS with image during call
 export const sendSignupLinkAction = async (req, res) => {
   try {
     const { phone_number, customer_name, conversation_id } = req.body;
 
-    console.log(`📱 Agent requested SMS signup link for ${customer_name} at ${phone_number}`);
+    console.log(`📱 Agent requested MMS signup link for ${customer_name} at ${phone_number}`);
     console.log(`   Conversation ID: ${conversation_id}`);
 
     if (!phone_number) {
@@ -18,23 +18,27 @@ export const sendSignupLinkAction = async (req, res) => {
       });
     }
 
-    // Send signup link via SMS
-    await twilioService.sendSignupLink(phone_number, customer_name);
+    // Send signup link via MMS with image to showcase capabilities
+    const greeting = customer_name ? `Hi ${customer_name}!` : 'Hi!';
+    const message = `${greeting} Thanks for your interest in VoiceFlow CRM! 🤖\n\nStart your FREE 14-day trial (no credit card needed):\nhttps://remodely.ai/signup\n\nQuestions? Reply to this text!\n\n- Remodelee AI Team`;
+    const imageUrl = 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80'; // Professional business/tech image
 
-    console.log(`✅ Signup link SMS sent to ${phone_number} during call`);
+    await twilioService.sendMMSWithImage(phone_number, message, imageUrl);
+
+    console.log(`✅ Signup link MMS with image sent to ${phone_number} during call`);
 
     // Return success to agent
     res.json({
       success: true,
-      message: `SMS sent successfully to ${phone_number}`,
-      action: 'sms_sent'
+      message: `MMS with image sent successfully to ${phone_number}`,
+      action: 'mms_sent'
     });
 
   } catch (error) {
-    console.error('Error sending signup link SMS:', error);
+    console.error('Error sending signup link MMS:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to send SMS'
+      error: 'Failed to send MMS'
     });
   }
 };
@@ -211,15 +215,19 @@ export const handleConversationEvent = async (req, res) => {
           const customerName = params.customer_name;
 
           try {
-            // Send SMS
-            await twilioService.sendSignupLink(phoneNumber, customerName);
-            console.log(`✅ SMS sent to ${phoneNumber} via tool call`);
+            // Send MMS with image to showcase capabilities
+            const greeting = customerName ? `Hi ${customerName}!` : 'Hi!';
+            const message = `${greeting} Thanks for your interest in VoiceFlow CRM! 🤖\n\nStart your FREE 14-day trial (no credit card needed):\nhttps://remodely.ai/signup\n\nQuestions? Reply to this text!\n\n- Remodelee AI Team`;
+            const imageUrl = 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80'; // Professional business/tech image
+
+            await twilioService.sendMMSWithImage(phoneNumber, message, imageUrl);
+            console.log(`✅ MMS with image sent to ${phoneNumber} via tool call`);
 
             // Respond with success
             res.json({
               success: true,
               tool_result: {
-                message: `SMS sent successfully to ${phoneNumber}`,
+                message: `MMS with signup link sent successfully to ${phoneNumber}`,
                 status: 'sent'
               }
             });
@@ -229,7 +237,7 @@ export const handleConversationEvent = async (req, res) => {
             res.json({
               success: false,
               tool_result: {
-                error: 'Failed to send SMS',
+                error: 'Failed to send MMS',
                 status: 'failed'
               }
             });

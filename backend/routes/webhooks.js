@@ -6,7 +6,9 @@ import {
   handleTwilioVoice,
   handleTwilioStatus,
   handleElevenLabsForward,
-  handleElevenLabsOutbound
+  handleElevenLabsOutbound,
+  handleTwilioSms,
+  handleTwilioSmsFallback
 } from '../controllers/twilioWebhookController.js';
 import {
   sendSignupLinkAction,
@@ -35,6 +37,8 @@ router.post('/twilio/voice', handleTwilioVoice);
 router.post('/twilio/status', handleTwilioStatus);
 router.post('/twilio/elevenlabs-forward', handleElevenLabsForward);
 router.post('/twilio/elevenlabs-outbound', handleElevenLabsOutbound);
+router.post('/twilio/sms', handleTwilioSms);
+router.post('/twilio/sms-fallback', handleTwilioSmsFallback);
 
 // N8N webhooks
 router.post('/n8n', webhookLimiter, handleN8nWebhook);
