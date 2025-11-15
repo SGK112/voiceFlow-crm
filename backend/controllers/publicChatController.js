@@ -662,6 +662,7 @@ export const requestVoiceDemo = async (req, res) => {
 
     // Personalize the call with the user's name
     const dynamicVariables = {
+      customer_name: name,
       lead_name: name,
       lead_phone: formattedNumber,
       lead_email: email || '',
@@ -672,6 +673,21 @@ export const requestVoiceDemo = async (req, res) => {
     // Personalized first message for the demo call
     const personalizedFirstMessage = `Hi ${name}! Thanks for requesting a demo. I'm an AI voice agent from Remodely dot A I, and I'm here to show you how voice AI like me can help automate your business communications. How are you doing today?`;
 
+    // Personalized script that instructs the agent to use the customer's name
+    const personalizedScript = `You are a friendly AI voice agent for Remodely.ai, a voice AI automation platform for contractors.
+
+IMPORTANT: The customer's name is ${name}. Use their name naturally in conversation.
+
+Your role:
+- You just called ${name} because they requested a demo from our website
+- Give them a quick 60-90 second demo of how you work
+- Show them you're intelligent, helpful, and natural
+- Ask about their business and what tasks they'd like to automate
+- Mention key features: 24/7 availability, natural conversations, CRM integration
+- End by offering to have our team reach out with pricing and next steps
+
+Be conversational and enthusiastic! This is their first experience with voice AI.`;
+
     // Initiate call using ElevenLabs batch calling (same as CRM does)
     const callData = await getElevenLabsService().initiateCall(
       demoAgentId,
@@ -679,7 +695,7 @@ export const requestVoiceDemo = async (req, res) => {
       agentPhoneNumberId,
       null, // no webhook for public demo
       dynamicVariables,
-      null, // use agent's default script
+      personalizedScript, // send personalized script with customer name
       personalizedFirstMessage
     );
 
