@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Building2, CreditCard, Activity, User, Settings as SettingsIcon } from 'lucide-react';
+import { Building2, CreditCard, Activity, User, Settings as SettingsIcon, Shield } from 'lucide-react';
 import BusinessProfileTab from '@/components/settings/BusinessProfileTab';
 import BillingTab from '@/components/settings/BillingTab';
 import UsageTab from '@/components/settings/UsageTab';
 import AccountTab from '@/components/settings/AccountTab';
+import MonitoringTab from '@/components/settings/MonitoringTab';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('account');
+  const { user } = useAuth();
+
+  // Check if user is admin (only help.remodely@gmail.com for now)
+  const isAdmin = user?.email === 'help.remodely@gmail.com';
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -22,7 +28,7 @@ export default function Settings() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 bg-white dark:bg-gray-800 border border-gray-200 p-1 rounded-lg">
+        <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-5' : 'grid-cols-4'} bg-white dark:bg-gray-800 border border-gray-200 p-1 rounded-lg`}>
           <TabsTrigger value="account" className="gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <User className="h-4 w-4" />
             <span className="hidden sm:inline">Account</span>
@@ -39,6 +45,12 @@ export default function Settings() {
             <Activity className="h-4 w-4" />
             <span className="hidden sm:inline">Usage</span>
           </TabsTrigger>
+          {isAdmin && (
+            <TabsTrigger value="admin" className="gap-2 data-[state=active]:bg-red-600 data-[state=active]:text-white">
+              <Shield className="h-4 w-4" />
+              <span className="hidden sm:inline">Admin</span>
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="account">
@@ -56,6 +68,12 @@ export default function Settings() {
         <TabsContent value="usage">
           <UsageTab />
         </TabsContent>
+
+        {isAdmin && (
+          <TabsContent value="admin">
+            <MonitoringTab />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );
