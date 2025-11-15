@@ -38,7 +38,7 @@ res.json({
 4. Add these variables:
 
 ```bash
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_51Rr3YyHDbK8UKkrvX9hmCAT31iVXdrOuHZeckLaSIbwNEvQfnQPsjVKj8g5E3zQa2WJqcAqMOr6oTX81KyUr5rjd00CCUwTd4h
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
 VITE_GOOGLE_CLIENT_ID=710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com
 VITE_API_URL=/api
 VITE_ELEVENLABS_API_KEY=[your_elevenlabs_api_key]

@@ -10,7 +10,7 @@ These are needed during the build process and must be set on the Render service:
 
 ```bash
 # Stripe Publishable Key (Frontend)
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_51Rr3YyHDbK8UKkrvX9hmCAT31iVXdrOuHZeckLaSIbwNEvQfnQPsjVKj8g5E3zQa2WJqcAqMOr6oTX81KyUr5rjd00CCUwTd4h
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
 
 # Google OAuth Client ID (Frontend)
 VITE_GOOGLE_CLIENT_ID=710258787879-qmvg6o96r0k3pc6r47mutesavrhkttik.apps.googleusercontent.com
