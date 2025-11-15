@@ -1,65 +1,208 @@
 import { useState } from 'react';
-import { X, Wand2, Mic, Phone, Bot, ChevronRight, Sparkles, Check, Search, Filter, Play, Sliders } from 'lucide-react';
+import { X, Wand2, Mic, Phone, Bot, ChevronRight, Sparkles, Check, Search, Filter, Play, Sliders, Upload, MessageSquare, Brain, Book, Zap } from 'lucide-react';
 import api from '../services/api';
 
 const AGENT_TEMPLATES = [
+  // Sales & Business
   {
     id: 'sales-outbound',
     name: 'Sales Outbound',
     icon: '📞',
+    category: 'Sales',
     description: 'Cold calling, lead qualification, appointment setting',
-    prompt: 'You are a friendly and professional sales representative making outbound calls to qualify leads and schedule appointments.',
+    prompt: 'You are a friendly and professional sales representative making outbound calls to qualify leads and schedule appointments. Ask qualifying questions, handle objections gracefully, and focus on setting up meetings.',
   },
+  {
+    id: 'sales-followup',
+    name: 'Sales Follow-up',
+    icon: '🔄',
+    category: 'Sales',
+    description: 'Follow up with prospects and customers',
+    prompt: 'You are following up with a prospect who showed interest. Be persistent but respectful, remind them of the value proposition, and work to move them forward in the sales process.',
+  },
+  {
+    id: 'demo-scheduler',
+    name: 'Demo Scheduler',
+    icon: '🎯',
+    category: 'Sales',
+    description: 'Schedule product demos and presentations',
+    prompt: 'You are scheduling product demonstrations. Confirm the prospect\'s needs, suggest optimal demo times, and ensure they know what to expect from the demonstration.',
+  },
+
+  // Customer Service
   {
     id: 'customer-support',
     name: 'Customer Support',
     icon: '🎧',
+    category: 'Support',
     description: 'Handle customer inquiries, resolve issues, provide assistance',
-    prompt: 'You are a helpful customer support agent assisting customers with their questions and concerns.',
+    prompt: 'You are a helpful customer support agent assisting customers with their questions and concerns. Listen carefully, show empathy, and provide clear solutions.',
   },
+  {
+    id: 'technical-support',
+    name: 'Technical Support',
+    icon: '🔧',
+    category: 'Support',
+    description: 'Troubleshoot technical issues',
+    prompt: 'You are a technical support specialist. Guide customers through troubleshooting steps, explain technical concepts clearly, and escalate complex issues when needed.',
+  },
+  {
+    id: 'order-status',
+    name: 'Order Status',
+    icon: '📦',
+    category: 'Support',
+    description: 'Check order status and delivery updates',
+    prompt: 'You help customers check their order status and delivery information. Be patient, verify order details, and provide accurate shipping updates.',
+  },
+
+  // Appointments & Scheduling
   {
     id: 'appointment-reminder',
     name: 'Appointment Reminder',
     icon: '📅',
+    category: 'Appointments',
     description: 'Automated appointment confirmations and reminders',
-    prompt: 'You are calling to confirm an upcoming appointment and ensure the customer has all necessary information.',
+    prompt: 'You are calling to confirm an upcoming appointment and ensure the customer has all necessary information. Be concise and helpful.',
   },
+  {
+    id: 'appointment-booking',
+    name: 'Appointment Booking',
+    icon: '📝',
+    category: 'Appointments',
+    description: 'Book new appointments and schedule services',
+    prompt: 'You help customers book appointments. Ask about their needs, check availability, and confirm all appointment details.',
+  },
+  {
+    id: 'rescheduling',
+    name: 'Rescheduling Agent',
+    icon: '🔁',
+    category: 'Appointments',
+    description: 'Handle appointment changes and cancellations',
+    prompt: 'You assist with rescheduling or canceling appointments. Be flexible, offer alternative times, and ensure smooth rebooking.',
+  },
+
+  // Financial Services
   {
     id: 'collections',
     name: 'Collections',
     icon: '💰',
+    category: 'Financial',
     description: 'Payment reminders and collection calls',
-    prompt: 'You are a professional collections agent making courteous payment reminder calls.',
+    prompt: 'You are a professional collections agent making courteous payment reminder calls. Be firm but respectful, offer payment options, and document all conversations.',
   },
+  {
+    id: 'payment-reminder',
+    name: 'Payment Reminder',
+    icon: '💳',
+    category: 'Financial',
+    description: 'Friendly payment due date reminders',
+    prompt: 'You remind customers about upcoming payment due dates. Be friendly and helpful, offer payment methods, and assist with any questions.',
+  },
+  {
+    id: 'invoice-followup',
+    name: 'Invoice Follow-up',
+    icon: '📋',
+    category: 'Financial',
+    description: 'Follow up on unpaid invoices',
+    prompt: 'You follow up on outstanding invoices. Verify receipt, address any billing questions, and facilitate prompt payment.',
+  },
+
+  // Marketing & Research
   {
     id: 'survey',
     name: 'Survey & Feedback',
     icon: '📊',
+    category: 'Marketing',
     description: 'Conduct surveys and gather customer feedback',
-    prompt: 'You are conducting a brief survey to gather valuable customer feedback.',
+    prompt: 'You are conducting a brief survey to gather valuable customer feedback. Be respectful of their time, ask clear questions, and thank them for participation.',
   },
+  {
+    id: 'lead-nurturing',
+    name: 'Lead Nurturing',
+    icon: '🌱',
+    category: 'Marketing',
+    description: 'Nurture leads with valuable information',
+    prompt: 'You nurture leads by providing valuable information and building relationships. Share relevant content, answer questions, and gently guide toward conversion.',
+  },
+  {
+    id: 'market-research',
+    name: 'Market Research',
+    icon: '🔍',
+    category: 'Marketing',
+    description: 'Conduct market research calls',
+    prompt: 'You conduct market research interviews. Ask targeted questions, gather insights, and maintain a professional, neutral tone.',
+  },
+
+  // Industry-Specific
   {
     id: 'hvac-scheduling',
     name: 'HVAC Scheduling',
-    icon: '🔧',
+    icon: '❄️',
+    category: 'Home Services',
     description: 'Schedule HVAC service appointments',
-    prompt: 'You are an HVAC scheduling assistant helping customers book service appointments.',
+    prompt: 'You are an HVAC scheduling assistant helping customers book service appointments for heating, cooling, and maintenance needs.',
   },
   {
     id: 'real-estate',
     name: 'Real Estate',
     icon: '🏠',
+    category: 'Real Estate',
     description: 'Property inquiries, showing scheduling, lead qualification',
-    prompt: 'You are a real estate assistant helping potential buyers and sellers with property inquiries.',
+    prompt: 'You are a real estate assistant helping potential buyers and sellers with property inquiries, scheduling showings, and qualifying leads.',
   },
   {
-    id: 'custom',
-    name: 'Custom Agent',
-    icon: '⚡',
-    description: 'Build a custom agent from scratch',
+    id: 'healthcare',
+    name: 'Healthcare',
+    icon: '🏥',
+    category: 'Healthcare',
+    description: 'Appointment scheduling and patient follow-up',
+    prompt: 'You are a healthcare scheduling assistant. Handle appointment bookings with sensitivity, verify insurance information, and provide pre-visit instructions.',
+  },
+  {
+    id: 'legal-intake',
+    name: 'Legal Intake',
+    icon: '⚖️',
+    category: 'Legal',
+    description: 'Initial client intake and case screening',
+    prompt: 'You conduct initial client intake for a law firm. Gather case details professionally, assess urgency, and schedule consultations while maintaining confidentiality.',
+  },
+  {
+    id: 'automotive',
+    name: 'Automotive Service',
+    icon: '🚗',
+    category: 'Automotive',
+    description: 'Service appointments and recalls',
+    prompt: 'You help customers schedule automotive service appointments and notify them about recalls. Explain service needs and answer maintenance questions.',
+  },
+  {
+    id: 'restaurant-reservations',
+    name: 'Restaurant Reservations',
+    icon: '🍽️',
+    category: 'Hospitality',
+    description: 'Take and manage restaurant reservations',
+    prompt: 'You handle restaurant reservations. Confirm party size, special requests, and dietary restrictions while providing excellent hospitality.',
+  },
+  {
+    id: 'hotel-concierge',
+    name: 'Hotel Concierge',
+    icon: '🏨',
+    category: 'Hospitality',
+    description: 'Guest services and recommendations',
+    prompt: 'You are a hotel concierge assisting guests with reservations, recommendations, and special requests. Be knowledgeable and accommodating.',
+  },
+
+  // Custom
+  {
+    id: 'manual',
+    name: 'Manual Builder',
+    icon: '🛠️',
+    category: 'Custom',
+    description: 'Build a custom agent from scratch with AI assistance',
     prompt: '',
   },
 ];
+
+const AGENT_CATEGORIES = ['All', 'Sales', 'Support', 'Appointments', 'Financial', 'Marketing', 'Home Services', 'Real Estate', 'Healthcare', 'Legal', 'Automotive', 'Hospitality', 'Custom'];
 
 // Comprehensive ElevenLabs voice library
 const ELEVENLABS_VOICES = [
@@ -132,6 +275,7 @@ const VOICE_MODELS = [
 export default function AIVoiceAgentWizard({ onClose, onCreate }) {
   const [step, setStep] = useState(1);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [agentName, setAgentName] = useState('');
   const [agentDescription, setAgentDescription] = useState('');
   const [selectedVoice, setSelectedVoice] = useState(ELEVENLABS_VOICES[0]);
@@ -140,7 +284,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
 
   // Voice filtering and search
   const [voiceSearch, setVoiceSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedVoiceCategory, setSelectedVoiceCategory] = useState('All');
   const [selectedGender, setSelectedGender] = useState('All');
   const [showAdvancedSettings, setShowAdvancedSettings] = useState(false);
 
@@ -153,21 +297,102 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
     model: 'eleven_turbo_v2_5'
   });
 
+  // Knowledge Base & Training
+  const [knowledgeBase, setKnowledgeBase] = useState('');
+  const [trainingExamples, setTrainingExamples] = useState([]);
+  const [newExample, setNewExample] = useState({ question: '', response: '' });
+
+  // AI Chat Assistant
+  const [showAIChat, setShowAIChat] = useState(false);
+  const [aiChatMessages, setAiChatMessages] = useState([]);
+  const [aiChatInput, setAiChatInput] = useState('');
+  const [aiChatLoading, setAiChatLoading] = useState(false);
+
   const handleTemplateSelect = (template) => {
     setSelectedTemplate(template);
     setAgentName(template.name);
     setAgentDescription(template.description);
     setCustomPrompt(template.prompt);
+
+    // If manual builder, show AI chat assistant
+    if (template.id === 'manual') {
+      setShowAIChat(true);
+      setAiChatMessages([{
+        role: 'assistant',
+        content: "Hi! I'm here to help you build your custom voice agent. What kind of agent do you want to create? Tell me about:\n\n• What should the agent do?\n• Who will it talk to?\n• What's the main goal?\n\nI'll help you create the perfect configuration!"
+      }]);
+    }
   };
+
+  const filteredTemplates = AGENT_TEMPLATES.filter(template => {
+    if (selectedCategory === 'All') return true;
+    return template.category === selectedCategory;
+  });
 
   const filteredVoices = ELEVENLABS_VOICES.filter(voice => {
     const matchesSearch = voice.name.toLowerCase().includes(voiceSearch.toLowerCase()) ||
                          voice.tone.toLowerCase().includes(voiceSearch.toLowerCase()) ||
                          voice.accent.toLowerCase().includes(voiceSearch.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || voice.category === selectedCategory;
+    const matchesCategory = selectedVoiceCategory === 'All' || voice.category === selectedVoiceCategory;
     const matchesGender = selectedGender === 'All' || voice.gender === selectedGender;
     return matchesSearch && matchesCategory && matchesGender;
   });
+
+  const handleAIChat = async () => {
+    if (!aiChatInput.trim()) return;
+
+    const userMessage = { role: 'user', content: aiChatInput };
+    setAiChatMessages([...aiChatMessages, userMessage]);
+    setAiChatInput('');
+    setAiChatLoading(true);
+
+    try {
+      const response = await api.post('/ai/agent-assistant', {
+        messages: [...aiChatMessages, userMessage],
+        currentConfig: {
+          name: agentName,
+          description: agentDescription,
+          prompt: customPrompt,
+          knowledgeBase,
+          trainingExamples
+        }
+      });
+
+      const assistantMessage = {
+        role: 'assistant',
+        content: response.data.message
+      };
+
+      setAiChatMessages([...aiChatMessages, userMessage, assistantMessage]);
+
+      // Apply suggestions if AI provides them
+      if (response.data.suggestions) {
+        if (response.data.suggestions.name) setAgentName(response.data.suggestions.name);
+        if (response.data.suggestions.description) setAgentDescription(response.data.suggestions.description);
+        if (response.data.suggestions.prompt) setCustomPrompt(response.data.suggestions.prompt);
+        if (response.data.suggestions.knowledgeBase) setKnowledgeBase(response.data.suggestions.knowledgeBase);
+      }
+    } catch (error) {
+      console.error('AI chat error:', error);
+      setAiChatMessages([...aiChatMessages, userMessage, {
+        role: 'assistant',
+        content: 'I apologize, but I encountered an error. Please try again.'
+      }]);
+    } finally {
+      setAiChatLoading(false);
+    }
+  };
+
+  const addTrainingExample = () => {
+    if (newExample.question && newExample.response) {
+      setTrainingExamples([...trainingExamples, newExample]);
+      setNewExample({ question: '', response: '' });
+    }
+  };
+
+  const removeTrainingExample = (index) => {
+    setTrainingExamples(trainingExamples.filter((_, i) => i !== index));
+  };
 
   const handleCreate = async () => {
     setLoading(true);
@@ -179,6 +404,8 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
         voiceId: selectedVoice.id,
         voiceName: selectedVoice.name,
         voiceSettings: voiceSettings,
+        knowledgeBase: knowledgeBase,
+        trainingExamples: trainingExamples,
         enabled: false,
         type: 'voice',
       };
@@ -203,8 +430,8 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-6xl my-4 md:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 p-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
@@ -217,7 +444,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
               </div>
               <div>
                 <h2 className="text-3xl font-bold text-white">AI Voice Agent Wizard</h2>
-                <p className="text-blue-100 text-sm mt-1">Create a voice agent with advanced ElevenLabs customization</p>
+                <p className="text-blue-100 text-sm mt-1">Create intelligent voice agents with advanced customization</p>
               </div>
             </div>
             <button
@@ -230,14 +457,14 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
 
           {/* Progress Steps */}
           <div className="flex items-center gap-2 mt-6">
-            {[1, 2, 3].map((s) => (
+            {[1, 2, 3, 4].map((s) => (
               <div key={s} className="flex items-center flex-1">
                 <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
                   step >= s ? 'bg-white text-blue-600' : 'bg-white/20 text-white'
                 } font-bold text-sm`}>
                   {step > s ? <Check className="w-5 h-5" /> : s}
                 </div>
-                {s < 3 && (
+                {s < 4 && (
                   <div className={`flex-1 h-1 mx-2 rounded ${
                     step > s ? 'bg-white' : 'bg-white/20'
                   }`} />
@@ -245,26 +472,49 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
               </div>
             ))}
           </div>
+          <div className="flex justify-between text-xs text-white/80 mt-2">
+            <span>Choose Type</span>
+            <span>Configure Voice</span>
+            <span>Knowledge & Training</span>
+            <span>Review</span>
+          </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-6 overscroll-contain" style={{ WebkitOverflowScrolling: 'touch' }}>
           {/* Step 1: Choose Template */}
           {step === 1 && (
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Choose Agent Type</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Select a pre-built template or start from scratch
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Select a pre-built template or use Manual Builder for complete customization
               </p>
 
+              {/* Category Filter */}
+              <div className="flex gap-2 overflow-x-auto pb-3 mb-4">
+                {AGENT_CATEGORIES.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-4 py-2 rounded-full text-xs whitespace-nowrap transition-colors ${
+                      selectedCategory === category
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {AGENT_TEMPLATES.map((template) => (
+                {filteredTemplates.map((template) => (
                   <button
                     key={template.id}
                     onClick={() => handleTemplateSelect(template)}
                     className={`p-4 rounded-lg border-2 text-left transition-all ${
                       selectedTemplate?.id === template.id
-                        ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
+                        ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 shadow-lg'
                         : 'border-gray-200 dark:border-gray-700 hover:border-blue-400'
                     }`}
                   >
@@ -275,13 +525,19 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
                       {template.description}
                     </p>
+                    {template.id === 'manual' && (
+                      <div className="mt-2 flex items-center gap-1 text-xs text-purple-600 dark:text-purple-400">
+                        <Brain className="w-3 h-3" />
+                        <span>AI Assisted</span>
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Step 2: Configure Voice */}
+          {/* Step 2: Configure Voice (same as before but condensed) */}
           {step === 2 && (
             <div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Configure Voice</h3>
@@ -306,9 +562,9 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   {VOICE_CATEGORIES.map((category) => (
                     <button
                       key={category}
-                      onClick={() => setSelectedCategory(category)}
+                      onClick={() => setSelectedVoiceCategory(category)}
                       className={`px-3 py-1 rounded-full text-xs whitespace-nowrap transition-colors ${
-                        selectedCategory === category
+                        selectedVoiceCategory === category
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                       }`}
@@ -347,7 +603,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
               </div>
 
               {/* Voice Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6 max-h-96 overflow-y-auto pr-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-6 max-h-96 overflow-y-auto pr-2">
                 {filteredVoices.map((voice) => (
                   <button
                     key={voice.id}
@@ -537,61 +793,271 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
             </div>
           )}
 
-          {/* Step 3: Customize Script */}
+          {/* Step 3: Knowledge Base & Training */}
           {step === 3 && (
-            <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Customize Agent Script</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                Define what your agent should say and how it should behave
-              </p>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Knowledge Base & Training</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Provide domain knowledge and training examples to make your agent smarter
+                </p>
+              </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Agent Instructions
+              {/* AI Chat Assistant for Manual Builder */}
+              {selectedTemplate?.id === 'manual' && (
+                <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-2 border-purple-200 dark:border-purple-700 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">AI Assistant Chat</h4>
+                  </div>
+
+                  <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 mb-3 max-h-64 overflow-y-auto">
+                    {aiChatMessages.map((msg, idx) => (
+                      <div key={idx} className={`mb-3 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                        <div className={`inline-block px-3 py-2 rounded-lg text-sm ${
+                          msg.role === 'user'
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                        }`}>
+                          {msg.content}
+                        </div>
+                      </div>
+                    ))}
+                    {aiChatLoading && (
+                      <div className="text-left">
+                        <div className="inline-block px-3 py-2 rounded-lg text-sm bg-gray-100 dark:bg-gray-700">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={aiChatInput}
+                      onChange={(e) => setAiChatInput(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleAIChat()}
+                      placeholder="Describe what you want your agent to do..."
+                      className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                    />
+                    <button
+                      onClick={handleAIChat}
+                      disabled={aiChatLoading || !aiChatInput.trim()}
+                      className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 text-sm flex items-center gap-2"
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      Send
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Agent Instructions */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Agent Instructions & Behavior
+                </label>
+                <textarea
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
+                  rows={6}
+                  placeholder="Describe how the agent should behave, what it should say, and how it should handle different scenarios..."
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none text-sm"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  💡 Tip: Be specific about tone, goals, objection handling, and escalation procedures
+                </p>
+              </div>
+
+              {/* Knowledge Base */}
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Book className="w-4 h-4 text-gray-500" />
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Knowledge Base (Optional)
                   </label>
-                  <textarea
-                    value={customPrompt}
-                    onChange={(e) => setCustomPrompt(e.target.value)}
-                    rows={8}
-                    placeholder="Describe how the agent should behave, what it should say, and how it should handle different scenarios..."
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none"
-                  />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    💡 Tip: Be specific about tone, goals, and how to handle objections
-                  </p>
+                </div>
+                <textarea
+                  value={knowledgeBase}
+                  onChange={(e) => setKnowledgeBase(e.target.value)}
+                  rows={4}
+                  placeholder="Add product information, FAQs, company policies, or any domain knowledge the agent should know about..."
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none text-sm"
+                />
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  Examples: pricing tiers, service offerings, business hours, common customer questions
+                </p>
+              </div>
+
+              {/* Training Examples */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-gray-500" />
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Training Examples (Optional)
+                    </label>
+                  </div>
+                  <span className="text-xs text-gray-500">{trainingExamples.length} examples</span>
                 </div>
 
-                {/* Summary */}
+                {/* Training Example List */}
+                {trainingExamples.length > 0 && (
+                  <div className="space-y-2 mb-3">
+                    {trainingExamples.map((example, idx) => (
+                      <div key={idx} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 text-sm">
+                            <p className="text-gray-700 dark:text-gray-300 mb-1">
+                              <strong>Q:</strong> {example.question}
+                            </p>
+                            <p className="text-gray-600 dark:text-gray-400">
+                              <strong>A:</strong> {example.response}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => removeTrainingExample(idx)}
+                            className="p-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Add Training Example */}
+                <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white dark:bg-gray-900">
+                  <input
+                    type="text"
+                    value={newExample.question}
+                    onChange={(e) => setNewExample({ ...newExample, question: e.target.value })}
+                    placeholder="Example customer question..."
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-2"
+                  />
+                  <input
+                    type="text"
+                    value={newExample.response}
+                    onChange={(e) => setNewExample({ ...newExample, response: e.target.value })}
+                    placeholder="Ideal agent response..."
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-2"
+                  />
+                  <button
+                    onClick={addTrainingExample}
+                    disabled={!newExample.question || !newExample.response}
+                    className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm flex items-center justify-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Training Example
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                  Training examples help the agent learn your preferred responses to common scenarios
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Review & Create */}
+          {step === 4 && (
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Review Your Agent</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Review all configuration before creating your AI voice agent
+              </p>
+
+              {/* Summary */}
+              <div className="space-y-4">
+                {/* Basic Info */}
                 <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Agent Summary</h4>
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                    <Bot className="w-4 h-4" />
+                    Basic Information
+                  </h4>
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Bot className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-600 dark:text-gray-400">Name:</span>
+                    <div className="flex items-start gap-2">
+                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Name:</span>
                       <span className="font-medium text-gray-900 dark:text-gray-100">{agentName || 'Unnamed Agent'}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Mic className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-600 dark:text-gray-400">Voice:</span>
+                    <div className="flex items-start gap-2">
+                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Type:</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">{selectedTemplate?.name || 'Custom'}</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Description:</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">{agentDescription || 'No description'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Voice Configuration */}
+                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                    <Mic className="w-4 h-4" />
+                    Voice Configuration
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-start gap-2">
+                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Voice:</span>
                       <span className="font-medium text-gray-900 dark:text-gray-100">
                         {selectedVoice.name} ({selectedVoice.gender}, {selectedVoice.accent})
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-600 dark:text-gray-400">Type:</span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">{selectedTemplate?.name || 'Custom'}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Sliders className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-600 dark:text-gray-400">Model:</span>
+                    <div className="flex items-start gap-2">
+                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Model:</span>
                       <span className="font-medium text-gray-900 dark:text-gray-100">
                         {VOICE_MODELS.find(m => m.id === voiceSettings.model)?.name}
                       </span>
                     </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Settings:</span>
+                      <span className="text-gray-900 dark:text-gray-100">
+                        Stability: {voiceSettings.stability}% • Similarity: {voiceSettings.similarityBoost}% • Style: {voiceSettings.style}%
+                      </span>
+                    </div>
                   </div>
                 </div>
+
+                {/* Instructions */}
+                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4" />
+                    Agent Instructions
+                  </h4>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                    {customPrompt || 'No specific instructions provided'}
+                  </p>
+                </div>
+
+                {/* Knowledge & Training */}
+                {(knowledgeBase || trainingExamples.length > 0) && (
+                  <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                      <Brain className="w-4 h-4" />
+                      Knowledge & Training
+                    </h4>
+                    <div className="space-y-2 text-sm">
+                      {knowledgeBase && (
+                        <div>
+                          <span className="text-gray-600 dark:text-gray-400">Knowledge Base:</span>
+                          <p className="text-gray-900 dark:text-gray-100 mt-1">{knowledgeBase.substring(0, 200)}{knowledgeBase.length > 200 ? '...' : ''}</p>
+                        </div>
+                      )}
+                      {trainingExamples.length > 0 && (
+                        <div>
+                          <span className="text-gray-600 dark:text-gray-400">Training Examples:</span>
+                          <p className="text-gray-900 dark:text-gray-100">{trainingExamples.length} example{trainingExamples.length !== 1 ? 's' : ''} provided</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -607,7 +1073,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
           </button>
 
           <div className="flex gap-3">
-            {step < 3 && (
+            {step < 4 && (
               <button
                 onClick={() => setStep(step + 1)}
                 disabled={step === 1 && !selectedTemplate}
@@ -618,7 +1084,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
               </button>
             )}
 
-            {step === 3 && (
+            {step === 4 && (
               <button
                 onClick={handleCreate}
                 disabled={loading || !agentName || !customPrompt}

@@ -806,16 +806,8 @@ function WorkflowStudioContent() {
           />
         </ReactFlow>
 
-        {/* MiniMap Label */}
-        <div
-          className="absolute bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-[10px] px-2 py-0.5 rounded-b"
-          style={{ bottom: 105, right: 10 }}
-        >
-          React Flow
-        </div>
-
-        {/* Help Text */}
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 shadow-lg text-xs text-gray-600 dark:text-gray-400 pointer-events-none">
+        {/* Help Text - Hidden on mobile to prevent navigation interference */}
+        <div className="hidden md:block absolute top-4 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 shadow-lg text-xs text-gray-600 dark:text-gray-400 pointer-events-none">
           💡 Hover over nodes to delete • Click edges and press Delete • Press Shift to multi-select
         </div>
       </div>
