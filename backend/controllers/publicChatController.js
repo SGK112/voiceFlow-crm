@@ -845,3 +845,132 @@ export const requestVoiceDemo = async (req, res) => {
   }
 };
 
+// Schedule a meeting/demo
+export const scheduleMeeting = async (req, res) => {
+  try {
+    const { name, email, phone, date, time, timezone, notes, meetingType } = req.body;
+
+    // Validate required fields
+    if (!name || !email || !date || !time) {
+      return res.status(400).json({
+        error: 'Missing required fields',
+        message: 'Please provide name, email, date, and time.'
+      });
+    }
+
+    // Import Meeting model dynamically
+    const Meeting = (await import('../models/Meeting.js')).default;
+
+    // Create meeting record
+    const meeting = new Meeting({
+      name,
+      email,
+      phone,
+      date,
+      time,
+      timezone: timezone || 'America/New_York',
+      meetingType: meetingType || 'demo',
+      notes,
+      status: 'scheduled',
+      source: 'website'
+    });
+
+    await meeting.save();
+
+    // Send confirmation email to customer
+    const meetingDateTime = new Date(`${date}T${time}`);
+    const formattedDate = meetingDateTime.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    const formattedTime = meetingDateTime.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: timezone
+    });
+
+    await emailService.sendEmail({
+      to: email,
+      subject: 'Meeting Scheduled - VoiceFlow CRM',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #4f46e5;">Your Meeting is Scheduled!</h2>
+          <p>Hi ${name},</p>
+          <p>Thank you for scheduling a meeting with our team. We're excited to speak with you!</p>
+
+          <div style="background: #f8fafc; border-left: 4px solid #4f46e5; padding: 20px; margin: 20px 0;">
+            <h3 style="margin-top: 0;">Meeting Details</h3>
+            <p style="margin: 8px 0;"><strong>Date:</strong> ${formattedDate}</p>
+            <p style="margin: 8px 0;"><strong>Time:</strong> ${formattedTime} (${timezone})</p>
+            <p style="margin: 8px 0;"><strong>Duration:</strong> 30 minutes</p>
+            <p style="margin: 8px 0;"><strong>Type:</strong> ${meetingType === 'demo' ? 'Product Demo' : 'Sales Call'}</p>
+            ${phone ? `<p style="margin: 8px 0;"><strong>Phone:</strong> ${phone}</p>` : ''}
+          </div>
+
+          ${notes ? `<p><strong>Your notes:</strong> ${notes}</p>` : ''}
+
+          <p>You'll receive a calendar invite shortly. If you need to reschedule or have any questions, please reply to this email.</p>
+
+          <p>Looking forward to speaking with you!</p>
+
+          <p style="margin-top: 30px;">
+            Best regards,<br>
+            <strong>VoiceFlow CRM Sales Team</strong>
+          </p>
+        </div>
+      `,
+      text: `Your Meeting is Scheduled!\n\nHi ${name},\n\nThank you for scheduling a meeting with our team.\n\nMeeting Details:\nDate: ${formattedDate}\nTime: ${formattedTime} (${timezone})\nDuration: 30 minutes\n${phone ? `Phone: ${phone}\n` : ''}${notes ? `\nYour notes: ${notes}\n` : ''}\n\nLooking forward to speaking with you!\n\nBest regards,\nVoiceFlow CRM Sales Team`
+    });
+
+    // Send notification to sales team
+    await emailService.sendEmail({
+      to: process.env.HELP_DESK_EMAIL || 'help.remodely@gmail.com',
+      subject: `New Meeting Scheduled - ${name}`,
+      html: `
+        <div style="font-family: Arial, sans-serif;">
+          <h2>New Meeting Scheduled</h2>
+          <p>A new meeting has been scheduled through the website.</p>
+
+          <h3>Customer Information:</h3>
+          <ul>
+            <li><strong>Name:</strong> ${name}</li>
+            <li><strong>Email:</strong> ${email}</li>
+            ${phone ? `<li><strong>Phone:</strong> ${phone}</li>` : ''}
+          </ul>
+
+          <h3>Meeting Details:</h3>
+          <ul>
+            <li><strong>Date:</strong> ${formattedDate}</li>
+            <li><strong>Time:</strong> ${formattedTime} (${timezone})</li>
+            <li><strong>Type:</strong> ${meetingType}</li>
+            ${notes ? `<li><strong>Notes:</strong> ${notes}</li>` : ''}
+          </ul>
+
+          <p><a href="mailto:${email}" style="background: #4f46e5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin-top: 10px;">Reply to Customer</a></p>
+        </div>
+      `,
+      text: `New Meeting Scheduled\n\nCustomer: ${name}\nEmail: ${email}\n${phone ? `Phone: ${phone}\n` : ''}\n\nDate: ${formattedDate}\nTime: ${formattedTime} (${timezone})\nType: ${meetingType}\n${notes ? `Notes: ${notes}\n` : ''}`
+    });
+
+    res.json({
+      success: true,
+      message: 'Meeting scheduled successfully',
+      meeting: {
+        id: meeting._id,
+        date,
+        time,
+        timezone
+      }
+    });
+
+  } catch (error) {
+    console.error('Schedule meeting error:', error);
+    res.status(500).json({
+      error: 'Failed to schedule meeting',
+      message: 'Sorry, we couldn\'t schedule your meeting. Please try again or contact us directly.'
+    });
+  }
+};
+
