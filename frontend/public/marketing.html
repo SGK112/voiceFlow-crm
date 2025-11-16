@@ -581,12 +581,77 @@
             margin-right: auto;
         }
 
+        .hero-subtitle {
+            font-size: 20px;
+            line-height: 1.7;
+            color: #475569;
+            margin-bottom: 36px;
+            font-weight: 400;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 48px;
+            margin-bottom: 36px;
+            padding: 24px 0;
+        }
+
+        .hero-stat {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
         .cta-group {
             display: flex;
             gap: 16px;
-            justify-content: center;
+            justify-content: flex-start;
             flex-wrap: wrap;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
+        }
+
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-features {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .hero-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .hero-feature-item svg {
+            color: #22c55e;
+            flex-shrink: 0;
         }
 
         .hero-notice {
@@ -2262,19 +2327,64 @@
         <div class="hero-wrapper">
             <div class="hero-content">
                 <div class="hero-badge">
-                    ✨ Powered by ElevenLabs AI Voice Technology
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    Powered by ElevenLabs AI Voice Technology
                 </div>
-                <h1>Build <span class="gradient-text">AI Voice Workflows</span> That Actually Work</h1>
-                <p>VoiceFlow CRM by Remodely.ai combines powerful voice AI with n8n-style visual workflows. Create no-code automations with easy OAuth consent, route calls to voice agents, trigger workflows, and more—all in one intuitive platform.</p>
+                <h1>AI Voice Agents That <span class="gradient-text">Work 24/7</span> for Your Business</h1>
+                <p class="hero-subtitle">Automate calls, qualify leads, and book appointments with intelligent voice AI. Build custom workflows without code and scale your operations instantly.</p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Calls Automated</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">Answer Rate</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="stat-number">30s</div>
+                        <div class="stat-label">Avg Response Time</div>
+                    </div>
+                </div>
                 <div class="cta-group">
-                    <a href="/login" class="btn btn-primary">Start Free Trial →</a>
-                    <a href="#how-it-works" class="btn btn-secondary">See How It Works</a>
+                    <a href="/login" class="btn btn-primary btn-large">
+                        <span>Start Free Trial</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-left: 8px;">
+                            <path d="M5 12h14M12 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                    <button class="btn btn-secondary btn-large" onclick="openCalendarModal()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <span>Schedule Demo</span>
+                    </button>
                 </div>
-                <p class="hero-notice">
-                    <span><span style="color: #3b82f6; font-weight: 800;">✓</span> 14-day free trial</span>
-                    <span><span style="color: #3b82f6; font-weight: 800;">✓</span> No credit card required</span>
-                    <span><span style="color: #3b82f6; font-weight: 800;">✓</span> Visual workflow builder</span>
-                </p>
+                <div class="hero-features">
+                    <div class="hero-feature-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>14-day free trial</span>
+                    </div>
+                    <div class="hero-feature-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>No credit card required</span>
+                    </div>
+                    <div class="hero-feature-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Setup in 5 minutes</span>
+                    </div>
+                </div>
             </div>
             <div class="hero-visual">
                 <div class="phone-mockup">
@@ -2489,29 +2599,29 @@
     <section class="workflow-builder-section" id="workflow-builder">
         <div class="workflow-container">
             <div class="section-title">
-                <h2>Visual No-Code Workflow Builder</h2>
-                <p>Design powerful automation workflows with our intuitive drag-and-drop interface—no coding required.</p>
+                <h2>Voice-First Automation Workflows</h2>
+                <p>Connect voice agents to your business processes with visual, no-code workflows—built for real conversations.</p>
             </div>
 
             <div class="workflow-builder-demo">
                 <div class="workflow-canvas-preview">
                     <div class="workflow-node trigger-node" style="left: 50px; top: 100px;">
-                        <div class="node-icon">🎯</div>
-                        <div class="node-label">Webhook Trigger</div>
+                        <div class="node-icon">📞</div>
+                        <div class="node-label">Incoming Call</div>
                         <div class="node-connector"></div>
                     </div>
                     <div class="workflow-connection" style="left: 140px; top: 125px; width: 60px;"></div>
 
                     <div class="workflow-node action-node" style="left: 200px; top: 100px;">
-                        <div class="node-icon">🔍</div>
-                        <div class="node-label">Spam Detection</div>
+                        <div class="node-icon">🤖</div>
+                        <div class="node-label">AI Voice Agent</div>
                         <div class="node-connector"></div>
                     </div>
                     <div class="workflow-connection" style="left: 290px; top: 125px; width: 60px;"></div>
 
                     <div class="workflow-node condition-node" style="left: 350px; top: 100px;">
                         <div class="node-icon">⚡</div>
-                        <div class="node-label">Route Lead</div>
+                        <div class="node-label">Qualify Lead</div>
                         <div class="node-connector" style="top: 40px; left: 50%;"></div>
                         <div class="node-connector" style="top: 40px; left: 50%; transform: translateX(-50%) rotate(45deg);"></div>
                     </div>
@@ -2520,14 +2630,14 @@
                     <div class="workflow-connection diagonal" style="left: 395px; top: 150px; width: 70px; height: 70px;"></div>
 
                     <div class="workflow-node action-node" style="left: 350px; top: 210px;">
-                        <div class="node-icon">📧</div>
-                        <div class="node-label">Send Email</div>
+                        <div class="node-icon">📅</div>
+                        <div class="node-label">Book Appointment</div>
                         <div class="node-connector"></div>
                     </div>
 
                     <div class="workflow-node action-node" style="left: 460px; top: 210px;">
-                        <div class="node-icon">📞</div>
-                        <div class="node-label">AI Voice Call</div>
+                        <div class="node-icon">📨</div>
+                        <div class="node-label">Send Follow-up</div>
                         <div class="node-connector"></div>
                     </div>
 
@@ -2536,12 +2646,12 @@
 
                     <div class="workflow-node integration-node" style="left: 350px; top: 310px;">
                         <div class="node-icon">📊</div>
-                        <div class="node-label">Google Sheets</div>
+                        <div class="node-label">Update CRM</div>
                     </div>
 
                     <div class="workflow-node integration-node" style="left: 460px; top: 310px;">
-                        <div class="node-icon">💾</div>
-                        <div class="node-label">Save to CRM</div>
+                        <div class="node-icon">📧</div>
+                        <div class="node-label">Notify Team</div>
                     </div>
 
                     <div class="workflow-pulse" style="left: 50px; top: 100px;"></div>
@@ -2551,43 +2661,43 @@
                     <div class="workflow-feature-item">
                         <div class="feature-check">✓</div>
                         <div>
-                            <h4>Drag & Drop Interface</h4>
-                            <p>Build complex workflows visually—no code needed</p>
+                            <h4>Voice Agent Integration</h4>
+                            <p>Connect ElevenLabs AI voice agents directly to your workflows</p>
                         </div>
                     </div>
                     <div class="workflow-feature-item">
                         <div class="feature-check">✓</div>
                         <div>
-                            <h4>Pre-Built Templates</h4>
-                            <p>Start with proven templates for lead generation, follow-ups, and more</p>
+                            <h4>Smart Call Routing</h4>
+                            <p>Route calls to the right agent based on lead score, time, or custom rules</p>
                         </div>
                     </div>
                     <div class="workflow-feature-item">
                         <div class="feature-check">✓</div>
                         <div>
-                            <h4>Smart Integrations</h4>
-                            <p>Connect ElevenLabs, Google Sheets, Email, SMS, and 100+ apps</p>
+                            <h4>Automated Follow-ups</h4>
+                            <p>Trigger SMS, email, or voice calls based on conversation outcomes</p>
                         </div>
                     </div>
                     <div class="workflow-feature-item">
                         <div class="feature-check">✓</div>
                         <div>
-                            <h4>Real-Time Testing</h4>
-                            <p>Test workflows instantly and see results as they happen</p>
+                            <h4>CRM Sync</h4>
+                            <p>Automatically update your CRM with call transcripts and lead data</p>
                         </div>
                     </div>
                     <div class="workflow-feature-item">
                         <div class="feature-check">✓</div>
                         <div>
-                            <h4>Conditional Logic</h4>
-                            <p>Route leads based on custom rules, scores, and behaviors</p>
+                            <h4>Appointment Booking</h4>
+                            <p>Let voice agents schedule meetings and sync to your calendar</p>
                         </div>
                     </div>
                     <div class="workflow-feature-item">
                         <div class="feature-check">✓</div>
                         <div>
-                            <h4>Custom Code Nodes</h4>
-                            <p>Add JavaScript for advanced logic when needed</p>
+                            <h4>No-Code Builder</h4>
+                            <p>Drag-and-drop interface—build complex automations in minutes</p>
                         </div>
                     </div>
                 </div>
