@@ -1616,32 +1616,38 @@
             cursor: not-allowed;
         }
 
-        /* Suggestion chips */
+        /* Suggestion chips - Professional */
         .suggestion-chips {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            padding: 8px 12px;
-            margin-top: 8px;
+            gap: 6px;
+            padding: 6px 0;
+            margin-top: 10px;
         }
 
         .suggestion-chip {
-            padding: 8px 14px;
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 13px;
-            color: #475569;
+            padding: 7px 12px;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #374151;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s ease;
             white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         .suggestion-chip:hover {
-            background: #e0e7ff;
-            border-color: #3b82f6;
-            color: #3b82f6;
-            transform: translateY(-1px);
+            background: #4f46e5;
+            border-color: #4f46e5;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+        }
+
+        .suggestion-chip:active {
+            transform: scale(0.98);
         }
 
         /* Hide default ElevenLabs widget button but keep functionality */
@@ -1774,6 +1780,12 @@
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease-out;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .contact-modal::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
 
         @media (max-width: 640px) {
@@ -1902,40 +1914,49 @@
         }
 
         .contact-form-btn {
-            padding: 12px 24px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 12px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px;
             border: none;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.15s ease;
             font-family: 'Inter', sans-serif;
         }
 
         .contact-form-btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: #4f46e5;
             color: white;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         .contact-form-btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            background: #4338ca;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-form-btn-primary:active {
+            transform: scale(0.98);
         }
 
         .contact-form-btn-primary:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
 
         .contact-form-btn-secondary {
-            background: #f1f5f9;
-            color: #64748b;
+            background: #f3f4f6;
+            color: #6b7280;
         }
 
         .contact-form-btn-secondary:hover {
-            background: #e2e8f0;
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .contact-form-btn-secondary:active {
+            transform: scale(0.98);
         }
 
         .contact-form-success {
@@ -1944,8 +1965,15 @@
         }
 
         .contact-form-success-icon {
-            font-size: 64px;
-            margin-bottom: 16px;
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: #d1fae5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #059669;
         }
 
         .contact-form-success h3 {
@@ -2629,8 +2657,12 @@
                 </div>
             </div>
             <div id="contactFormSuccess" class="contact-form-success" style="display: none;">
-                <div class="contact-form-success-icon">✅</div>
-                <h3>Message Sent!</h3>
+                <div class="contact-form-success-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <h3>Message Sent</h3>
                 <p>Thank you for your interest. Our sales team will reach out to you within 24 hours.</p>
                 <button type="button" class="contact-form-btn contact-form-btn-primary" id="contactFormClose">Close</button>
             </div>
@@ -2996,7 +3028,9 @@
 
             const avatar = document.createElement('div');
             avatar.className = 'message-avatar';
-            avatar.textContent = isUser ? '👤' : '🤖';
+            avatar.innerHTML = isUser ?
+                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' :
+                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path></svg>';
 
             const content = document.createElement('div');
             content.className = 'message-content';
@@ -3010,7 +3044,7 @@
                 const contactButton = document.createElement('button');
                 contactButton.className = 'contact-form-btn contact-form-btn-primary';
                 contactButton.style.marginTop = '12px';
-                contactButton.textContent = '📝 Fill Out Contact Form';
+                contactButton.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 6px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>Contact Sales';
                 contactButton.onclick = () => {
                     openContactModal();
                     // Pre-fill the interest to "demo" since they were chatting

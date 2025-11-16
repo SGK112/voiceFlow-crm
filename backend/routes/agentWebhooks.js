@@ -1,8 +1,7 @@
 import express from 'express';
-import EmailService from '../services/emailService.js';
+import emailService from '../services/emailService.js';
 
 const router = express.Router();
-const emailService = new EmailService();
 
 /**
  * Webhook for agents to send signup links
