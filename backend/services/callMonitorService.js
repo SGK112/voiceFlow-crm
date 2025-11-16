@@ -86,6 +86,14 @@ class CallMonitorService {
       return;
     }
 
+    // Skip if webhooks are configured (preferred method)
+    if (process.env.WEBHOOK_URL && process.env.WEBHOOK_URL.length > 0) {
+      console.log(`⚠️  Webhooks configured - skipping call monitoring (webhooks handle post-call emails)`);
+      this.stopMonitoring();
+      this.monitoredCalls.clear();
+      return;
+    }
+
     console.log(`🔍 Checking ${this.monitoredCalls.size} monitored calls...`);
 
     for (const [callId, callData] of this.monitoredCalls.entries()) {
