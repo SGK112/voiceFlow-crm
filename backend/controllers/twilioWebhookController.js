@@ -4,6 +4,7 @@ import VoiceAgent from '../models/VoiceAgent.js';
 import Campaign from '../models/Campaign.js';
 import TwilioService from '../services/twilioService.js';
 import ElevenLabsService from '../services/elevenLabsService.js';
+import callMonitorService from '../services/callMonitorService.js';
 
 const twilioService = new TwilioService();
 const elevenLabsService = new ElevenLabsService(process.env.ELEVENLABS_API_KEY);
@@ -325,7 +326,18 @@ export const handleTwilioSms = async (req, res) => {
         );
 
         if (callData) {
-          console.log(`✅ Voice call initiated: ${callData.id || callData.call_id || 'ID pending'}`);
+          const callId = callData.id || callData.call_id;
+          console.log(`✅ Voice call initiated: ${callId || 'ID pending'}`);
+
+          // Register call for automatic post-call email monitoring
+          if (callId) {
+            callMonitorService.registerCall(callId, From, {
+              customer_name: customerName,
+              customer_phone: From,
+              trigger_source: 'sms_request'
+            });
+            console.log(`✅ Call registered for automatic email follow-up`);
+          }
 
           response.message('Perfect! My AI voice agent is calling you right now to discuss VoiceFlow CRM. Answer and chat! 📞');
         } else {

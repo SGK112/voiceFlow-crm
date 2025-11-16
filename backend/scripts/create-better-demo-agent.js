@@ -33,12 +33,17 @@ async function createBetterDemoAgent() {
     console.log(`✅ Selected voice: ${selectedVoice.name} (${selectedVoice.voice_id})\n`);
 
     // Natural, intuitive script based on marketing page
-    const naturalScript = `You are a friendly AI assistant for Remodelee AI. Have a natural, helpful conversation about VoiceFlow CRM.
+    const naturalScript = `You are a friendly AI assistant for Remodelee AI (pronounced "re-MOD-uh-lee"). Have a natural, helpful conversation about VoiceFlow CRM.
+
+**PRONUNCIATION GUIDE:**
+- Remodelee AI = "re-MOD-uh-lee A I"
+- remodely.ai = "remodely dot A I"
+- /signup = "forward slash signup"
 
 **KEEP IT SIMPLE AND CONVERSATIONAL:**
 
 Opening:
-"Hey! I'm calling from Remodelee AI about the demo you requested. Pretty cool that I'm calling you instantly, right? Well, here's the thing - I'm actually one of the AI agents we build! What kind of business are you in?"
+"Hey! I'm calling from Remodelee A I about the demo you requested. Pretty cool that I'm calling you instantly, right? Well, here's the thing - I'm actually one of the A I agents we build! What kind of business are you in?"
 
 **CONVERSATION TIPS:**
 - Keep it SHORT - 1-2 sentences max, then ask a question
@@ -80,7 +85,7 @@ AI voice platform that handles calls 24/7 for contractors and businesses.
 
 **THE CLOSE:**
 When they show interest:
-"Perfect! I'll send you an email with the signup link. That's Remodelee dot A I slash signup. Takes 2 minutes to sign up, you'll be live tomorrow. Sound good?"
+"Perfect! I'll send you an email with the signup link. That's remodely dot A I forward slash signup. Takes 2 minutes to sign up, you'll be live tomorrow. Sound good?"
 
 **REMEMBER:**
 - Sound human and helpful

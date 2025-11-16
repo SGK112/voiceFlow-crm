@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth Flow Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .code {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .provider-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .provider-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .provider-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        .provider-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔐 OAuth Integration Test</h1>
+        <p>Test the VoiceFlow CRM OAuth credential flow</p>
+
+        <div class="status success">
+            ✅ <strong>Server Running:</strong> http://localhost:5174
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Manual Testing Steps</h2>
+            <ol>
+                <li><strong>Open Workflow Builder:</strong>
+                    <div class="code">http://localhost:5174/app/workflows</div>
+                </li>
+                <li><strong>Create New Workflow</strong> or open existing one</li>
+                <li><strong>Open Node Palette</strong> (left sidebar)</li>
+                <li><strong>Find "Integrations" Category</strong></li>
+                <li><strong>Drag any OAuth node</strong> onto canvas:</li>
+            </ol>
+
+            <div class="provider-grid">
+                <div class="provider-card" onclick="showInfo('google_sheets')">
+                    <div class="provider-icon">📊</div>
+                    <div>Google Sheets</div>
+                </div>
+                <div class="provider-card" onclick="showInfo('google_calendar')">
+                    <div class="provider-icon">📅</div>
+                    <div>Google Calendar</div>
+                </div>
+                <div class="provider-card" onclick="showInfo('gmail')">
+                    <div class="provider-icon">📧</div>
+                    <div>Gmail</div>
+                </div>
+                <div class="provider-card" onclick="showInfo('slack')">
+                    <div class="provider-icon">💬</div>
+                    <div>Slack</div>
+                </div>
+                <div class="provider-card" onclick="showInfo('facebook')">
+                    <div class="provider-icon">📘</div>
+                    <div>Facebook</div>
+                </div>
+                <div class="provider-card" onclick="showInfo('quickbooks')">
+                    <div class="provider-icon">💰</div>
+                    <div>QuickBooks</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>✨ Expected Behavior</h2>
+            <ol>
+                <li>Credential modal pops up automatically</li>
+                <li>Shows provider name (e.g., "Google Sheets")</li>
+                <li>Shows "Connect" button</li>
+                <li>Click "Connect" → Opens n8n OAuth popup</li>
+                <li>After auth → Node is added to canvas</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Quick Tests</h2>
+
+            <button onclick="testAPI('/api/credentials/node/google_sheets')">
+                Test Google Sheets Detection
+            </button>
+
+            <button onclick="testAPI('/api/credentials/node/slack')">
+                Test Slack Detection
+            </button>
+
+            <button onclick="openWorkflows()">
+                Open Workflow Builder
+            </button>
+
+            <button onclick="openN8n()">
+                Open n8n Dashboard
+            </button>
+
+            <div id="result" style="margin-top: 20px;"></div>
+        </div>
+
+        <div class="status info">
+            <strong>📖 Note:</strong> Full OAuth requires OAuth apps configured in n8n.
+            See <code>OAUTH_TESTING_GUIDE.md</code> for setup instructions.
+        </div>
+    </div>
+
+    <script>
+        function testAPI(endpoint) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="code">Loading...</div>';
+
+            fetch(`http://localhost:5001${endpoint}`)
+                .then(r => r.json())
+                .then(data => {
+                    resultDiv.innerHTML = `
+                        <div class="status success">
+                            <strong>✅ API Response:</strong>
+                            <pre class="code">${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                })
+                .catch(err => {
+                    resultDiv.innerHTML = `
+                        <div class="status" style="background: #f8d7da; border-color: #f5c6cb; color: #721c24;">
+                            <strong>❌ Error:</strong> ${err.message}
+                            <br><br>
+                            <small>Make sure you're logged in to the CRM first!</small>
+                        </div>
+                    `;
+                });
+        }
+
+        function showInfo(type) {
+            const providers = {
+                google_sheets: {
+                    name: 'Google Sheets',
+                    description: 'Read and write data to Google Sheets',
+                    color: '#34a853'
+                },
+                slack: {
+                    name: 'Slack',
+                    description: 'Post messages to Slack channels',
+                    color: '#4a154b'
+                },
+                facebook: {
+                    name: 'Facebook',
+                    description: 'Post to Facebook pages',
+                    color: '#1877f2'
+                }
+            };
+
+            const provider = providers[type] || { name: type, description: 'OAuth integration' };
+
+            document.getElementById('result').innerHTML = `
+                <div class="status info">
+                    <h3 style="margin-top: 0;">${provider.name}</h3>
+                    <p>${provider.description}</p>
+                    <p><strong>When dragged onto canvas:</strong></p>
+                    <ol>
+                        <li>System checks if credential exists</li>
+                        <li>If not → Shows connection modal</li>
+                        <li>User clicks "Connect"</li>
+                        <li>Opens OAuth flow in popup</li>
+                        <li>After auth → Node is added</li>
+                    </ol>
+                </div>
+            `;
+        }
+
+        function openWorkflows() {
+            window.open('http://localhost:5174/app/workflows', '_blank');
+        }
+
+        function openN8n() {
+            window.open('http://5.183.8.119:5678', '_blank');
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            console.log('OAuth Test Page Loaded');
+            console.log('Workflow Builder: http://localhost:5174/app/workflows');
+            console.log('n8n Dashboard: http://5.183.8.119:5678');
+        });
+    </script>
+</body>
+</html>

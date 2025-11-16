@@ -1,6 +1,7 @@
 import express from 'express';
 import twilio from 'twilio';
 import ElevenLabsService from '../services/elevenLabsService.js';
+import callMonitorService from '../services/callMonitorService.js';
 
 const router = express.Router();
 
@@ -58,13 +59,24 @@ router.post('/trigger-demo-call', async (req, res) => {
             null   // Use agent's default first message
           );
 
-          console.log(`📞 Demo call initiated: ${callData.id || callData.call_id || 'ID pending'}`);
+          const callId = callData.id || callData.call_id;
+          console.log(`📞 Demo call initiated: ${callId || 'ID pending'}`);
+
+          // Register call for monitoring (automatic post-call emails)
+          if (callId) {
+            callMonitorService.registerCall(callId, From, {
+              customer_phone: From,
+              customer_name: 'there',
+              trigger_source: 'sms_demo'
+            });
+            console.log(`✅ Call registered for automatic email follow-up`);
+          }
 
           // Log the interaction
           console.log({
             type: 'demo_call_triggered',
             phone: From,
-            callId: callData.id || callData.call_id,
+            callId: callId,
             agentId: DEMO_AGENT_ID,
             timestamp: new Date()
           });

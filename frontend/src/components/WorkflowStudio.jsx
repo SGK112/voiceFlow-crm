@@ -36,9 +36,11 @@ import {
   ExternalLink,
   ShoppingBag,
   Workflow as WorkflowIcon,
-  Rocket
+  Rocket,
+  Key
 } from 'lucide-react';
 import api from '../services/api';
+import CredentialConnectionModal from './CredentialConnectionModal';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
@@ -141,7 +143,17 @@ const nodeTemplates = [
   // === MARKETING & PROMOTIONS ===
   { type: 'promo_campaign', label: 'Promo Campaign', icon: '🎁', color: '#ec4899', description: 'Send promotion', category: 'Marketing' },
   { type: 'drip_sequence', label: 'Drip Sequence', icon: '💧', color: '#ec4899', description: 'Nurture sequence', category: 'Marketing' },
-  { type: 'segment_filter', label: 'Segment Filter', icon: '🎯', color: '#ec4899', description: 'Filter by criteria', category: 'Marketing' }
+  { type: 'segment_filter', label: 'Segment Filter', icon: '🎯', color: '#ec4899', description: 'Filter by criteria', category: 'Marketing' },
+
+  // === INTEGRATIONS (OAuth Required) ===
+  { type: 'google_sheets', label: 'Google Sheets', icon: '📊', color: '#34a853', description: 'Read/Write sheets', category: 'Integrations', requiresOAuth: true },
+  { type: 'google_calendar', label: 'Google Calendar', icon: '📅', color: '#4285f4', description: 'Manage events', category: 'Integrations', requiresOAuth: true },
+  { type: 'gmail', label: 'Gmail', icon: '📧', color: '#ea4335', description: 'Send emails', category: 'Integrations', requiresOAuth: true },
+  { type: 'slack', label: 'Slack', icon: '💬', color: '#4a154b', description: 'Post messages', category: 'Integrations', requiresOAuth: true },
+  { type: 'facebook', label: 'Facebook', icon: '📘', color: '#1877f2', description: 'Post to page', category: 'Integrations', requiresOAuth: true },
+  { type: 'quickbooks', label: 'QuickBooks', icon: '💰', color: '#2ca01c', description: 'Manage invoices', category: 'Integrations', requiresOAuth: true },
+  { type: 'stripe', label: 'Stripe', icon: '💳', color: '#635bff', description: 'Process payments', category: 'Integrations', requiresOAuth: true },
+  { type: 'hubspot', label: 'HubSpot', icon: '🟠', color: '#ff7a59', description: 'CRM integration', category: 'Integrations', requiresOAuth: true }
 ];
 
 // AI Workflow Wizard Modal Component
@@ -354,6 +366,11 @@ function WorkflowStudioContent() {
   const [nodeAIResponse, setNodeAIResponse] = useState(null);
   const [nodeAILoading, setNodeAILoading] = useState(false);
 
+  // Credential State
+  const [showCredentialModal, setShowCredentialModal] = useState(false);
+  const [pendingNode, setPendingNode] = useState(null);
+  const [credentialInfo, setCredentialInfo] = useState(null);
+
   // Load workflows on mount
   useEffect(() => {
     fetchWorkflows();
@@ -503,7 +520,7 @@ function WorkflowStudioContent() {
     event.dataTransfer.setData('application/reactflow', JSON.stringify(nodeTemplate));
   };
 
-  const onDrop = (event) => {
+  const onDrop = async (event) => {
     event.preventDefault();
     const templateData = JSON.parse(event.dataTransfer.getData('application/reactflow'));
 
@@ -526,12 +543,40 @@ function WorkflowStudioContent() {
       }
     };
 
+    // Check if node requires OAuth credentials
+    if (templateData.requiresOAuth) {
+      try {
+        const response = await api.get(`/credentials/node/${templateData.type}`);
+        const credData = response.data;
+
+        if (!credData.isConfigured) {
+          // Credential not configured, show modal
+          setPendingNode(newNode);
+          setCredentialInfo(credData);
+          setShowCredentialModal(true);
+          return; // Don't add node yet
+        }
+      } catch (error) {
+        console.error('Error checking credentials:', error);
+      }
+    }
+
+    // Add node if no credentials needed or already configured
     setNodes((nds) => nds.concat(newNode));
   };
 
   const onDragOver = (event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleCredentialConnected = (credInfo) => {
+    console.log('Credential connected:', credInfo);
+    // Add the pending node now that credential is configured
+    if (pendingNode) {
+      setNodes((nds) => nds.concat(pendingNode));
+      setPendingNode(null);
+    }
   };
 
   const updateNodeParams = (nodeId, newParams) => {
@@ -1423,6 +1468,20 @@ function WorkflowStudioContent() {
         <AIWorkflowWizard
           onClose={() => setShowAIWizard(false)}
           onGenerate={handleAIWorkflowGenerate}
+        />
+      )}
+
+      {/* Credential Connection Modal */}
+      {showCredentialModal && credentialInfo && (
+        <CredentialConnectionModal
+          isOpen={showCredentialModal}
+          onClose={() => {
+            setShowCredentialModal(false);
+            setPendingNode(null);
+            setCredentialInfo(null);
+          }}
+          credentialInfo={credentialInfo}
+          onConnected={handleCredentialConnected}
         />
       )}
     </div>
