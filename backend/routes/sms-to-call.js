@@ -2,8 +2,10 @@ import express from 'express';
 import twilio from 'twilio';
 import ElevenLabsService from '../services/elevenLabsService.js';
 import callMonitorService from '../services/callMonitorService.js';
+import AIService from '../services/aiService.js';
 
 const router = express.Router();
+const aiService = new AIService();
 
 const twilioClient = twilio(
   process.env.TWILIO_ACCOUNT_SID,
@@ -12,24 +14,29 @@ const twilioClient = twilio(
 
 const elevenLabsService = new ElevenLabsService(process.env.ELEVENLABS_API_KEY);
 
-// SMS agent configuration (separate from website form agent)
-const SMS_AGENT_ID = process.env.ELEVENLABS_SMS_AGENT_ID || 'agent_9701k9xptd0kfr383djx5zk7300x';
+// SMS agent configuration (uses dedicated SMS agent or falls back to demo agent)
+const SMS_AGENT_ID = process.env.ELEVENLABS_SMS_AGENT_ID || process.env.ELEVENLABS_DEMO_AGENT_ID || 'agent_8101ka4wyweke1s9np3je7npewrr';
 const DEMO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 
 /**
- * Handle incoming SMS for short code workflow
- * User texts "DEMO" to trigger a demo call
+ * Handle incoming SMS with AI responses and voice call capability
+ * - AI responds to any message via text
+ * - Triggers voice call when user says "call me" or similar
  */
 router.post('/trigger-demo-call', async (req, res) => {
   try {
     const { From, Body } = req.body;
-    const message = Body?.trim().toLowerCase();
+    const message = Body?.trim();
+    const messageLower = message.toLowerCase();
 
     console.log(`📱 SMS received from ${From}: "${Body}"`);
 
-    // Check if message is "demo" (case insensitive)
-    if (message === 'demo') {
-      console.log(`🎯 Demo request detected! Initiating call to ${From}...`);
+    // Check if user wants a voice call
+    const callTriggers = ['call me', 'call', 'phone call', 'speak', 'talk', 'voice', 'demo call'];
+    const wantsCall = callTriggers.some(trigger => messageLower.includes(trigger));
+
+    if (wantsCall) {
+      console.log(`📞 Voice call request detected! Initiating call to ${From}...`);
 
       // Send confirmation SMS
       await twilioClient.messages.create({
@@ -95,23 +102,63 @@ router.post('/trigger-demo-call', async (req, res) => {
 
       res.status(200).send(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`);
 
-    } else if (message.includes('demo') || message.includes('call me')) {
-      // Partial match - provide instructions
-      await twilioClient.messages.create({
-        from: DEMO_PHONE_NUMBER,
-        to: From,
-        body: '👋 Want a live demo? Just text "DEMO" and our AI agent will call you instantly!'
-      });
-
-      res.status(200).send(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`);
-
     } else {
-      // Default response
-      await twilioClient.messages.create({
-        from: DEMO_PHONE_NUMBER,
-        to: From,
-        body: '🎙️ Welcome to Remodely.ai! Text "DEMO" for an instant AI demo call, or visit remodely.ai to get started.'
-      });
+      // AI-powered text response for any other message
+      console.log(`🤖 Generating AI response for: "${Body}"`);
+
+      try {
+        const aiResponse = await aiService.chat([
+          {
+            role: 'system',
+            content: `You are an AI assistant for Remodely.ai, a Voice Workflow CRM platform.
+
+Your role:
+- Answer questions about Remodely.ai features (AI voice agents, workflow automation, CRM, etc.)
+- Be friendly, helpful, and concise (SMS responses should be under 160 characters when possible)
+- If asked about pricing, features, or demos, provide helpful info
+- Suggest they text "call me" if they want to speak with our AI voice agent
+- Keep responses professional but conversational
+
+Key features to mention when relevant:
+- 24/7 AI voice agents (powered by ElevenLabs)
+- Visual workflow automation (like n8n)
+- Full CRM with lead & deal management
+- Integrations with Google, Slack, Stripe, etc.
+- No coding required
+
+If unsure about something specific, suggest they visit remodely.ai or text "call me" for a voice demo.`
+          },
+          {
+            role: 'user',
+            content: message
+          }
+        ], {
+          model: 'gpt-4o-mini',
+          temperature: 0.7,
+          maxTokens: 150
+        });
+
+        const responseText = aiResponse.trim();
+
+        // Send AI response via SMS
+        await twilioClient.messages.create({
+          from: DEMO_PHONE_NUMBER,
+          to: From,
+          body: responseText
+        });
+
+        console.log(`✅ AI response sent: "${responseText.substring(0, 50)}..."`);
+
+      } catch (aiError) {
+        console.error('❌ AI response failed:', aiError);
+
+        // Fallback response if AI fails
+        await twilioClient.messages.create({
+          from: DEMO_PHONE_NUMBER,
+          to: From,
+          body: '👋 Thanks for reaching out! Text "call me" for a live AI voice demo, or visit remodely.ai to learn more about our Voice Workflow CRM!'
+        });
+      }
 
       res.status(200).send(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`);
     }
