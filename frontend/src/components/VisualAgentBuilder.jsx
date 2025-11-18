@@ -1153,39 +1153,41 @@ function VisualAgentBuilderContent() {
     }
   };
 
-  const [showNodePalette, setShowNodePalette] = useState(true);
+  // Auto-collapse node palette on mobile, expanded on desktop
+  const [showNodePalette, setShowNodePalette] = useState(window.innerWidth >= 768);
 
   return (
     <div className="flex flex-col bg-background" style={{ height: '100vh', overflow: 'hidden' }}>
-      {/* Top Toolbar */}
-      <div className="bg-card border-b border-border px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      {/* Top Toolbar - Mobile Responsive */}
+      <div className="bg-card border-b border-border px-2 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1 sm:gap-3">
           <button
             onClick={() => navigate('/app/agent-studio')}
-            className="p-2 hover:bg-muted rounded-lg"
+            className="p-1.5 sm:p-2 hover:bg-muted rounded-lg touch-manipulation"
+            title="Close"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
           <input
             type="text"
             value={agentName}
             onChange={(e) => setAgentName(e.target.value)}
-            className="px-3 py-1 bg-muted border border-border rounded-lg font-medium"
+            className="px-2 sm:px-3 py-1 bg-muted border border-border rounded-lg font-medium text-sm sm:text-base w-24 sm:w-auto"
             placeholder="Agent name..."
           />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1 sm:gap-3">
           {localStorage.getItem('voiceflow_autosave') && (
             <button
               onClick={restoreAutosave}
-              className="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg flex items-center gap-2 text-sm"
+              className="px-2 sm:px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg flex items-center gap-1 sm:gap-2 text-xs sm:text-sm touch-manipulation"
               title="Restore your last autosaved workflow"
             >
               <Upload className="h-4 w-4" />
-              Restore Autosave
+              <span className="hidden sm:inline">Restore Autosave</span>
             </button>
           )}
-          <div className="text-sm text-muted-foreground">
+          <div className="hidden md:block text-sm text-muted-foreground">
             {nodes.length} nodes • {edges.length} connections
             {lastSaved && (
               <div className="text-xs text-green-600">
@@ -1195,44 +1197,47 @@ function VisualAgentBuilderContent() {
           </div>
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2"
+            className="px-2 sm:px-4 py-1.5 sm:py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-1 sm:gap-2 touch-manipulation"
+            title="Save Agent"
           >
             <Save className="h-4 w-4" />
-            Save
+            <span className="hidden sm:inline">Save</span>
           </button>
           <button
             onClick={handleTest}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-2"
+            className="px-2 sm:px-4 py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center gap-1 sm:gap-2 touch-manipulation"
+            title="Test Agent"
           >
             <Play className="h-4 w-4" />
-            Test Agent
+            <span className="hidden sm:inline">Test Agent</span>
           </button>
           <button
             onClick={() => setShowExecutions(!showExecutions)}
-            className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+            className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-2 touch-manipulation hidden md:flex ${
               showExecutions
                 ? 'bg-purple-600 hover:bg-purple-700 text-white'
                 : 'bg-muted hover:bg-muted/80 text-foreground'
             }`}
+            title="View Executions"
           >
             <FileText className="h-4 w-4" />
-            Executions
+            <span className="hidden lg:inline">Executions</span>
           </button>
         </div>
       </div>
 
-      {/* Main Viewport Area with Split View */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Builder Side */}
-        <div className={`${showExecutions ? 'w-2/3' : 'w-full'} flex flex-col transition-all duration-300`}>
+      {/* Main Viewport Area with Split View - Mobile Responsive */}
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        {/* Builder Side - Full width on mobile, 2/3 on desktop when executions shown */}
+        <div className={`${showExecutions ? 'w-full md:w-2/3' : 'w-full'} flex flex-col transition-all duration-300`}>
           <div
         className="flex relative overflow-hidden"
         style={{
           height: `calc(100vh - 60px - ${consoleExpanded ? consoleHeight : 40}px)`
         }}
       >
-        {/* Collapsible Node Palette */}
-        <div className={`${showNodePalette ? 'w-64' : 'w-12'} bg-card border-r border-border transition-all duration-300 overflow-hidden`}>
+        {/* Collapsible Node Palette - Auto-collapsed on mobile */}
+        <div className={`${showNodePalette ? 'w-48 sm:w-64' : 'w-10 sm:w-12'} bg-card border-r border-border transition-all duration-300 overflow-hidden`}>
           <div className="p-2 h-full overflow-y-auto">
             <button
               onClick={() => setShowNodePalette(!showNodePalette)}
@@ -1343,11 +1348,11 @@ function VisualAgentBuilderContent() {
         />
       )}
 
-      {/* Debug Console - Sliding Panel with Tabs */}
+      {/* Debug Console - Sliding Panel with Tabs - Mobile Responsive */}
       <div
         className="fixed bottom-0 left-0 right-0 bg-card border-t border-border flex flex-col z-50"
         style={{
-          height: consoleExpanded ? `${consoleHeight}px` : '40px',
+          height: consoleExpanded ? `${Math.min(consoleHeight, window.innerWidth < 768 ? 250 : consoleHeight)}px` : '40px',
           transition: isResizing ? 'none' : 'height 0.3s ease-in-out'
         }}
       >
@@ -1364,17 +1369,17 @@ function VisualAgentBuilderContent() {
             </div>
           </div>
         )}
-        {/* Console Header - Always Visible */}
-        <div className="flex items-center justify-between px-4 py-2 bg-muted border-b border-border">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setConsoleExpanded(!consoleExpanded)}>
+        {/* Console Header - Always Visible - Mobile Responsive */}
+        <div className="flex items-center justify-between px-2 sm:px-4 py-2 bg-muted border-b border-border">
+          <div className="flex items-center gap-2 sm:gap-4 overflow-x-auto">
+            <div className="flex items-center gap-2 cursor-pointer touch-manipulation" onClick={() => setConsoleExpanded(!consoleExpanded)}>
               <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <h3 className="font-semibold text-foreground text-sm">Workflow Console</h3>
+              <h3 className="font-semibold text-foreground text-xs sm:text-sm whitespace-nowrap">Console</h3>
             </div>
 
-            {/* Tabs */}
+            {/* Tabs - Scrollable on mobile */}
             {consoleExpanded && (
-              <div className="flex gap-1">
+              <div className="flex gap-1 overflow-x-auto">
                 <button
                   onClick={() => setConsoleTab('logs')}
                   className={`px-3 py-1 text-xs rounded transition-colors ${
@@ -1998,9 +2003,9 @@ function VisualAgentBuilderContent() {
       </div>
     </div>
 
-        {/* Executions Side */}
+        {/* Executions Side - Hidden on mobile, shown on desktop */}
         {showExecutions && (
-          <div className="w-1/3 border-l border-border bg-card flex flex-col overflow-hidden">
+          <div className="hidden md:flex w-full md:w-1/3 border-l border-border bg-card flex-col overflow-hidden">
             {/* Executions Header */}
             <div className="px-4 py-3 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-2">
