@@ -44,6 +44,8 @@ import MyVoices from './pages/MyVoices';
 import AgentStudio from './pages/AgentStudio';
 import AgentStudioWizard from './pages/AgentStudioWizard';
 import VisualAgentBuilder from './components/VisualAgentBuilder';
+import MobileAgentBuilder from './components/MobileAgentBuilder';
+import AgentStudioResponsive from './pages/AgentStudioResponsive';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -105,8 +107,9 @@ function App() {
         <Route path="premium-agent-request" element={<PremiumAgentRequest />} />
         <Route path="voice-library" element={<VoiceLibraryBrowser />} />
         <Route path="my-voices" element={<MyVoices />} />
-        {/* Visual Agent Builder - Primary Route */}
-        <Route path="agent-studio" element={<VisualAgentBuilder />} />
+        {/* Agent Studio - Responsive (Mobile Builder on mobile, Visual Builder on desktop) */}
+        <Route path="agent-studio" element={<AgentStudioResponsive />} />
+        <Route path="agent-studio/mobile" element={<MobileAgentBuilder />} />
         <Route path="agent-studio/visual" element={<VisualAgentBuilder />} />
         <Route path="agent-studio/new" element={<AgentStudioWizard />} />
         <Route path="agent-studio/legacy" element={<AgentStudio />} />
