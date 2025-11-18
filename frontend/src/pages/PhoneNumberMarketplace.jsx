@@ -71,7 +71,7 @@ const PhoneNumberMarketplace = () => {
   };
 
   const purchaseNumber = async (phoneNumber) => {
-    if (!confirm(`Purchase ${phoneNumber} for $1.00/month?`)) return;
+    if (!confirm(`Purchase ${phoneNumber} for $12/month? (Includes 500 mins, $0.05/min overage)`)) return;
 
     try {
       setLoading(true);

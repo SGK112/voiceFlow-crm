@@ -82,6 +82,7 @@ import helpDeskRoutes from './routes/helpDesk.js';
 import n8nSyncRoutes from './routes/n8n-sync.js';
 import aiModelsRoutes from './routes/ai-models.js';
 import callInitiationRoutes from './routes/callInitiation.js';
+import usageCreditsRoutes from './routes/usageCredits.js';
 import { startOverageBillingCron } from './jobs/monthlyOverageBilling.js';
 import { requestIdMiddleware } from './middleware/security.js';
 
@@ -172,6 +173,7 @@ app.use('/api/quickbooks', quickbooksRoutes);
 app.use('/api/marketplace', marketplaceRoutes);
 app.use('/api/user-integrations', userIntegrationRoutes);
 app.use('/api/phone-numbers', phoneNumberRoutes);
+app.use('/api/usage-credits', usageCreditsRoutes);
 app.use('/api/sms-to-call', smsToCallRoutes);
 app.use('/api/help-desk', helpDeskRoutes);
 app.use('/api/n8n-sync', n8nSyncRoutes);

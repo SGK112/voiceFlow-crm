@@ -164,7 +164,8 @@ export const purchaseNumber = async (req, res) => {
       friendlyName: friendlyName || phoneNumber
     });
 
-    // Create Stripe subscription item for recurring billing ($2/month)
+    // Create Stripe subscription item for recurring billing ($12/month)
+    // Includes 500 minutes of calls per month
     let stripeSubscriptionItemId;
 
     if (req.user.stripeSubscriptionId) {
@@ -176,7 +177,7 @@ export const purchaseNumber = async (req, res) => {
           recurring: {
             interval: 'month'
           },
-          unit_amount: 200 // $2.00 in cents
+          unit_amount: 1200 // $12.00 in cents (includes 500 mins/month)
         },
         quantity: 1
       });
@@ -197,7 +198,9 @@ export const purchaseNumber = async (req, res) => {
         sms: purchasedNumber.capabilities.SMS,
         mms: purchasedNumber.capabilities.MMS
       },
-      monthlyCost: 2.00,
+      monthlyCost: 12.00,
+      includedMinutes: 500, // 500 minutes included
+      overageRate: 0.05, // $0.05/min overage
       stripeSubscriptionItemId
     });
 
@@ -312,7 +315,9 @@ export const portNumber = async (req, res) => {
       portRequestSid: portRequest.sid,
       currentProvider,
       accountNumber,
-      monthlyCost: 2.00
+      monthlyCost: 12.00,
+      includedMinutes: 500,
+      overageRate: 0.05
     });
 
     res.status(201).json({
@@ -542,7 +547,7 @@ export const searchNumbers = async (req, res) => {
         SMS: number.capabilities.SMS,
         MMS: number.capabilities.MMS
       },
-      price: '1.00' // Standard Twilio pricing ~$1/month
+      price: '12.00' // $12/month includes 500 mins
     }));
 
     res.json({
