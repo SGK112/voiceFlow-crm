@@ -46,6 +46,7 @@ import AgentStudioWizard from './pages/AgentStudioWizard';
 import VisualAgentBuilder from './components/VisualAgentBuilder';
 import MobileAgentBuilder from './components/MobileAgentBuilder';
 import AgentStudioResponsive from './pages/AgentStudioResponsive';
+import CreditsDashboard from './pages/CreditsDashboard';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -113,6 +114,7 @@ function App() {
         <Route path="agent-studio/visual" element={<VisualAgentBuilder />} />
         <Route path="agent-studio/new" element={<AgentStudioWizard />} />
         <Route path="agent-studio/legacy" element={<AgentStudio />} />
+        <Route path="credits" element={<CreditsDashboard />} />
         <Route path="voiceflow-builder" element={<VoiceFlowBuilder />} />
         <Route path="workflows" element={<WorkflowStudio />} />
         <Route path="workflows/:id" element={<WorkflowStudio />} />
