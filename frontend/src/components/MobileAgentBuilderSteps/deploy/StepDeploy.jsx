@@ -55,6 +55,25 @@ export default function StepDeploy({ agentData }) {
       setCreating(true);
       setError(null);
 
+      // Validate voice agent requirements
+      if (agentData.agentType === 'voice') {
+        if (!agentData.prompt || agentData.prompt.trim().length < 10) {
+          setError('Agent prompt is required (minimum 10 characters). Please go back and fill in the Agent Instructions step.');
+          setCreating(false);
+          return;
+        }
+        if (!agentData.voiceId) {
+          setError('Please select a voice for your agent.');
+          setCreating(false);
+          return;
+        }
+        if (!agentData.direction) {
+          setError('Please select call direction (Inbound or Outbound).');
+          setCreating(false);
+          return;
+        }
+      }
+
       // Build agent payload based on type
       const payload = {
         name: `${agentData.agentType} Agent`,

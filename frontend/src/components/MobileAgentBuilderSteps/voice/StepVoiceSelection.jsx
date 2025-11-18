@@ -7,10 +7,24 @@ import { agentApi } from '../../../services/api';
  * Browse and preview ElevenLabs voices
  */
 
+// Map accent to flag emoji
+const ACCENT_FLAGS = {
+  'american': '🇺🇸',
+  'british': '🇬🇧',
+  'australian': '🇦🇺',
+  'indian': '🇮🇳',
+  'irish': '🇮🇪',
+  'scottish': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+  'canadian': '🇨🇦',
+  'south african': '🇿🇦',
+  'new zealand': '🇳🇿'
+};
+
 export default function StepVoiceSelection({ agentData, updateAgentData }) {
   const [voices, setVoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedAccent, setSelectedAccent] = useState('american'); // Default to American
   const [playingVoice, setPlayingVoice] = useState(null);
   const [audio, setAudio] = useState(null);
 
@@ -36,7 +50,7 @@ export default function StepVoiceSelection({ agentData, updateAgentData }) {
     }
   };
 
-  const playVoice = (voice) => {
+  const playVoice = async (voice) => {
     // Stop current audio
     if (audio) {
       audio.pause();
@@ -51,15 +65,30 @@ export default function StepVoiceSelection({ agentData, updateAgentData }) {
 
     // Play preview
     if (voice.preview_url) {
-      const newAudio = new Audio(voice.preview_url);
-      newAudio.play();
-      setPlayingVoice(voice.voice_id);
-      setAudio(newAudio);
+      try {
+        const newAudio = new Audio(voice.preview_url);
+        setPlayingVoice(voice.voice_id);
+        setAudio(newAudio);
 
-      newAudio.onended = () => {
+        // Handle errors
+        newAudio.onerror = () => {
+          console.error('Failed to load audio preview');
+          setPlayingVoice(null);
+          setAudio(null);
+        };
+
+        newAudio.onended = () => {
+          setPlayingVoice(null);
+          setAudio(null);
+        };
+
+        // Play (must be after event handlers)
+        await newAudio.play();
+      } catch (err) {
+        console.error('Failed to play audio:', err);
         setPlayingVoice(null);
         setAudio(null);
-      };
+      }
     }
   };
 
@@ -70,11 +99,16 @@ export default function StepVoiceSelection({ agentData, updateAgentData }) {
     });
   };
 
-  const filteredVoices = voices.filter(voice =>
-    voice.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    voice.labels?.gender?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    voice.labels?.accent?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredVoices = voices.filter(voice => {
+    const matchesSearch = voice.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      voice.labels?.gender?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      voice.labels?.accent?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesAccent = !selectedAccent ||
+      voice.labels?.accent?.toLowerCase().includes(selectedAccent.toLowerCase());
+
+    return matchesSearch && matchesAccent;
+  });
 
   return (
     <div className="p-4 pb-20">
@@ -103,6 +137,35 @@ export default function StepVoiceSelection({ agentData, updateAgentData }) {
           </div>
         </div>
 
+        {/* Accent Filter */}
+        <div className="mb-4">
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            <button
+              onClick={() => setSelectedAccent(null)}
+              className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-all ${
+                !selectedAccent
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-muted text-foreground hover:bg-muted/80'
+              }`}
+            >
+              All
+            </button>
+            {Object.entries(ACCENT_FLAGS).map(([accent, flag]) => (
+              <button
+                key={accent}
+                onClick={() => setSelectedAccent(accent)}
+                className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-all ${
+                  selectedAccent === accent
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-muted text-foreground hover:bg-muted/80'
+                }`}
+              >
+                {flag} {accent.charAt(0).toUpperCase() + accent.slice(1)}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Voices List */}
         {loading ? (
           <div className="text-center py-12">
@@ -122,10 +185,10 @@ export default function StepVoiceSelection({ agentData, updateAgentData }) {
               return (
                 <div
                   key={voice.voice_id}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`p-4 rounded-lg border-2 transition-all bg-card ${
                     isSelected
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
-                      : 'border-border bg-card'
+                      ? 'border-blue-500'
+                      : 'border-border'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -140,7 +203,10 @@ export default function StepVoiceSelection({ agentData, updateAgentData }) {
 
                     {/* Voice Info */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-foreground mb-1">
+                      <h3 className="font-semibold text-foreground mb-1 flex items-center gap-2">
+                        {voice.labels?.accent && ACCENT_FLAGS[voice.labels.accent.toLowerCase()] && (
+                          <span className="text-lg">{ACCENT_FLAGS[voice.labels.accent.toLowerCase()]}</span>
+                        )}
                         {voice.name}
                       </h3>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">

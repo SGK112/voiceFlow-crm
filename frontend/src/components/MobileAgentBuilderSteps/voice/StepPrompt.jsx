@@ -15,11 +15,13 @@ export default function StepPrompt({ agentData, updateAgentData }) {
       <div className="max-w-lg mx-auto">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-foreground mb-2">Agent Instructions</h2>
-          <p className="text-muted-foreground">What is your agent's purpose?</p>
+          <p className="text-muted-foreground">What is your agent's purpose? <span className="text-red-500">*</span></p>
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2 text-foreground">Prompt</label>
+          <label className="block text-sm font-medium mb-2 text-foreground">
+            Prompt <span className="text-red-500">*</span>
+          </label>
           <textarea
             value={agentData.prompt || ''}
             onChange={(e) => updateAgentData({ prompt: e.target.value })}
@@ -28,7 +30,7 @@ export default function StepPrompt({ agentData, updateAgentData }) {
             className="w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground placeholder:text-muted-foreground resize-none"
           />
           <div className="flex items-center justify-between mt-2">
-            <span className="text-xs text-muted-foreground">{charCount} characters</span>
+            <span className="text-xs text-muted-foreground">{charCount} characters (minimum 10)</span>
           </div>
         </div>
 
