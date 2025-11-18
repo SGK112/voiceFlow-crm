@@ -225,4 +225,28 @@ export const communityAgentApi = {
   getCreatorRevenue: () => api.get('/community-agents/creator/revenue'),
 };
 
+export const elevenLabsApi = {
+  // Voice library
+  getVoices: () => api.get('/elevenlabs/voices'),
+
+  // Agent management
+  createAgent: (data) => api.post('/elevenlabs/agents/create', data),
+  updateAgent: (agentId, data) => api.patch(`/elevenlabs/agents/${agentId}/update`, data),
+  getAgent: (agentId) => api.get(`/elevenlabs/agents/${agentId}`),
+  listAgents: () => api.get('/elevenlabs/agents'),
+  deleteAgent: (agentId) => api.delete(`/elevenlabs/agents/${agentId}`),
+};
+
+export const knowledgeBaseApi = {
+  // Knowledge base management
+  getKnowledgeBases: () => api.get('/knowledge-base'),
+  getKnowledgeBaseById: (id) => api.get(`/knowledge-base/${id}`),
+  createKnowledgeBase: (data) => api.post('/knowledge-base', data),
+  updateKnowledgeBase: (id, data) => api.patch(`/knowledge-base/${id}`, data),
+  deleteKnowledgeBase: (id) => api.delete(`/knowledge-base/${id}`),
+  uploadDocument: (formData) => api.post('/knowledge-base/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+};
+
 export default api;
