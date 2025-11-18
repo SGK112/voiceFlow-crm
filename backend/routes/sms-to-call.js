@@ -31,6 +31,57 @@ router.post('/trigger-demo-call', async (req, res) => {
 
     console.log(`📱 SMS received from ${From}: "${Body}"`);
 
+    // Check for specific keywords first (signup, pricing, demo)
+    const signupTriggers = ['signup', 'sign up', 'register', 'get started', 'join'];
+    const pricingTriggers = ['pricing', 'price', 'cost', 'how much', 'plans', 'subscription'];
+    const demoTriggers = ['demo', 'schedule', 'book', 'appointment', 'meeting'];
+
+    const wantsSignup = signupTriggers.some(trigger => messageLower.includes(trigger));
+    const wantsPricing = pricingTriggers.some(trigger => messageLower.includes(trigger));
+    const wantsDemo = demoTriggers.some(trigger => messageLower.includes(trigger));
+
+    // Handle signup request
+    if (wantsSignup) {
+      console.log(`📝 Signup request detected from ${From}`);
+
+      await twilioClient.messages.create({
+        from: DEMO_PHONE_NUMBER,
+        to: From,
+        body: '🚀 Welcome to Remodely.ai!\n\nGet started here: https://remodely.ai/signup\n\n✨ Features included:\n• 24/7 AI Voice Agents\n• Visual Workflow Builder\n• Full CRM System\n• Multi-channel Communication\n\nNeed help? Text "call me" to speak with our AI assistant!'
+      });
+
+      res.status(200).send(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`);
+      return;
+    }
+
+    // Handle pricing request
+    if (wantsPricing) {
+      console.log(`💰 Pricing request detected from ${From}`);
+
+      await twilioClient.messages.create({
+        from: DEMO_PHONE_NUMBER,
+        to: From,
+        body: '💎 Remodely.ai Pricing Plans:\n\n📦 Starter: $99/mo\n• 1 AI Voice Agent\n• 500 calls/month\n• Basic CRM\n\n🚀 Professional: $299/mo\n• 5 AI Agents\n• Unlimited calls\n• Advanced workflows\n\n🏢 Enterprise: Custom\n• Unlimited everything\n• Dedicated support\n\nView details: https://remodely.ai/pricing\n\nText "call me" to discuss your needs!'
+      });
+
+      res.status(200).send(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`);
+      return;
+    }
+
+    // Handle demo request
+    if (wantsDemo) {
+      console.log(`🎬 Demo request detected from ${From}`);
+
+      await twilioClient.messages.create({
+        from: DEMO_PHONE_NUMBER,
+        to: From,
+        body: '🎙️ Experience Remodely.ai live!\n\nText "call me" right now for an instant AI voice demo, or schedule a personalized demo:\n\n📅 Book a demo: https://remodely.ai/demo\n\nOur AI assistant David can:\n• Answer questions 24/7\n• Qualify leads automatically\n• Schedule appointments\n• Send follow-up SMS/emails\n• And much more!\n\nReady? Text "call me"!'
+      });
+
+      res.status(200).send(`<?xml version="1.0" encoding="UTF-8"?><Response></Response>`);
+      return;
+    }
+
     // Check if user wants a voice call
     const callTriggers = ['call me', 'call', 'phone call', 'speak', 'talk', 'voice', 'demo call'];
     const wantsCall = callTriggers.some(trigger => messageLower.includes(trigger));
@@ -198,32 +249,74 @@ router.post('/call-status', (req, res) => {
  */
 router.post('/send-sms-from-agent', async (req, res) => {
   try {
-    const { to, message, callSid, agentId } = req.body;
+    const { to, from, message, callSid, agentId } = req.body;
 
-    console.log(`📤 Agent SMS request:`, { to, agentId, callSid });
+    // Use provided 'from' number or fall back to default
+    const fromNumber = from || DEMO_PHONE_NUMBER;
+
+    console.log(`📤 Agent SMS request:`, { to, from, agentId, callSid });
+    console.log(`📤 Message body: "${message}"`);
+    console.log(`📤 From number (provided): ${from || 'not provided'}`);
+    console.log(`📤 From number (using): ${fromNumber}`);
+    console.log(`📤 To number: ${to}`);
 
     if (!to || !message) {
       return res.status(400).json({ error: 'Missing required fields: to, message' });
     }
 
+    // Validate Twilio configuration
+    if (!fromNumber) {
+      console.error('❌ No from number provided and TWILIO_PHONE_NUMBER is not configured');
+      return res.status(500).json({ error: 'Twilio phone number not configured' });
+    }
+
+    if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
+      console.error('❌ Twilio credentials are not configured');
+      return res.status(500).json({ error: 'Twilio credentials not configured' });
+    }
+
     // Send SMS via Twilio
     const sms = await twilioClient.messages.create({
-      from: DEMO_PHONE_NUMBER,
+      from: fromNumber,
       to: to,
       body: message
     });
 
-    console.log(`✅ SMS sent from agent: ${sms.sid}`);
+    console.log(`✅ SMS sent successfully!`);
+    console.log(`   Message SID: ${sms.sid}`);
+    console.log(`   Status: ${sms.status}`);
+    console.log(`   From: ${sms.from}`);
+    console.log(`   To: ${sms.to}`);
+    console.log(`   Date Created: ${sms.dateCreated}`);
+    console.log(`   Error Code: ${sms.errorCode || 'None'}`);
+    console.log(`   Error Message: ${sms.errorMessage || 'None'}`);
+    console.log(`   Full Response:`, JSON.stringify(sms, null, 2));
 
     res.json({
       success: true,
       messageSid: sms.sid,
-      status: sms.status
+      status: sms.status,
+      from: sms.from,
+      to: sms.to,
+      dateCreated: sms.dateCreated,
+      errorCode: sms.errorCode,
+      errorMessage: sms.errorMessage
     });
 
   } catch (error) {
     console.error('❌ Error sending SMS from agent:', error);
-    res.status(500).json({ error: error.message });
+    console.error('❌ Error details:', {
+      message: error.message,
+      code: error.code,
+      status: error.status,
+      moreInfo: error.moreInfo
+    });
+    res.status(500).json({
+      error: error.message,
+      code: error.code,
+      status: error.status,
+      moreInfo: error.moreInfo
+    });
   }
 });
 
@@ -232,17 +325,25 @@ router.post('/send-sms-from-agent', async (req, res) => {
  */
 router.post('/send-mms-from-agent', async (req, res) => {
   try {
-    const { to, message, mediaUrl, callSid, agentId } = req.body;
+    const { to, from, message, mediaUrl, callSid, agentId } = req.body;
 
-    console.log(`📤 Agent MMS request:`, { to, agentId, callSid, mediaUrl });
+    // Use provided 'from' number or fall back to default
+    const fromNumber = from || DEMO_PHONE_NUMBER;
+
+    console.log(`📤 Agent MMS request:`, { to, from: fromNumber, agentId, callSid, mediaUrl });
 
     if (!to || !message) {
       return res.status(400).json({ error: 'Missing required fields: to, message' });
     }
 
+    if (!fromNumber) {
+      console.error('❌ No from number provided and TWILIO_PHONE_NUMBER is not configured');
+      return res.status(500).json({ error: 'Twilio phone number not configured' });
+    }
+
     // Send MMS via Twilio
     const mmsData = {
-      from: DEMO_PHONE_NUMBER,
+      from: fromNumber,
       to: to,
       body: message
     };

@@ -328,11 +328,12 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
   async chat(prompt, options = {}) {
     const maxTokens = options.maxTokens || 1500;
     const temperature = options.temperature || 0.7;
+    const model = options.model || null;
 
     try {
       switch (this.activeProvider) {
         case 'openai':
-          return await this.chatOpenAI(prompt, maxTokens, temperature);
+          return await this.chatOpenAI(prompt, maxTokens, temperature, model);
 
         case 'anthropic':
           return await this.chatAnthropic(prompt, maxTokens, temperature);
@@ -349,9 +350,69 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
     }
   }
 
-  async chatOpenAI(prompt, maxTokens, temperature) {
+  /**
+   * Chat with messages array (for conversational AI)
+   * Supports multi-turn conversations with message history
+   */
+  async chatWithMessages(messages, options = {}) {
+    const maxTokens = options.maxTokens || 1500;
+    const temperature = options.temperature || 0.7;
+    const model = options.model || 'gpt-4o-mini';
+    const responseFormat = options.responseFormat || null;
+
+    if (!this.isAvailable()) {
+      throw new Error('AI service not available. Please configure an AI provider API key.');
+    }
+
+    try {
+      switch (this.activeProvider) {
+        case 'openai':
+          const openaiParams = {
+            model: model,
+            messages: messages,
+            max_tokens: maxTokens,
+            temperature: temperature
+          };
+
+          // Add response_format if specified (for JSON mode)
+          if (responseFormat === 'json_object') {
+            openaiParams.response_format = { type: 'json_object' };
+          }
+
+          const response = await this.providers.openai.chat.completions.create(openaiParams);
+          return response.choices[0].message.content;
+
+        case 'anthropic':
+          // Anthropic requires system message separate from messages array
+          const systemMessage = messages.find(m => m.role === 'system');
+          const conversationMessages = messages.filter(m => m.role !== 'system');
+
+          const anthropicResponse = await this.providers.anthropic.messages.create({
+            model: 'claude-3-5-haiku-20241022',
+            max_tokens: maxTokens,
+            temperature: temperature,
+            system: systemMessage ? systemMessage.content : undefined,
+            messages: conversationMessages
+          });
+          return anthropicResponse.content[0].text;
+
+        case 'google':
+          // Google Gemini requires a different format - convert messages to prompt
+          const geminiPrompt = messages.map(m => `${m.role}: ${m.content}`).join('\n\n');
+          return await this.chatGoogle(geminiPrompt, maxTokens, temperature);
+
+        default:
+          throw new Error('No AI provider available');
+      }
+    } catch (error) {
+      console.error('AI Service Error:', error.message);
+      throw new Error(`AI request failed: ${error.message}`);
+    }
+  }
+
+  async chatOpenAI(prompt, maxTokens, temperature, model = 'gpt-4o-mini') {
     const response = await this.providers.openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: model,
       messages: [{ role: 'user', content: prompt }],
       max_tokens: maxTokens,
       temperature: temperature
