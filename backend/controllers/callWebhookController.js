@@ -1,6 +1,7 @@
 import CallLog from '../models/CallLog.js';
 import VoiceAgent from '../models/VoiceAgent.js';
 import WorkflowExecutor from '../services/workflowExecutor.js';
+import emailService from '../services/emailService.js';
 
 const workflowExecutor = new WorkflowExecutor();
 
@@ -61,6 +62,41 @@ export const handleCallCompletion = async (req, res) => {
     } catch (workflowError) {
       console.error('Error executing workflows:', workflowError);
       // Don't fail the webhook response if workflows fail
+    }
+
+    // Send calendar invite if consultation was booked
+    try {
+      // Check if the call transcript indicates a consultation was booked
+      const transcript = callData.transcript || '';
+      const metadata = callData.metadata || {};
+
+      // Extract consultation details from transcript or metadata
+      if (metadata.consultation_booked || transcript.toLowerCase().includes('consultation')) {
+        const customerEmail = metadata.customer_email || callData.email;
+        const customerName = callData.caller_name || metadata.customer_name;
+        const consultationDate = metadata.consultation_date;
+        const consultationTime = metadata.consultation_time;
+        const address = metadata.address || agent.configuration?.business_address;
+
+        if (customerEmail && consultationDate && consultationTime) {
+          console.log('📧 Sending consultation confirmation with calendar invite...');
+
+          await emailService.sendConsultationConfirmation({
+            to: customerEmail,
+            leadName: customerName,
+            consultationDate,
+            consultationTime,
+            address: address || 'To be confirmed',
+            companyName: agent.name || 'Our Company',
+            companyEmail: process.env.COMPANY_EMAIL || 'info@company.com'
+          });
+
+          console.log('✅ Calendar invite sent successfully');
+        }
+      }
+    } catch (calendarError) {
+      console.error('Error sending calendar invite:', calendarError);
+      // Don't fail the webhook response if calendar invite fails
     }
 
     // Respond to ElevenLabs

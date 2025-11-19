@@ -229,6 +229,19 @@ export const updateAgent = async (req, res) => {
           name: agent.name,
           script: agent.script
         });
+
+        // CRITICAL FIX: Re-assign phone number after updating agent config
+        // ElevenLabs API clears phone assignment when agent is updated
+        if (agent.phoneNumber) {
+          console.log(`📞 Re-assigning phone ${agent.phoneNumber} to agent ${agent.elevenLabsAgentId}`);
+
+          const webhookUrl = process.env.WEBHOOK_BASE_URL
+            ? `${process.env.WEBHOOK_BASE_URL}/api/webhooks/call-completed`
+            : `${req.protocol}://${req.get('host')}/api/webhooks/call-completed`;
+
+          await elevenLabsService.assignPhoneToAgent(agent.phoneNumber, agent.elevenLabsAgentId, webhookUrl);
+          console.log(`✅ Phone number re-assigned successfully with webhook: ${webhookUrl}`);
+        }
       } catch (error) {
         console.error('Failed to update ElevenLabs agent:', error);
       }

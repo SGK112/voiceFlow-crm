@@ -301,6 +301,26 @@ When scheduling, calculate dates from TODAY (${formattedDate}):
   }
 
   /**
+   * Assign a phone number to an agent with webhook URL
+   * CRITICAL: This must be called after ANY agent update since ElevenLabs clears the assignment
+   * @param {string} phoneNumberId - The ElevenLabs phone number ID (e.g., phnum_xxx)
+   * @param {string} agentId - The ElevenLabs agent ID to assign
+   * @param {string} webhookUrl - Webhook URL for call completion events
+   */
+  async assignPhoneToAgent(phoneNumberId, agentId, webhookUrl) {
+    try {
+      const response = await this.client.patch(`/convai/phone-numbers/${phoneNumberId}`, {
+        agent_id: agentId,
+        webhook_url: webhookUrl
+      });
+      return response.data;
+    } catch (error) {
+      console.error('ElevenLabs API Error:', error.response?.data || error.message);
+      throw new Error('Failed to assign phone number to agent');
+    }
+  }
+
+  /**
    * Upload a file to ElevenLabs Knowledge Base
    * @param {string|Buffer} filePathOrBuffer - Path to file or file buffer
    * @param {string} fileName - Original filename

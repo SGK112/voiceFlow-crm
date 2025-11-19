@@ -689,6 +689,161 @@ class EmailService {
       return false;
     }
   }
+
+  /**
+   * Generate an iCalendar (.ics) calendar invite attachment
+   * @param {Object} options - Calendar event details
+   * @param {string} options.title - Event title
+   * @param {string} options.description - Event description
+   * @param {Date} options.startTime - Event start time
+   * @param {Date} options.endTime - Event end time
+   * @param {string} options.location - Event location (optional)
+   * @param {string} options.organizerEmail - Organizer email (defaults to SMTP_USER)
+   * @param {string} options.organizerName - Organizer name (defaults to SMTP_FROM_NAME)
+   */
+  generateCalendarInvite({ title, description, startTime, endTime, location, organizerEmail, organizerName }) {
+    const formatDate = (date) => {
+      return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    };
+
+    const now = new Date();
+    const organizerEmailAddr = organizerEmail || process.env.SMTP_USER || 'no-reply@voiceflowcrm.com';
+    const organizerNameValue = organizerName || process.env.SMTP_FROM_NAME || 'VoiceFlow CRM';
+
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//VoiceFlow CRM//Calendar//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:REQUEST',
+      'BEGIN:VEVENT',
+      `DTSTART:${formatDate(startTime)}`,
+      `DTEND:${formatDate(endTime)}`,
+      `DTSTAMP:${formatDate(now)}`,
+      `ORGANIZER;CN=${organizerNameValue}:mailto:${organizerEmailAddr}`,
+      `UID:${now.getTime()}@voiceflowcrm.com`,
+      'SEQUENCE:0',
+      'STATUS:CONFIRMED',
+      `SUMMARY:${title}`,
+      `DESCRIPTION:${description.replace(/\n/g, '\\n')}`,
+      location ? `LOCATION:${location}` : '',
+      'BEGIN:VALARM',
+      'TRIGGER:-PT15M',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:Reminder',
+      'END:VALARM',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].filter(Boolean).join('\r\n');
+
+    return {
+      filename: 'invite.ics',
+      content: icsContent,
+      contentType: 'text/calendar; method=REQUEST; charset=UTF-8'
+    };
+  }
+
+  /**
+   * Send email with calendar invite attachment
+   * @param {Object} options - Email and calendar details
+   */
+  async sendEmailWithCalendarInvite({ to, subject, html, text, calendarDetails }) {
+    const calendarAttachment = this.generateCalendarInvite(calendarDetails);
+
+    return this.sendEmail({
+      to,
+      subject,
+      html,
+      text,
+      attachments: [calendarAttachment]
+    });
+  }
+
+  /**
+   * Send consultation confirmation with calendar invite
+   */
+  async sendConsultationConfirmation({ to, leadName, consultationDate, consultationTime, address, companyName, companyEmail }) {
+    const subject = `Consultation Scheduled with ${companyName}`;
+
+    // Parse the date and time into a Date object
+    const startTime = new Date(consultationDate + ' ' + consultationTime);
+    const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // 1 hour consultation
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+          .consultation-box { background: white; padding: 20px; margin: 20px 0; border-left: 4px solid #10b981; }
+          .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>✅ Consultation Scheduled!</h1>
+          </div>
+          <div class="content">
+            <h2>Hi ${leadName},</h2>
+            <p>Great news! Your consultation with ${companyName} has been scheduled.</p>
+
+            <div class="consultation-box">
+              <h3>📅 ${consultationDate}</h3>
+              <h3>🕐 ${consultationTime}</h3>
+              <p><strong>Location:</strong> ${address}</p>
+            </div>
+
+            <p><strong>📎 A calendar invite is attached to this email.</strong> Simply open the attachment to add this appointment to your calendar.</p>
+
+            <p>We look forward to meeting with you! If you need to reschedule, please contact us at ${companyEmail}.</p>
+          </div>
+          <div class="footer">
+            <p>This appointment confirmation was sent by ${companyName}</p>
+            <p>&copy; ${new Date().getFullYear()} ${companyName}. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const text = `
+      Consultation Scheduled!
+
+      Hi ${leadName},
+
+      Your consultation with ${companyName} has been scheduled:
+
+      Date: ${consultationDate}
+      Time: ${consultationTime}
+      Location: ${address}
+
+      A calendar invite is attached to this email.
+
+      Looking forward to meeting you!
+      ${companyName}
+      ${companyEmail}
+    `;
+
+    return this.sendEmailWithCalendarInvite({
+      to,
+      subject,
+      html,
+      text,
+      calendarDetails: {
+        title: `Consultation with ${companyName}`,
+        description: `Free consultation at ${address}`,
+        startTime,
+        endTime,
+        location: address,
+        organizerEmail: companyEmail,
+        organizerName: companyName
+      }
+    });
+  }
 }
 
 export default new EmailService();
