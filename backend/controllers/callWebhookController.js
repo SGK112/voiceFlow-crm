@@ -22,10 +22,13 @@ export const handleCallCompletion = async (req, res) => {
     // Find the agent that handled this call (by ElevenLabs agent ID or phone number)
     const agent = await VoiceAgent.findOne({
       $or: [
-        { agentId: callData.agent_id },
+        { elevenLabsAgentId: callData.agent_id }, // Fixed: use elevenLabsAgentId, not agentId
         { phoneNumber: callData.to_number }
       ]
     });
+
+    console.log('🔍 Agent lookup for:', callData.agent_id);
+    console.log('   Found agent:', agent ? agent.name : 'NONE');
 
     if (!agent) {
       console.warn('⚠️ No agent found for call:', callData.agent_id);
@@ -33,12 +36,14 @@ export const handleCallCompletion = async (req, res) => {
     }
 
     const userId = agent.userId;
+    console.log('   User ID:', userId);
 
     // Save the call to database
     const call = await CallLog.create({
       userId,
       agentId: agent._id,
       agentType: agent.type,
+      direction: callData.direction || 'inbound',
       callerPhone: callData.caller_phone,
       callerName: callData.caller_name,
       duration: callData.duration,
@@ -50,7 +55,12 @@ export const handleCallCompletion = async (req, res) => {
       metadata: {
         elevenlabs_call_id: callData.call_id,
         timestamp: callData.timestamp,
-        raw_data: callData
+        consultation_booked: callData.consultation_booked,
+        customer_email: callData.customer_email || callData.email,
+        customer_name: callData.customer_name || callData.caller_name,
+        consultation_date: callData.consultation_date,
+        consultation_time: callData.consultation_time,
+        address: callData.address
       }
     });
 
