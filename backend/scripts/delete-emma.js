@@ -1,31 +1,25 @@
-import axios from 'axios';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import VoiceAgent from '../models/VoiceAgent.js';
+
 dotenv.config();
 
-console.log('🗑️ DELETING Emma agent...\n');
+await mongoose.connect(process.env.MONGODB_URI);
+console.log('✅ Connected to MongoDB\n');
 
-try {
-  await axios.delete(
-    'https://api.elevenlabs.io/v1/convai/agents/agent_1401kadsbxczf28b34twm35wega7',
-    { headers: { 'xi-api-key': process.env.ELEVENLABS_API_KEY } }
-  );
-  console.log('✅ Emma deleted from ElevenLabs');
-} catch (error) {
-  console.log('Error deleting:', error.message);
+// Find and delete Emma (the one with no ElevenLabs ID)
+const emma = await VoiceAgent.findOne({ name: 'Surprise Granite - Emma (Main Reception)' });
+
+if (emma) {
+  console.log('Found Emma:');
+  console.log('   DB ID:', emma._id);
+  console.log('   ElevenLabs ID:', emma.elevenLabsAgentId || 'NONE');
+  console.log('   User ID:', emma.userId || 'NONE');
+
+  await VoiceAgent.deleteOne({ _id: emma._id });
+  console.log('\n✅ Emma deleted');
+} else {
+  console.log('Emma not found');
 }
 
-// Unassign from phone
-try {
-  await axios.patch(
-    'https://api.elevenlabs.io/v1/convai/phone-numbers/phnum_2701kacmjq23fzaacdgqwt0qty0b',
-    { agent_id: null },
-    { headers: { 'xi-api-key': process.env.ELEVENLABS_API_KEY, 'Content-Type': 'application/json' } }
-  );
-  console.log('✅ Phone number cleared');
-} catch (error) {
-  console.log('Error clearing phone:', error.message);
-}
-
-console.log('\n✅ Emma is GONE');
-console.log('\nTell me EXACTLY what you want and I will build it from scratch.');
-console.log('No more guessing. No more hallucinating.');
+await mongoose.disconnect();
