@@ -3179,6 +3179,85 @@
                 height: 48px !important;
             }
         }
+
+        /* Success Modal Overlay */
+        .success-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .success-modal-overlay.show {
+            display: flex;
+        }
+
+        .success-modal {
+            background: white;
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: slideUp 0.4s ease-out;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .success-icon {
+            font-size: 72px;
+            margin-bottom: 24px;
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .success-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+
+        .success-message {
+            font-size: 18px;
+            color: #4b5563;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .success-submessage {
+            font-size: 15px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -5049,15 +5128,19 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Show success message
-                    voiceStatusMessage.style.display = 'block';
-                    voiceStatusMessage.style.background = '#dcfce7';
-                    voiceStatusMessage.style.color = '#16a34a';
-                    voiceStatusMessage.textContent = `✅ Success! ${name}, your phone should ring in 5-10 seconds.`;
+                    // Hide any inline status message
+                    voiceStatusMessage.style.display = 'none';
 
-                    // Reset form after 5 seconds
+                    // Show success modal popup
+                    const successModal = document.getElementById('successModal');
+                    const successModalMessage = document.getElementById('successModalMessage');
+
+                    successModalMessage.textContent = `Hi ${name}! Your phone should ring in 5-10 seconds.`;
+                    successModal.classList.add('show');
+
+                    // Reset form and hide modal after 5 seconds
                     setTimeout(() => {
-                        voiceStatusMessage.style.display = 'none';
+                        successModal.classList.remove('show');
                         demoNameInput.value = '';
                         demoEmailInput.value = '';
                         demoPhoneInput.value = '';
@@ -5204,5 +5287,17 @@
             stickyPhoneBar.classList.remove('visible');
         });
     </script>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="success-modal-overlay">
+        <div class="success-modal">
+            <div class="success-icon">📞 ✨</div>
+            <div class="success-title">Calling You Now!</div>
+            <div class="success-message" id="successModalMessage"></div>
+            <div class="success-submessage">
+                Our AI assistant will introduce herself and give you an amazing demo of our voice AI platform!
+            </div>
+        </div>
+    </div>
 </body>
 </html>
