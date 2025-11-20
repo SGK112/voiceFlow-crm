@@ -2912,8 +2912,232 @@
             }
         }
 
+        /* AI Robot Mascot */
+        .ai-robot-container {
+            position: absolute;
+            top: 50%;
+            right: 5%;
+            transform: translateY(-50%);
+            z-index: 2;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .ai-robot {
+            width: 280px;
+            height: 320px;
+            position: relative;
+            filter: drop-shadow(0 20px 40px rgba(59, 130, 246, 0.3));
+        }
+
+        /* Robot Head */
+        .robot-head {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 100px;
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            border-radius: 24px;
+            border: 4px solid #cbd5e1;
+            animation: head-tilt 4s ease-in-out infinite;
+        }
+
+        /* Robot Screen/Face */
+        .robot-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 110px;
+            height: 70px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 16px;
+            border: 3px solid #3b82f6;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), inset 0 0 15px rgba(59, 130, 246, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Robot Eyes */
+        .robot-eye {
+            width: 24px;
+            height: 24px;
+            background: #3b82f6;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 0 15px #3b82f6;
+            animation: eye-blink 5s infinite;
+        }
+
+        .robot-eye::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 8px;
+            height: 8px;
+            background: #60a5fa;
+            border-radius: 50%;
+        }
+
+        /* Robot Antennas */
+        .robot-antenna {
+            position: absolute;
+            width: 4px;
+            height: 30px;
+            background: #cbd5e1;
+            border-radius: 2px;
+            top: -25px;
+        }
+
+        .robot-antenna.left {
+            left: 30px;
+            transform: rotate(-15deg);
+        }
+
+        .robot-antenna.right {
+            right: 30px;
+            transform: rotate(15deg);
+        }
+
+        .robot-antenna::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: #3b82f6;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #3b82f6;
+            animation: antenna-pulse 2s infinite;
+        }
+
+        /* Robot Body */
+        .robot-body {
+            position: absolute;
+            top: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 140px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 20px;
+            border: 4px solid #60a5fa;
+        }
+
+        /* Robot Circle Detail */
+        .robot-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+            border-radius: 50%;
+            border: 3px solid #93c5fd;
+            animation: circle-pulse 3s infinite;
+        }
+
+        /* Robot Arms */
+        .robot-arm {
+            position: absolute;
+            width: 30px;
+            height: 80px;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            border-radius: 15px;
+            border: 3px solid #93c5fd;
+            top: 140px;
+        }
+
+        .robot-arm.left {
+            left: 65px;
+            transform: rotate(-15deg);
+            transform-origin: top center;
+            animation: arm-wave 3s ease-in-out infinite;
+        }
+
+        .robot-arm.right {
+            right: 65px;
+            transform: rotate(15deg);
+        }
+
+        /* Robot Hand */
+        .robot-hand {
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 22px;
+            background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+            border-radius: 50%;
+            border: 2px solid #dbeafe;
+        }
+
+        /* Robot Legs */
+        .robot-leg {
+            position: absolute;
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border-radius: 15px;
+            border: 3px solid #60a5fa;
+            top: 270px;
+        }
+
+        .robot-leg.left {
+            left: 95px;
+        }
+
+        .robot-leg.right {
+            right: 95px;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(-50%) translateX(0); }
+            50% { transform: translateY(-55%) translateX(5px); }
+        }
+
+        @keyframes head-tilt {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(-3deg); }
+            75% { transform: translateX(-50%) rotate(3deg); }
+        }
+
+        @keyframes eye-blink {
+            0%, 95%, 100% { transform: scaleY(1); }
+            97% { transform: scaleY(0.1); }
+        }
+
+        @keyframes antenna-pulse {
+            0%, 100% { box-shadow: 0 0 10px #3b82f6; }
+            50% { box-shadow: 0 0 20px #3b82f6, 0 0 30px #60a5fa; }
+        }
+
+        @keyframes circle-pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        @keyframes arm-wave {
+            0%, 100% { transform: rotate(-15deg); }
+            50% { transform: rotate(-30deg); }
+        }
+
         /* Mobile Optimizations */
         @media (max-width: 768px) {
+            /* Hide robot on mobile */
+            .ai-robot-container {
+                display: none;
+            }
+
             /* Hero Section */
             .hero {
                 padding: 120px 20px 40px;
@@ -3187,6 +3411,38 @@
 
     <!-- Hero Section -->
     <section class="hero">
+        <!-- AI Robot Mascot -->
+        <div class="ai-robot-container">
+            <div class="ai-robot">
+                <!-- Robot Head with Antennas -->
+                <div class="robot-head">
+                    <div class="robot-antenna left"></div>
+                    <div class="robot-antenna right"></div>
+                    <div class="robot-screen">
+                        <div class="robot-eye"></div>
+                        <div class="robot-eye"></div>
+                    </div>
+                </div>
+
+                <!-- Robot Body with Circle -->
+                <div class="robot-body">
+                    <div class="robot-circle"></div>
+                </div>
+
+                <!-- Robot Arms -->
+                <div class="robot-arm left">
+                    <div class="robot-hand"></div>
+                </div>
+                <div class="robot-arm right">
+                    <div class="robot-hand"></div>
+                </div>
+
+                <!-- Robot Legs -->
+                <div class="robot-leg left"></div>
+                <div class="robot-leg right"></div>
+            </div>
+        </div>
+
         <div style="max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 1;">
             <!-- Trustpilot Badge First -->
             <div style="margin-bottom: 32px; display: flex; align-items: center; justify-content: center; gap: 12px;">
