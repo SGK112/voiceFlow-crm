@@ -1,0 +1,507 @@
+/**
+ * MARKETING PAGE COMPLETE REDESIGN
+ * Eye-catching, modern, scroll-encouraging design
+ */
+
+/* ============================================
+   CHAT BUBBLE - FIXED & PROFESSIONAL
+   ============================================ */
+
+.ai-chat-toggle {
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    border: none !important;
+    box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4),
+                0 0 0 0 rgba(59, 130, 246, 0.4) !important;
+    cursor: pointer !important;
+    z-index: 9999 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    animation: pulse-ring 2s infinite !important;
+}
+
+.ai-chat-toggle::before {
+    content: '💬' !important;
+    font-size: 32px !important;
+    display: block !important;
+}
+
+.ai-chat-toggle:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 12px 48px rgba(59, 130, 246, 0.6) !important;
+}
+
+.ai-chat-toggle:active {
+    transform: scale(0.95) !important;
+}
+
+@keyframes pulse-ring {
+    0% {
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4),
+                    0 0 0 0 rgba(59, 130, 246, 0.4);
+    }
+    50% {
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4),
+                    0 0 0 16px rgba(59, 130, 246, 0);
+    }
+    100% {
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4),
+                    0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+@media (max-width: 768px) {
+    .ai-chat-toggle {
+        width: 56px !important;
+        height: 56px !important;
+        bottom: 16px !important;
+        right: 16px !important;
+    }
+
+    .ai-chat-toggle::before {
+        font-size: 28px !important;
+    }
+}
+
+/* ============================================
+   HERO SECTION - ATTENTION-GRABBING
+   ============================================ */
+
+.hero {
+    position: relative !important;
+    min-height: 90vh !important;
+    display: flex !important;
+    align-items: center !important;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%) !important;
+    overflow: hidden !important;
+}
+
+/* Animated gradient background */
+.hero::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: linear-gradient(
+        45deg,
+        rgba(59, 130, 246, 0.1) 0%,
+        rgba(147, 51, 234, 0.1) 25%,
+        rgba(59, 130, 246, 0.1) 50%,
+        rgba(147, 51, 234, 0.1) 75%,
+        rgba(59, 130, 246, 0.1) 100%
+    ) !important;
+    background-size: 400% 400% !important;
+    animation: gradient-shift 15s ease infinite !important;
+    z-index: 0 !important;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating particles effect */
+.hero::after {
+    content: '' !important;
+    position: absolute !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 40%) !important;
+    animation: float-particles 20s ease-in-out infinite !important;
+    z-index: 0 !important;
+}
+
+@keyframes float-particles {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+.hero-content {
+    position: relative !important;
+    z-index: 1 !important;
+    text-align: center !important;
+    color: white !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 80px 24px !important;
+}
+
+.hero h1 {
+    font-size: clamp(36px, 8vw, 72px) !important;
+    font-weight: 900 !important;
+    line-height: 1.1 !important;
+    margin-bottom: 24px !important;
+    background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    animation: fade-in-up 0.8s ease-out !important;
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-description,
+.hero p {
+    font-size: clamp(18px, 4vw, 24px) !important;
+    line-height: 1.6 !important;
+    color: #e0e7ff !important;
+    margin-bottom: 40px !important;
+    animation: fade-in-up 0.8s ease-out 0.2s backwards !important;
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+    position: absolute !important;
+    bottom: 40px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    animation: bounce 2s infinite !important;
+    z-index: 10 !important;
+}
+
+.scroll-indicator::before {
+    content: 'Scroll to explore' !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+.scroll-indicator::after {
+    content: '↓' !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+}
+
+/* ============================================
+   BUTTONS - PREMIUM STYLE
+   ============================================ */
+
+.btn,
+.cta-primary,
+button.btn-primary {
+    position: relative !important;
+    padding: 16px 40px !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    border: none !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: white !important;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4) !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow: hidden !important;
+}
+
+.btn::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.6s, height 0.6s !important;
+}
+
+.btn:hover::before {
+    width: 300px !important;
+    height: 300px !important;
+}
+
+.btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.6) !important;
+}
+
+.btn:active {
+    transform: translateY(0) !important;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* ============================================
+   CARDS - MODERN & CLEAN
+   ============================================ */
+
+.feature-card,
+.integration-card,
+.pricing-card {
+    background: white !important;
+    border-radius: 16px !important;
+    padding: 32px !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.feature-card::before,
+.integration-card::before,
+.pricing-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 4px !important;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #3b82f6) !important;
+    background-size: 200% 100% !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s !important;
+}
+
+.feature-card:hover::before,
+.integration-card:hover::before,
+.pricing-card:hover::before {
+    opacity: 1 !important;
+    animation: shimmer 2s infinite !important;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.feature-card:hover,
+.integration-card:hover,
+.pricing-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Card icons with gradient backgrounds */
+.feature-card .feature-icon,
+.integration-logo {
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 16px !important;
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 32px !important;
+    margin-bottom: 20px !important;
+    border: 2px solid rgba(59, 130, 246, 0.2) !important;
+    transition: all 0.3s !important;
+}
+
+.feature-card:hover .feature-icon,
+.integration-card:hover .integration-logo {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    transform: scale(1.1) rotate(5deg) !important;
+    border-color: transparent !important;
+}
+
+/* ============================================
+   SECTIONS - ENGAGING LAYOUT
+   ============================================ */
+
+section {
+    padding: 100px 24px !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Alternating backgrounds */
+section:nth-child(even) {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%) !important;
+}
+
+section:nth-child(odd) {
+    background: white !important;
+}
+
+.section-title {
+    text-align: center !important;
+    margin-bottom: 64px !important;
+}
+
+.section-title h2 {
+    font-size: clamp(32px, 6vw, 56px) !important;
+    font-weight: 900 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 16px !important;
+    background: linear-gradient(135deg, #0f172a 0%, #475569 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.section-title p {
+    font-size: clamp(16px, 3vw, 20px) !important;
+    color: #64748b !important;
+    max-width: 700px !important;
+    margin: 0 auto !important;
+    line-height: 1.6 !important;
+}
+
+/* Decorative elements */
+.section-title::after {
+    content: '' !important;
+    display: block !important;
+    width: 80px !important;
+    height: 4px !important;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6) !important;
+    margin: 24px auto 0 !important;
+    border-radius: 2px !important;
+}
+
+/* ============================================
+   STATS - EYE-CATCHING METRICS
+   ============================================ */
+
+.stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 32px !important;
+    margin: 64px 0 !important;
+}
+
+.stat-item {
+    text-align: center !important;
+    padding: 32px !important;
+    background: white !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08) !important;
+    transition: all 0.3s !important;
+}
+
+.stat-item:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 12px 48px rgba(59, 130, 246, 0.2) !important;
+}
+
+.stat-item h3 {
+    font-size: clamp(40px, 8vw, 64px) !important;
+    font-weight: 900 !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    line-height: 1 !important;
+    margin-bottom: 12px !important;
+}
+
+.stat-item p {
+    font-size: 16px !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
+}
+
+/* ============================================
+   PRICING - PREMIUM TIERS
+   ============================================ */
+
+.pricing-card.featured {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+    border: 2px solid #3b82f6 !important;
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.4) !important;
+}
+
+.pricing-card.featured h3,
+.pricing-card.featured .price {
+    color: white !important;
+}
+
+.pricing-card.featured .section-title::after {
+    background: linear-gradient(90deg, #60a5fa, #a78bfa) !important;
+}
+
+/* ============================================
+   MOBILE OPTIMIZATION
+   ============================================ */
+
+@media (max-width: 768px) {
+    section {
+        padding: 60px 20px !important;
+    }
+
+    .hero-content {
+        padding: 60px 20px !important;
+    }
+
+    .hero h1 {
+        font-size: 36px !important;
+    }
+
+    .btn {
+        width: 100% !important;
+        padding: 14px 24px !important;
+        font-size: 16px !important;
+    }
+
+    .feature-card,
+    .integration-card,
+    .pricing-card {
+        padding: 24px !important;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+}
+
+/* ============================================
+   REMOVE HORIZONTAL SCROLL
+   ============================================ */
+
+* {
+    max-width: 100% !important;
+}
+
+.container,
+.section-container {
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+}
