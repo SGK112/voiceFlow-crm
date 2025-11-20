@@ -3071,33 +3071,116 @@
         </div>
     </section>
 
-    <!-- Live Stats Section (Sintra-style) -->
-    <section style="padding: 80px 24px; background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);">
-        <div style="max-width: 550px; margin: 0 auto;">
-            <div style="background: white; padding: 40px 32px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); text-align: center; border: 1px solid #e2e8f0;">
-                <div style="color: #64748b; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px;">Live Call Activity</div>
-                <div style="font-size: 72px; font-weight: 900; color: #0f172a; line-height: 1; margin-bottom: 8px;">
-                    <span id="callCounter">0</span>
+    <!-- Live Stats Section - Realistic Call Volume -->
+    <section style="padding: 80px 24px; background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 48px;">
+                <h2 style="font-size: 42px; font-weight: 900; color: #0f172a; margin-bottom: 12px;">Live Call Volume</h2>
+                <p style="font-size: 18px; color: #64748b;">Real-time activity across our network</p>
+            </div>
+
+            <div style="background: white; padding: 48px 40px; border-radius: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); border: 1px solid #e2e8f0;">
+                <!-- Main Stats -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; margin-bottom: 40px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; font-weight: 900; color: #3b82f6; line-height: 1; margin-bottom: 8px;">
+                            <span id="callCounter">0</span>
+                        </div>
+                        <div style="color: #64748b; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Calls Today</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; font-weight: 900; color: #10b981; line-height: 1; margin-bottom: 8px;">
+                            <span id="activeCallsCounter">147</span>
+                        </div>
+                        <div style="color: #64748b; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Active Now</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 48px; font-weight: 900; color: #f59e0b; line-height: 1; margin-bottom: 8px;">
+                            <span>98%</span>
+                        </div>
+                        <div style="color: #64748b; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Answer Rate</div>
+                    </div>
                 </div>
-                <div style="color: #10b981; font-size: 16px; font-weight: 600; margin-bottom: 32px;">
-                    <span>↑ +2,847 today</span>
-                </div>
-                <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid #f1f5f9;">
-                    <svg width="100%" height="80" viewBox="0 0 500 80" preserveAspectRatio="none">
+
+                <!-- Hourly Chart -->
+                <div style="margin-top: 40px; padding-top: 32px; border-top: 2px solid #f1f5f9;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <div style="font-size: 16px; font-weight: 700; color: #0f172a;">Call Volume (Last 24 Hours)</div>
+                        <div style="display: flex; gap: 20px; font-size: 13px; font-weight: 600;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <div style="width: 12px; height: 12px; background: #3b82f6; border-radius: 2px;"></div>
+                                <span style="color: #64748b;">Answered</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <div style="width: 12px; height: 12px; background: #cbd5e1; border-radius: 2px;"></div>
+                                <span style="color: #64748b;">Peak Hours</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <svg width="100%" height="200" viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet">
                         <defs>
-                            <linearGradient id="statsGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.2" />
-                                <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.02" />
+                            <linearGradient id="callGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.3" />
+                                <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.05" />
                             </linearGradient>
                         </defs>
-                        <path d="M 0 60 Q 125 55 250 35 T 500 15"
-                              stroke="#3b82f6" stroke-width="3" fill="none" stroke-linecap="round"/>
-                        <path d="M 0 60 Q 125 55 250 35 T 500 15 L 500 80 L 0 80 Z"
-                              fill="url(#statsGradient)"/>
-                        <circle cx="125" cy="50" r="5" fill="#3b82f6" opacity="0.8"/>
-                        <circle cx="250" cy="35" r="5" fill="#3b82f6" opacity="0.8"/>
-                        <circle cx="375" cy="25" r="5" fill="#3b82f6" opacity="0.8"/>
-                        <circle cx="500" cy="15" r="6" fill="#3b82f6"/>
+
+                        <!-- Grid lines -->
+                        <line x1="0" y1="50" x2="800" y2="50" stroke="#f1f5f9" stroke-width="1"/>
+                        <line x1="0" y1="100" x2="800" y2="100" stroke="#f1f5f9" stroke-width="1"/>
+                        <line x1="0" y1="150" x2="800" y2="150" stroke="#f1f5f9" stroke-width="1"/>
+
+                        <!-- Realistic call volume curve (business hours peak) -->
+                        <path d="M 0 180
+                                 L 33 175
+                                 L 66 170
+                                 L 100 165
+                                 L 133 155
+                                 L 166 145
+                                 L 200 120
+                                 L 233 95
+                                 L 266 80
+                                 L 300 70
+                                 L 333 65
+                                 L 366 75
+                                 L 400 85
+                                 L 433 90
+                                 L 466 95
+                                 L 500 110
+                                 L 533 125
+                                 L 566 140
+                                 L 600 150
+                                 L 633 160
+                                 L 666 168
+                                 L 700 173
+                                 L 733 176
+                                 L 766 178
+                                 L 800 180"
+                              stroke="#3b82f6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+                        <!-- Fill area under curve -->
+                        <path d="M 0 180
+                                 L 33 175 L 66 170 L 100 165 L 133 155 L 166 145
+                                 L 200 120 L 233 95 L 266 80 L 300 70 L 333 65
+                                 L 366 75 L 400 85 L 433 90 L 466 95 L 500 110
+                                 L 533 125 L 566 140 L 600 150 L 633 160 L 666 168
+                                 L 700 173 L 733 176 L 766 178 L 800 180
+                                 L 800 200 L 0 200 Z"
+                              fill="url(#callGradient)"/>
+
+                        <!-- Data points -->
+                        <circle cx="200" cy="120" r="5" fill="#3b82f6"/>
+                        <circle cx="300" cy="70" r="5" fill="#3b82f6"/>
+                        <circle cx="400" cy="85" r="5" fill="#3b82f6"/>
+                        <circle cx="500" cy="110" r="5" fill="#3b82f6"/>
+
+                        <!-- Time labels -->
+                        <text x="0" y="195" font-size="11" fill="#94a3b8" font-weight="600">12AM</text>
+                        <text x="200" y="195" font-size="11" fill="#94a3b8" font-weight="600">6AM</text>
+                        <text x="400" y="195" font-size="11" fill="#94a3b8" font-weight="600">12PM</text>
+                        <text x="600" y="195" font-size="11" fill="#94a3b8" font-weight="600">6PM</text>
+                        <text x="775" y="195" font-size="11" fill="#94a3b8" font-weight="600">Now</text>
                     </svg>
                 </div>
             </div>
