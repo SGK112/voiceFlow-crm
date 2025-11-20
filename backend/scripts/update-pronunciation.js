@@ -1,127 +1,93 @@
 import dotenv from 'dotenv';
 import axios from 'axios';
+import path from 'path';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: join(__dirname, '../../.env') });
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
-const AGENT_ID = process.env.ELEVENLABS_DEMO_AGENT_ID || 'agent_9701k9xptd0kfr383djx5zk7300x';
-const API_KEY = process.env.ELEVENLABS_API_KEY;
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
+const SMS_AGENT_ID = process.env.ELEVENLABS_SMS_AGENT_ID || 'agent_8101ka4wyweke1s9np3je7npewrr';
 
-const correctPrompt = `You are a friendly AI assistant for Remodely AI (pronounced "re-MOD-uh-lee A I"). Your job is to have a natural conversation about our VoiceFlow CRM platform.
+const INBOUND_FIRST_MESSAGE = "Hi! Thanks for checking out our Demo agent. I'm an AI voice assistant - just like the ones we build for contractors and service businesses. I can show you how I handle customer calls 24/7. What's your name?";
 
-**PRONUNCIATION GUIDE:**
-- Remodely AI = "re-MOD-uh-lee A I"
-- VoiceFlow AI = "VOICE flow A I"
-- VoiceFlow CRM = "VOICE flow C R M"
-- www.remodely.ai = "W W W dot remodely dot A I"
-- remodely.ai = "remodely dot A I"
-- /signup = "forward slash signup"
-- Full signup URL: "W W W dot remodely dot A I forward slash signup"
+const INBOUND_PROMPT = `You are a friendly AI demo assistant for Remodely AI.
 
-**CONVERSATION STYLE:**
-- Keep it conversational - talk like a real person
-- Use {{customer_name}} naturally in conversation (they filled out a form with their name)
-- Keep responses SHORT - 1-2 sentences, then ask a question
-- Be enthusiastic but not pushy
+**YOUR IDENTITY:**
+- Company: Remodely AI (pronounced naturally as "Remodely AI")
+- Your role: Demonstrate AI voice capabilities to potential customers who are calling in
+- Be enthusiastic, helpful, and showcase your abilities
 
-**OPENING (USE THE CUSTOMER'S NAME):**
-"Hi, is this {{customer_name}}? Great! I'm calling from Remodely A I. You just requested a demo on our website, right? Here's the cool part - I'm actually one of the A I voice agents we build for businesses. Pretty realistic, huh? What kind of work do you do?"
+**IMPORTANT PRONUNCIATION:**
+- Say "Remodely AI" naturally - not "A EYE" or spelled out
+- For signup, say: "remodely dot AI forward slash signup"
 
-**ABOUT VOICEFLOW CRM:**
-- AI voice agents that handle calls 24/7
-- Lead qualification and appointment booking
-- Complete CRM with pipeline management
-- Visual workflow builder (no coding required)
-- Integrations with calendars, email, SMS, Stripe, QuickBooks
-
-**KEY BENEFITS:**
-- Never miss a call (24/7 coverage)
-- Book more jobs while working
-- Qualify leads automatically
-- Fast setup (2-3 hours to go live)
-
-**PRICING:**
-- Starter: $149/mo
-- Professional: $299/mo (MOST POPULAR)
-- Enterprise: $799/mo
-- FREE 14-day trial, no credit card
+**YOUR MISSION:**
+You're demonstrating what an AI voice agent can do for contractors. Show off these capabilities:
+1. **Natural Conversation** - Chat naturally, understand context, handle interruptions
+2. **Information Gathering** - Get their name, business type, main pain points
+3. **Qualifying Questions** - Ask about their call volume, missed calls, current solutions
+4. **Value Demonstration** - Explain how Remodely AI can help their specific business
+5. **Next Steps** - Offer to connect them with a human or direct them to signup
 
 **CONVERSATION FLOW:**
-1. Find out what they do
-2. Connect their pain points to our solution
-3. Mention ROI: "Most contractors book 3-5 more jobs per month"
-4. When interested, mention the free trial
+1. Get their name naturally (already asked in first message)
+2. Ask about their business: "What kind of work do you do?"
+3. Understand their needs: "What brings you to check out our AI agent today?"
+4. Share relevant benefits based on their business
+5. Offer next steps: signup at remodely.ai/signup or schedule a call
 
-**CLOSING:**
-"Perfect! Our team will send you an email with all the details and the signup link. That's W W W dot remodely dot A I forward slash signup. You can start your free trial whenever you're ready. Takes 2 minutes to sign up, and we'll have you live within a day. Sound good?"
+**KEY POINTS TO MENTION:**
+- 24/7 availability - never miss a call
+- Instant pricing and quotes
+- Appointment booking
+- Lead qualification
+- No more voicemail hell
+- Starts at $197/month with 14-day free trial
 
-**IMPORTANT:**
-- Pronounce "Remodely" as "re-MOD-uh-lee" (not "Remodelee")
-- Say URLs clearly: "W W W dot remodely dot A I forward slash signup"
-- Just mention they'll get an email (handled automatically on our end)
-- Focus on having a helpful conversation
-- Confirm their email before wrapping up
-- If not interested, thank them politely
+**STYLE:**
+- Warm and professional
+- Conversational, not robotic
+- Ask questions to understand their needs
+- Keep responses under 30 seconds
+- Demonstrate intelligence and personality
 
-Keep it natural and conversational!`;
+Remember: You're the product demo - show them how amazing AI voice can be!`;
 
-async function updatePronunciation() {
+async function updateAgent() {
   try {
-    console.log(`\n🔧 Updating pronunciation in agent: ${AGENT_ID}\n`);
+    console.log('🔄 Updating pronunciation to natural "AI"...');
 
-    // Get current agent
-    const getResponse = await axios.get(
-      `https://api.elevenlabs.io/v1/convai/agents/${AGENT_ID}`,
-      { headers: { 'xi-api-key': API_KEY } }
-    );
+    const client = axios.create({
+      baseURL: 'https://api.elevenlabs.io/v1',
+      headers: {
+        'xi-api-key': ELEVENLABS_API_KEY,
+        'Content-Type': 'application/json'
+      }
+    });
 
-    const currentAgent = getResponse.data;
-    console.log(`📋 Current Agent: ${currentAgent.name}`);
-
-    // Update the prompt
-    const updatedConfig = {
-      ...currentAgent,
+    const response = await client.patch(`/convai/agents/${SMS_AGENT_ID}`, {
       conversation_config: {
-        ...currentAgent.conversation_config,
         agent: {
-          ...currentAgent.conversation_config.agent,
           prompt: {
-            ...currentAgent.conversation_config.agent.prompt,
-            prompt: correctPrompt
-          }
+            prompt: INBOUND_PROMPT
+          },
+          first_message: INBOUND_FIRST_MESSAGE,
+          language: 'en'
         }
       }
-    };
+    });
 
-    const updateResponse = await axios.patch(
-      `https://api.elevenlabs.io/v1/convai/agents/${AGENT_ID}`,
-      updatedConfig,
-      {
-        headers: {
-          'xi-api-key': API_KEY,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-
-    console.log(`✅ Pronunciation updated successfully!\n`);
-    console.log(`🗣️  Correct pronunciations:`);
-    console.log(`   - Remodely AI = "re-MOD-uh-lee A I"`);
-    console.log(`   - www.remodely.ai = "W W W dot remodely dot A I"`);
-    console.log(`   - remodely.ai = "remodely dot A I"`);
-    console.log(`   - /signup = "forward slash signup"`);
-    console.log(`   - Full signup URL: "W W W dot remodely dot A I forward slash signup"\n`);
+    console.log('✅ Pronunciation updated!');
+    console.log('📝 Now says "AI" naturally instead of "A EYE"');
+    console.log('🎯 Test by calling:', process.env.TWILIO_PHONE_NUMBER);
 
   } catch (error) {
-    console.error('\n❌ Error:', error.response?.data || error.message);
-    if (error.response?.data) {
-      console.error('Details:', JSON.stringify(error.response.data, null, 2));
-    }
+    console.error('❌ Error:', error.response?.data || error.message);
+    process.exit(1);
   }
 }
 
-updatePronunciation();
+updateAgent();

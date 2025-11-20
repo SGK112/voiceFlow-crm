@@ -3002,6 +3002,14 @@
 
         /* Mobile Optimizations */
         @media (max-width: 768px) {
+            /* CRITICAL: Hide banner on mobile - must override inline styles */
+            body #promoBanner {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                overflow: hidden !important;
+            }
+
             /* Hide mascot on mobile */
             .ai-robot-mascot {
                 display: none;
