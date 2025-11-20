@@ -456,6 +456,86 @@ section:nth-child(odd) {
 }
 
 /* ============================================
+   CONTENT ALIGNMENT FIXES
+   ============================================ */
+
+/* Center all section content */
+section {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+.container,
+.section-container,
+.hero-container,
+.features-container,
+.pricing-container,
+.stats-container,
+.cta-container {
+    max-width: 1280px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+    box-sizing: border-box !important;
+}
+
+/* Grid layouts - properly centered */
+.features-grid,
+.integrations-grid,
+.pricing-cards {
+    width: 100% !important;
+    max-width: 1280px !important;
+    margin: 0 auto !important;
+    display: grid !important;
+    justify-items: center !important;
+}
+
+/* Cards should not exceed container */
+.feature-card,
+.integration-card,
+.pricing-card {
+    width: 100% !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+}
+
+/* Text alignment */
+.section-title,
+.hero-content {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* CTA buttons centered */
+.cta-group,
+.hero-cta-group,
+.cta-buttons {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    margin: 0 auto !important;
+}
+
+/* Stats grid centered */
+.stats-grid {
+    justify-items: center !important;
+    align-items: stretch !important;
+}
+
+/* Phone mockup centered */
+.phone-mockup {
+    margin: 40px auto !important;
+    display: block !important;
+}
+
+/* ============================================
    MOBILE OPTIMIZATION
    ============================================ */
 
@@ -474,19 +554,35 @@ section:nth-child(odd) {
 
     .btn {
         width: 100% !important;
+        max-width: 320px !important;
         padding: 14px 24px !important;
         font-size: 16px !important;
+        margin: 0 auto !important;
     }
 
     .feature-card,
     .integration-card,
     .pricing-card {
         padding: 24px !important;
+        max-width: 100% !important;
     }
 
     .stats-grid {
         grid-template-columns: 1fr !important;
         gap: 20px !important;
+    }
+
+    .features-grid,
+    .integrations-grid,
+    .pricing-cards {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+    }
+
+    .container,
+    .section-container {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
     }
 }
 
@@ -494,14 +590,40 @@ section:nth-child(odd) {
    REMOVE HORIZONTAL SCROLL
    ============================================ */
 
+html {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
 * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Ensure no element breaks layout */
+img,
+video,
+iframe,
+svg {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Grid items shouldn't overflow */
+.grid > *,
+[class*="grid"] > * {
+    min-width: 0 !important;
     max-width: 100% !important;
 }
 
-.container,
-.section-container {
-    max-width: 1280px !important;
-    margin: 0 auto !important;
-    padding-left: 24px !important;
-    padding-right: 24px !important;
+/* Flex items shouldn't overflow */
+.flex > *,
+[class*="flex"] > * {
+    min-width: 0 !important;
+    max-width: 100% !important;
 }
