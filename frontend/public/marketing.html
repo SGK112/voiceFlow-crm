@@ -135,30 +135,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Mobile: Move navbar below banner */
-        @media (max-width: 768px) {
-            .navbar {
-                top: 48px !important; /* Banner height on mobile + spacing */
-            }
-
-            #promoBanner {
-                height: 48px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .navbar {
-                top: 44px !important; /* Smaller banner on mobile */
-            }
-
-            #promoBanner {
-                height: 44px;
-            }
-        }
-
         .navbar.scrolled {
             background: transparent;
             box-shadow: none;
@@ -3039,7 +3015,7 @@
 
             /* Hero Section */
             .hero {
-                padding: 140px 20px 40px; /* Extra padding for banner + navbar */
+                padding: 120px 20px 40px;
                 min-height: auto;
             }
 
@@ -3136,7 +3112,7 @@
         @media (max-width: 480px) {
             /* Extra small screens */
             .hero {
-                padding: 120px 16px 32px; /* Extra padding for banner + navbar */
+                padding: 100px 16px 32px;
             }
 
             .hero h1 {
