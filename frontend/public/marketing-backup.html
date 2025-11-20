@@ -10,7 +10,23 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/marketing-enhanced-styles.css">
+    <link rel="stylesheet" href="/cookie-consent.css">
     <style>
+        /*
+         * Background Images Guide:
+         *
+         * To add construction or team images to your marketing page:
+         * 1. Place images in /frontend/public/ (e.g., construction.jpg, team.jpg)
+         * 2. Uncomment the background-image CSS in the sections below
+         * 3. Replace '/path/to/image.jpg' with your actual image path
+         *
+         * Recommended sections for images:
+         * - .hero: Construction site or finished project (line 178)
+         * - .cta-section: Team photo or construction crew (line 1142)
+         *
+         * The overlays ensure text remains readable over images.
+         */
+
         * {
             margin: 0;
             padding: 0;
@@ -175,6 +191,26 @@
             position: relative;
             overflow: hidden;
             background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+            /*
+             * ADD YOUR IMAGES HERE:
+             *
+             * Option 1: Hero background with construction team or field workers
+             * Upload image to /frontend/public/ folder (e.g., hero-construction.jpg)
+             * Then uncomment these lines and update the path:
+             *
+             * background-image:
+             *   linear-gradient(rgba(248, 250, 252, 0.92), rgba(255, 255, 255, 0.95)),
+             *   url('/hero-construction.jpg');
+             * background-size: cover;
+             * background-position: center;
+             * background-attachment: fixed;
+             *
+             * Recommended images:
+             * - Construction crew on job site
+             * - Field service professionals answering calls
+             * - Busy office with phone operators
+             * - Modern construction site with workers
+             */
         }
 
         .hero::before {
@@ -218,7 +254,7 @@
         }
 
         .hero-content {
-            text-align: left;
+            text-align: center;
             position: relative;
             z-index: 1;
         }
@@ -594,10 +630,12 @@
             gap: 48px;
             margin-bottom: 36px;
             padding: 24px 0;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .hero-stat {
-            text-align: left;
+            text-align: center;
         }
 
         .stat-number {
@@ -620,7 +658,7 @@
         .cta-group {
             display: flex;
             gap: 16px;
-            justify-content: flex-start;
+            justify-content: center;
             flex-wrap: wrap;
             margin-bottom: 32px;
         }
@@ -638,6 +676,7 @@
             display: flex;
             gap: 24px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .hero-feature-item {
@@ -870,6 +909,149 @@
             line-height: 1.7;
         }
 
+        /* Integrations Section */
+        .integrations {
+            padding: 100px 24px;
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        }
+
+        .integrations-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .integrations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .integration-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .integration-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .integration-card:hover {
+            border-color: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+            transform: translateY(-4px);
+        }
+
+        .integration-card:hover::before {
+            opacity: 1;
+        }
+
+        .integration-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .integration-logo {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            flex-shrink: 0;
+        }
+
+        .integration-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.01em;
+        }
+
+        .integration-description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .integration-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .integration-features li {
+            color: #475569;
+            font-size: 13px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .integration-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+            font-weight: 700;
+        }
+
+        .integration-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            margin-top: auto;
+        }
+
+        .integration-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .integration-button.secondary {
+            background: #ffffff;
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .integration-button.secondary:hover {
+            background: #eff6ff;
+            border-color: #3b82f6;
+        }
+
         /* Pricing Section */
         .pricing {
             padding: 100px 24px;
@@ -987,6 +1169,24 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            /*
+             * ADD CTA BACKGROUND IMAGE:
+             *
+             * Upload a powerful image to /frontend/public/ (e.g., team-work.jpg)
+             * Recommended images:
+             * - Construction team celebrating completed project
+             * - Field workers using phones/tablets on job site
+             * - Professional service team in action
+             * - Happy contractors with equipment
+             *
+             * Uncomment to activate:
+             * background-image:
+             *   linear-gradient(rgba(30, 41, 59, 0.88), rgba(30, 41, 59, 0.92)),
+             *   url('/team-work.jpg');
+             * background-size: cover;
+             * background-position: center;
+             * background-attachment: fixed;
+             */
         }
 
         .cta-section::before {
@@ -1024,15 +1224,150 @@
 
         /* Footer */
         .footer {
-            padding: 48px 24px;
-            background: #ffffff;
+            padding: 80px 24px 32px;
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
             border-top: 1px solid rgba(15, 23, 42, 0.08);
-            text-align: center;
         }
 
-        .footer p {
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1.5fr 2fr;
+            gap: 60px;
+            margin-bottom: 48px;
+        }
+
+        .footer-brand {
+            max-width: 360px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .footer-logo-text {
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+        }
+
+        .footer-logo-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+
+        .footer-column h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            letter-spacing: -0.01em;
+        }
+
+        .footer-column a {
+            display: block;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 12px;
+            transition: color 0.2s;
+        }
+
+        .footer-column a:hover {
+            color: #3b82f6;
+        }
+
+        .footer-bottom {
+            padding-top: 32px;
+            border-top: 1px solid rgba(15, 23, 42, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-bottom p {
             color: #94a3b8;
             font-size: 14px;
+            margin: 0;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-social a {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .footer-social a:hover {
+            background: #3b82f6;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 968px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-links {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 32px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer {
+                padding: 48px 20px 24px;
+            }
+
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
         }
 
         /* AI Chat Toggle Button - Professional Design */
@@ -1731,17 +2066,53 @@
         }
 
         /* Responsive */
+        /* Enhanced Mobile Responsiveness */
         @media (max-width: 768px) {
+            /* Navigation */
             .navbar-container {
                 padding: 12px 16px;
             }
             .logo {
                 font-size: 18px;
             }
-            .btn {
-                padding: 8px 16px;
-                font-size: 13px;
+            .nav-menu {
+                gap: 8px;
             }
+            .nav-link {
+                display: none;
+            }
+
+            /* Buttons - Full width on mobile for better tap targets */
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                min-width: 120px;
+            }
+            .btn-large {
+                padding: 14px 28px;
+                font-size: 15px;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            /* CTA Group - Centered and stacked */
+            .cta-group {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+                align-items: center;
+            }
+
+            .cta-group .btn {
+                width: 100%;
+                max-width: 320px;
+                justify-content: center;
+            }
+
+            /* Hero Section */
             .hero {
                 padding: 120px 20px 60px;
             }
@@ -1763,22 +2134,55 @@
                 box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             }
             .hero h1 {
-                font-size: 40px;
+                font-size: 36px;
+                line-height: 1.2;
             }
             .hero p {
-                font-size: 18px;
+                font-size: 16px;
+                line-height: 1.6;
             }
+            .hero-stats {
+                gap: 24px;
+                justify-content: center;
+            }
+            .hero-stat {
+                min-width: 120px;
+            }
+            .stat-number {
+                font-size: 28px;
+            }
+
+            /* Hero Features */
+            .hero-features {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
+            }
+            .hero-feature-item {
+                font-size: 13px;
+            }
+
+            /* Section Titles */
             .section-title h2 {
-                font-size: 36px;
+                font-size: 32px;
+                line-height: 1.2;
             }
             .section-title p {
-                font-size: 18px;
+                font-size: 16px;
             }
-            .nav-menu {
-                gap: 8px;
+
+            /* Forms - Better mobile experience */
+            input, textarea, select {
+                font-size: 16px !important; /* Prevents iOS zoom */
+                padding: 12px !important;
             }
-            .nav-link {
-                display: none;
+
+            /* Modal improvements */
+            .modal-content {
+                margin: 20px;
+                max-width: calc(100% - 40px) !important;
+                max-height: calc(100vh - 40px);
+                overflow-y: auto;
             }
             .pricing-card.featured {
                 transform: scale(1);
@@ -1790,6 +2194,21 @@
             }
             .features-grid {
                 grid-template-columns: 1fr;
+            }
+            .integrations-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .integration-card {
+                padding: 24px;
+            }
+            .integration-logo {
+                width: 48px;
+                height: 48px;
+                font-size: 24px;
+            }
+            .integration-name {
+                font-size: 18px;
             }
             .stat-item h3 {
                 font-size: 32px;
@@ -2244,6 +2663,74 @@
             line-height: 1.5;
         }
 
+        /* Error Modal - Red theme variant */
+        .error-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .error-modal-overlay.show {
+            display: flex;
+        }
+
+        .error-modal {
+            background: white;
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: slideUp 0.4s ease-out;
+            position: relative;
+        }
+
+        .error-icon {
+            font-size: 72px;
+            margin-bottom: 24px;
+        }
+
+        .error-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #dc2626;
+            margin-bottom: 16px;
+        }
+
+        .error-message {
+            font-size: 18px;
+            color: #4b5563;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .error-close-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .error-close-btn:hover {
+            background: #b91c1c;
+            transform: scale(1.05);
+        }
+
         /* Voice demo form styles */
         .demo-input {
             width: 100%;
@@ -2299,6 +2786,346 @@
             transform: none;
             box-shadow: none;
         }
+
+        /* ============================================
+           COMPREHENSIVE MOBILE OPTIMIZATIONS
+           ============================================ */
+
+        @media (max-width: 968px) {
+            /* Hero Section Mobile */
+            .hero {
+                padding: 100px 20px 60px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+                line-height: 1.2;
+            }
+
+            .hero-description {
+                font-size: 16px;
+                max-width: 100%;
+            }
+
+            .hero-cta-group {
+                flex-direction: column;
+                width: 100%;
+                gap: 12px;
+            }
+
+            .hero-cta-group .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 14px 24px;
+            }
+
+            /* Stats Section Mobile */
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 20px;
+            }
+
+            /* Features Section Mobile */
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 20px;
+            }
+
+            .feature-card {
+                padding: 24px 20px;
+            }
+
+            /* Pricing Section Mobile */
+            .pricing-cards {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 0 20px;
+            }
+
+            .pricing-card {
+                max-width: 100%;
+            }
+
+            /* Integration Grid Mobile */
+            .integration-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+                padding: 0 20px;
+            }
+
+            /* Navigation Mobile */
+            .nav-menu {
+                gap: 6px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-link {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+
+            .btn {
+                font-size: 13px;
+                padding: 8px 16px;
+            }
+
+            /* Section Spacing */
+            section {
+                padding: 60px 20px;
+            }
+
+            h2 {
+                font-size: 32px;
+            }
+
+            /* CTA Section Mobile */
+            .cta-section {
+                padding: 60px 20px;
+            }
+
+            .cta-section h2 {
+                font-size: 32px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .cta-buttons .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            /* Tighter mobile spacing */
+            .hero {
+                padding: 80px 16px 40px;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+                line-height: 1.2;
+            }
+
+            .hero-badge {
+                font-size: 11px;
+                padding: 6px 14px;
+            }
+
+            .hero-description {
+                font-size: 15px;
+            }
+
+            .hero-cta-group .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+
+            /* Stats Mobile */
+            .stat-number {
+                font-size: 32px;
+            }
+
+            .stat-label {
+                font-size: 13px;
+            }
+
+            /* Features Mobile */
+            .feature-card {
+                padding: 20px 16px;
+            }
+
+            .feature-icon {
+                font-size: 36px;
+            }
+
+            .feature-card h3 {
+                font-size: 18px;
+            }
+
+            .feature-card p {
+                font-size: 14px;
+            }
+
+            /* Pricing Mobile */
+            .pricing-card {
+                padding: 24px 20px;
+            }
+
+            .plan-price {
+                font-size: 36px;
+            }
+
+            .plan-name {
+                font-size: 20px;
+            }
+
+            /* Integration Grid - Single Column on Small Mobile */
+            .integration-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .integration-card {
+                padding: 16px;
+            }
+
+            /* Section Headings */
+            h2 {
+                font-size: 26px;
+            }
+
+            .section-subtitle {
+                font-size: 14px;
+            }
+
+            /* CTA Section */
+            .cta-section {
+                padding: 40px 16px;
+            }
+
+            .cta-section h2 {
+                font-size: 26px;
+            }
+
+            .cta-section p {
+                font-size: 15px;
+            }
+
+            /* Footer Mobile */
+            .footer {
+                padding: 40px 16px 20px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .footer-column h4 {
+                font-size: 13px;
+                margin-bottom: 12px;
+            }
+
+            .footer-column a {
+                font-size: 13px;
+                margin-bottom: 10px;
+            }
+
+            /* Make all buttons touch-friendly */
+            button, .btn, a.btn {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Ensure text stays readable */
+            body {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+
+            /* Prevent horizontal scroll */
+            .container, .section-container {
+                max-width: 100%;
+                overflow-x: hidden;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            /* Touch-friendly spacing */
+            .feature-grid,
+            .pricing-cards,
+            .integration-grid {
+                gap: 16px;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 375px) {
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            .hero-description {
+                font-size: 14px;
+            }
+
+            .stat-number {
+                font-size: 28px;
+            }
+
+            .plan-price {
+                font-size: 32px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            /* Ensure navbar doesn't overflow */
+            .navbar-container {
+                padding: 12px;
+            }
+
+            .logo-text {
+                font-size: 16px;
+            }
+
+            .logo-icon {
+                font-size: 20px;
+            }
+        }
+
+        /* Landscape mode optimization for phones */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .hero {
+                padding: 60px 16px 30px;
+            }
+
+            .hero h1 {
+                font-size: 24px;
+            }
+
+            section {
+                padding: 40px 16px;
+            }
+        }
+
+        /* Prevent zoom on input focus (iOS) */
+        @media (max-width: 640px) {
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            textarea,
+            select {
+                font-size: 16px;
+            }
+        }
+
+        /* Optimize touch targets */
+        @media (hover: none) and (pointer: coarse) {
+            /* Touch device optimization */
+            .nav-link,
+            .btn,
+            button,
+            a {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            /* Increase padding for better touch targets */
+            .feature-card,
+            .pricing-card,
+            .integration-card {
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2315,6 +3142,7 @@
             <div class="nav-menu">
                 <a href="#features" class="nav-link">Features</a>
                 <a href="#how-it-works" class="nav-link">How It Works</a>
+                <a href="#integrations" class="nav-link">Integrations</a>
                 <a href="#pricing" class="nav-link">Pricing</a>
                 <a href="/login" class="btn btn-secondary">Sign In</a>
                 <a href="/login" class="btn btn-primary">Get Started →</a>
@@ -2328,12 +3156,13 @@
             <div class="hero-content">
                 <div class="hero-badge">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
-                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
-                    Powered by ElevenLabs AI Voice Technology
+                    Complete Plug-and-Play Solution • ElevenLabs + n8n Powered
                 </div>
-                <h1>AI Voice Agents That <span class="gradient-text">Work 24/7</span> for Your Business</h1>
-                <p class="hero-subtitle">Automate calls, qualify leads, and book appointments with intelligent voice AI. Build custom workflows without code and scale your operations instantly.</p>
+                <h1>Voice AI That <span class="gradient-text">Answers Every Call</span> and Runs Your Workflows</h1>
+                <p class="hero-subtitle">Built-in voice automation with ElevenLabs AI and n8n workflow automation. Answer calls, book jobs, send estimates, and manage your entire operation - all without touching code. Perfect for construction, field services, and businesses that run on phone calls.</p>
                 <div class="hero-stats">
                     <div class="hero-stat">
                         <div class="stat-number">50K+</div>
@@ -2541,15 +3370,15 @@
                 <p>We provide everything—pre-built agents, custom development, and a full-featured CRM to manage your entire operation.</p>
             </div>
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card" style="border: 2px solid #3b82f6; background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(37, 99, 235, 0.05) 100%);">
                     <div class="feature-icon">🎙️</div>
-                    <h3>Pre-Built AI Voice Agents</h3>
-                    <p>We provide ready-to-use voice agents powered by ElevenLabs. Ultra-realistic voices with emotional intelligence that handle calls, qualify leads, and book appointments—deployed instantly.</p>
+                    <h3>ElevenLabs AI Voice - Built-In ✓</h3>
+                    <p><strong>Critical Integration #1:</strong> Pre-configured ElevenLabs voice technology with ultra-realistic voices. Handles every call with natural conversation, emotional intelligence, and perfect clarity - works 24/7 without breaks. No setup required, it just works.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Custom Agent Development</h3>
-                    <p>Need something specific? Our team builds custom AI agents tailored to your unique business requirements, workflows, and industry needs—from consultation to deployment.</p>
+                <div class="feature-card" style="border: 2px solid #10b981; background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(5, 150, 105, 0.05) 100%);">
+                    <div class="feature-icon">⚙️</div>
+                    <h3>n8n Workflow Automation - Built-In ✓</h3>
+                    <p><strong>Critical Integration #2:</strong> Full n8n workflow platform integrated out-of-the-box. Connect to Facebook, Shopify, Google, Stripe, QuickBooks, and 300+ services with OAuth. Visual workflow builder included - automate everything from lead capture to payment.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
@@ -2710,6 +3539,188 @@
         </div>
     </section>
 
+    <!-- Integrations Section -->
+    <section class="integrations" id="integrations">
+        <div class="integrations-container">
+            <div class="section-title">
+                <h2>Powerful Integrations</h2>
+                <p>Connect with the tools you already use. Seamlessly integrate voice AI with your entire business stack.</p>
+            </div>
+
+            <div class="integrations-grid">
+                <!-- ElevenLabs -->
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <div class="integration-logo">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="22"/>
+                            </svg>
+                        </div>
+                        <h3 class="integration-name">ElevenLabs</h3>
+                    </div>
+                    <p class="integration-description">Lifelike AI voice agents with advanced conversational capabilities and natural speech synthesis.</p>
+                    <ul class="integration-features">
+                        <li>Natural voice conversations</li>
+                        <li>Multi-language support</li>
+                        <li>Real-time call handling</li>
+                        <li>Custom voice training</li>
+                    </ul>
+                    <a href="https://elevenlabs.io" target="_blank" class="integration-button">Learn More</a>
+                </div>
+
+                <!-- Twilio -->
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <div class="integration-logo">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                        </div>
+                        <h3 class="integration-name">Twilio</h3>
+                    </div>
+                    <p class="integration-description">Enterprise-grade phone infrastructure for inbound and outbound calling with SMS capabilities.</p>
+                    <ul class="integration-features">
+                        <li>Global phone numbers</li>
+                        <li>SMS & voice calling</li>
+                        <li>Call routing & recording</li>
+                        <li>99.95% uptime SLA</li>
+                    </ul>
+                    <a href="https://www.twilio.com" target="_blank" class="integration-button">Learn More</a>
+                </div>
+
+                <!-- Stripe -->
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <div class="integration-logo">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                                <line x1="2" y1="10" x2="22" y2="10"/>
+                            </svg>
+                        </div>
+                        <h3 class="integration-name">Stripe</h3>
+                    </div>
+                    <p class="integration-description">Secure subscription billing and payment processing with automated invoicing.</p>
+                    <ul class="integration-features">
+                        <li>Subscription management</li>
+                        <li>Usage-based billing</li>
+                        <li>Automated invoicing</li>
+                        <li>PCI compliance</li>
+                    </ul>
+                    <a href="https://stripe.com" target="_blank" class="integration-button">Learn More</a>
+                </div>
+
+                <!-- Google -->
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <div class="integration-logo">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </div>
+                        <h3 class="integration-name">Google</h3>
+                    </div>
+                    <p class="integration-description">OAuth authentication and calendar sync for seamless appointment scheduling.</p>
+                    <ul class="integration-features">
+                        <li>Single sign-on (SSO)</li>
+                        <li>Calendar integration</li>
+                        <li>Event scheduling</li>
+                        <li>Automatic reminders</li>
+                    </ul>
+                    <a href="https://workspace.google.com" target="_blank" class="integration-button">Learn More</a>
+                </div>
+
+                <!-- n8n -->
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <div class="integration-logo">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                            </svg>
+                        </div>
+                        <h3 class="integration-name">n8n</h3>
+                    </div>
+                    <p class="integration-description">Visual workflow automation connecting voice agents to hundreds of apps and services.</p>
+                    <ul class="integration-features">
+                        <li>No-code automation</li>
+                        <li>500+ integrations</li>
+                        <li>Custom workflows</li>
+                        <li>Event-driven triggers</li>
+                    </ul>
+                    <a href="https://n8n.io" target="_blank" class="integration-button">Learn More</a>
+                </div>
+
+                <!-- Slack -->
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <div class="integration-logo">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="integration-name">Slack</h3>
+                    </div>
+                    <p class="integration-description">Team notifications and collaboration with real-time alerts for calls and leads.</p>
+                    <ul class="integration-features">
+                        <li>Real-time notifications</li>
+                        <li>Team collaboration</li>
+                        <li>Custom alerts</li>
+                        <li>Channel integration</li>
+                    </ul>
+                    <a href="https://slack.com" target="_blank" class="integration-button">Learn More</a>
+                </div>
+
+                <!-- SMTP/Email -->
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <div class="integration-logo">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                <polyline points="22,6 12,13 2,6"/>
+                            </svg>
+                        </div>
+                        <h3 class="integration-name">SMTP / Email</h3>
+                    </div>
+                    <p class="integration-description">Automated email notifications and follow-ups for every customer interaction.</p>
+                    <ul class="integration-features">
+                        <li>Automated follow-ups</li>
+                        <li>Lead notifications</li>
+                        <li>Custom templates</li>
+                        <li>Delivery tracking</li>
+                    </ul>
+                    <a href="#" class="integration-button secondary">Built-in</a>
+                </div>
+
+                <!-- CRM Integration -->
+                <div class="integration-card">
+                    <div class="integration-header">
+                        <div class="integration-logo">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                        <h3 class="integration-name">Built-in CRM</h3>
+                    </div>
+                    <p class="integration-description">Native lead management and customer tracking with full conversation history.</p>
+                    <ul class="integration-features">
+                        <li>Lead capture & tracking</li>
+                        <li>Call history & recordings</li>
+                        <li>Contact management</li>
+                        <li>Analytics & reporting</li>
+                    </ul>
+                    <a href="/login" class="integration-button secondary">Included Free</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Pricing Section -->
     <section class="pricing" id="pricing">
         <div class="section-title">
@@ -2771,11 +3782,31 @@
 
     <!-- Final CTA -->
     <section class="cta-section">
-        <h2>Ready to Transform Your Business with AI?</h2>
-        <p>Join innovative businesses already using VoiceFlow CRM to automate operations, qualify leads faster, and scale without limits.</p>
+        <h2>Never Miss Another Call. Automate Everything.</h2>
+        <p>Complete plug-and-play solution with ElevenLabs voice AI and n8n workflows built-in. Start answering calls, booking jobs, and running your business 24/7 - setup takes 5 minutes, no coding required. Perfect for contractors, field services, and any business that depends on phone calls.</p>
         <div class="cta-group">
-            <a href="/login" class="btn btn-primary">Start Free Trial →</a>
-            <a href="mailto:support@voiceflowcrm.ai" class="btn btn-secondary">Contact Sales</a>
+            <a href="/login" class="btn btn-primary btn-large">Start Free Trial - Setup in 5 Min →</a>
+            <button class="btn btn-secondary btn-large" onclick="openCalendarModal()">Watch 2-Min Demo</button>
+        </div>
+        <div style="margin-top: 32px; display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; color: #94a3b8; font-size: 14px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>ElevenLabs Integrated</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>n8n Workflows Built-In</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Works 24/7/365</span>
+            </div>
         </div>
     </section>
 
@@ -2980,7 +4011,76 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <p>© 2025 VoiceFlow CRM. All rights reserved.</p>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-icon">🎙️</span>
+                        <div>
+                            <div class="footer-logo-text">Remodely</div>
+                            <div class="footer-logo-subtitle">VoiceFlow CRM</div>
+                        </div>
+                    </div>
+                    <p class="footer-description">AI-powered voice agents with visual workflow automation. Transform your business communication.</p>
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Product</h4>
+                        <a href="/features.html">Features</a>
+                        <a href="/how-it-works.html">How It Works</a>
+                        <a href="/integrations.html">Integrations</a>
+                        <a href="/pricing.html">Pricing</a>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <a href="/about.html">About</a>
+                        <a href="/blog.html">Blog</a>
+                        <a href="/careers.html">Careers</a>
+                        <a href="/contact.html">Contact</a>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="/documentation.html">Documentation</a>
+                        <a href="/api-reference.html">API Reference</a>
+                        <a href="/support.html">Support</a>
+                        <a href="/status.html">Status</a>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <a href="/privacy.html">Privacy Policy</a>
+                        <a href="/terms.html">Terms of Service</a>
+                        <a href="/cookies.html">Cookie Policy</a>
+                        <a href="/security.html">Security</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2025 VoiceFlow CRM by Remodely.ai. All rights reserved.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Twitter">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="LinkedIn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+                            <circle cx="4" cy="4" r="2"/>
+                        </svg>
+                    </a>
+                    <a href="#" aria-label="GitHub">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <!-- AI Chat Toggle Button -->
@@ -3752,14 +4852,35 @@
                 }
             } catch (error) {
                 console.error('Voice demo error:', error);
-                voiceStatusMessage.style.display = 'block';
-                voiceStatusMessage.className = 'voice-status-message error';
-                voiceStatusMessage.textContent = '⚠️ ' + (error.message || 'Failed to initiate call. Please try again.');
+
+                // Hide inline message
+                voiceStatusMessage.style.display = 'none';
+
+                // Show error modal popup
+                const errorModal = document.getElementById('errorModal');
+                const errorModalMessage = document.getElementById('errorModalMessage');
+
+                errorModalMessage.textContent = error.message || 'We\'re having trouble placing your call right now. Please try again or use the text chat below.';
+                errorModal.classList.add('show');
 
                 // Reset button state on error
                 requestCallBtn.disabled = false;
                 btnIcon.textContent = '📞';
                 btnText.textContent = 'Call Me Now';
+            }
+        });
+
+        // Error modal close button
+        const errorModal = document.getElementById('errorModal');
+        const errorCloseBtn = document.getElementById('errorCloseBtn');
+        errorCloseBtn.addEventListener('click', () => {
+            errorModal.classList.remove('show');
+        });
+
+        // Close error modal when clicking outside
+        errorModal.addEventListener('click', (e) => {
+            if (e.target === errorModal) {
+                errorModal.classList.remove('show');
             }
         });
 
@@ -3968,5 +5089,20 @@
             </div>
         </div>
     </div>
+
+    <!-- Error Modal -->
+    <div id="errorModal" class="error-modal-overlay">
+        <div class="error-modal">
+            <div class="error-icon">⚠️</div>
+            <div class="error-title">Couldn't Place Call</div>
+            <div class="error-message" id="errorModalMessage">
+                We're having trouble placing your call right now. Please try again or use the text chat below.
+            </div>
+            <button class="error-close-btn" id="errorCloseBtn">Try Again</button>
+        </div>
+    </div>
+
+    <!-- Cookie Consent Banner -->
+    <script src="/cookie-consent.js"></script>
 </body>
 </html>
