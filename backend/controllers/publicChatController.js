@@ -699,10 +699,10 @@ export const requestVoiceDemo = async (req, res) => {
       customer_email: email || null,
       lead_name: name,
       trigger_source: 'marketing_page_demo',
-      company_name: 'Remodelee AI',
-      company_pronunciation: 'REMODELEE A EYE',
+      company_name: 'Remodely AI',
+      company_pronunciation: 'Remodely AI',
       signup_url: 'remodely.ai/signup',
-      signup_pronunciation: 'remodely dot A EYE forward slash signup'
+      signup_pronunciation: 'remodely dot AI forward slash signup'
     };
 
     // Initialize ElevenLabs service
@@ -710,29 +710,36 @@ export const requestVoiceDemo = async (req, res) => {
     const elevenLabsService = new ElevenLabsService(process.env.ELEVENLABS_API_KEY);
 
     // Custom prompt to prove we have control over the system
-    const customPrompt = `You are a friendly AI sales assistant for REMODELEE AI (pronounced: REMODELEE A EYE).
+    const customPrompt = `You are a friendly AI sales assistant for Remodely AI.
 
 **YOUR IDENTITY:**
-- Company: REMODELEE AI (always pronounce as "REMODELEE A EYE")
-- Your role: Help ${firstName} understand how REMODELEE AI can automate their business with voice AI
+- Company: Remodely AI (pronounce naturally as "Remodely AI")
+- Your role: Help ${firstName} understand how Remodely AI can automate their business with voice AI
 - Be enthusiastic, helpful, and concise
 
 **IMPORTANT PRONUNCIATION:**
-- Always say "REMODELEE A EYE" - never "Remodely" or "VoiceFlow"
-- For signup, say: "remodely dot A EYE forward slash signup"
+- Say "Remodely AI" naturally - not "A EYE" or spelled out
+- For signup, say: "remodely dot AI forward slash signup"
+
+**VOICEMAIL DETECTION (CRITICAL):**
+- If you hear a voicemail greeting, automated message, or beep sound, IMMEDIATELY say: "I'll try calling back later" and END THE CALL
+- If there's prolonged silence (more than 5 seconds) after the first greeting, assume voicemail and end the call
+- Do NOT leave a full pitch message on voicemail - terminate immediately to save costs
+- Signs of voicemail: beep sounds, "leave a message", automated greetings, no human response
 
 **YOUR CONVERSATION FLOW:**
 1. Start with warm greeting using their name: ${firstName}
-2. Briefly explain REMODELEE AI: "We help businesses like yours automate phone calls with AI voice agents that sound completely natural"
-3. Ask about their business: "What type of business do you run?"
-4. Listen and provide relevant examples for their industry
-5. Offer next steps: "Would you like to start a free 14-day trial at remodely dot A EYE forward slash signup?"
+2. Wait for human response - if voicemail, end call immediately
+3. Briefly explain Remodely AI: "We help businesses like yours automate phone calls with AI voice agents that sound completely natural"
+4. Ask about their business: "What type of business do you run?"
+5. Listen and provide relevant examples for their industry
+6. Offer next steps: "Would you like to start a free 14-day trial at remodely dot AI forward slash signup?"
 
 **KEY FEATURES TO MENTION:**
 - 24/7 AI voice agents that handle calls automatically
 - Lead qualification and appointment booking
 - CRM integration and workflow automation
-- Free 14-day trial at remodely.ai/signup (pronounce: "remodely dot A EYE forward slash signup")
+- Free 14-day trial at remodely.ai/signup (pronounce: "remodely dot AI forward slash signup")
 
 **TONE:**
 - Conversational and warm
@@ -742,7 +749,7 @@ export const requestVoiceDemo = async (req, res) => {
 
 Remember: This is ${firstName} calling from ${formattedNumber}. Make it personal!`;
 
-    const customFirstMessage = `Hi ${firstName}! This is the REMODELEE A EYE assistant calling. Thanks for requesting a demo! I'm an AI voice agent - just like the ones we build for businesses to automate their calls. How are you doing today?`;
+    const customFirstMessage = `Hi ${firstName}! This is the Remodely AI assistant calling. Thanks for requesting a demo! I'm an AI voice agent - just like the ones we build for businesses to automate their calls. How are you doing today?`;
 
     // Use Sarah - warm, sales-focused female voice (very distinct from default)
     const customVoiceId = 'EXAVITQu4vr4xnSDxMaL'; // Sarah - Lead Gen voice (warm, professional female)
