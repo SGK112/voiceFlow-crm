@@ -65,7 +65,7 @@
         /* Navigation */
         .navbar {
             position: fixed;
-            top: 0;
+            top: 44px;
             left: 0;
             right: 0;
             z-index: 1000;
@@ -304,7 +304,7 @@
         /* Sticky Phone Bar */
         .sticky-phone-bar {
             position: fixed;
-            top: 70px;
+            top: 114px;
             left: 0;
             right: 0;
             z-index: 900;
@@ -464,7 +464,7 @@
 
         /* Hero Section */
         .hero {
-            padding: 140px 24px 100px;
+            padding: 180px 24px 100px;
             background: #ffffff;
             position: relative;
             overflow: hidden;
@@ -2272,6 +2272,19 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px !important;
+            }
+
+            .hero p {
+                font-size: 18px !important;
+            }
+
+            .btn-primary {
+                font-size: 16px !important;
+                padding: 16px 32px !important;
+            }
+
             .hero-container {
                 grid-template-columns: 1fr;
                 gap: 40px;
@@ -2831,6 +2844,15 @@
     </style>
 </head>
 <body>
+    <!-- Promotional Banner -->
+    <div style="background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%); color: white; text-align: center; padding: 12px 24px; font-size: 14px; font-weight: 600; position: relative; z-index: 1001;">
+        <span style="display: inline-flex; align-items: center; gap: 12px;">
+            <span style="background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">LIMITED TIME</span>
+            <span>Get 50% off your first 3 months — Start your free trial today</span>
+            <a href="/login" style="color: white; text-decoration: underline; font-weight: 700; margin-left: 8px;">Claim offer →</a>
+        </span>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="navbar-container">
@@ -2853,7 +2875,9 @@
                 <a href="#integrations" class="nav-link">Integrations</a>
                 <a href="#pricing" class="nav-link">Pricing</a>
                 <a href="/login" class="btn btn-secondary">Sign In</a>
-                <a href="/login" class="btn btn-primary">Get Started →</a>
+                <a href="tel:+16028334780" class="btn btn-primary" style="background: white; color: #3b82f6; font-weight: 700; box-shadow: 0 4px 12px rgba(255,255,255,0.2);">
+                    Try Free — Call Now
+                </a>
             </div>
         </div>
     </nav>
@@ -2902,12 +2926,25 @@
                         Try It Now — Call (602) 833-4780
                     </a>
                 </div>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: #3b82f6; font-size: 15px; margin-bottom: 48px;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    <span style="font-weight: 600;">Free 14-day trial • No credit card required</span>
+                <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px; margin-bottom: 48px;">
+                    <div style="display: flex; align-items: center; gap: 8px; color: #3b82f6; font-size: 15px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                        <span style="font-weight: 600;">Free 14-day trial</span>
+                    </div>
+                    <span style="color: #cbd5e1;">•</span>
+                    <div style="display: flex; align-items: center; gap: 8px; color: #10b981; font-size: 15px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span style="font-weight: 600;">100% money-back guarantee</span>
+                    </div>
+                    <span style="color: #cbd5e1;">•</span>
+                    <div style="display: flex; align-items: center; gap: 8px; color: #64748b; font-size: 15px;">
+                        <span style="font-weight: 600;">No credit card required</span>
+                    </div>
                 </div>
                 <div class="trust-badges" style="justify-content: center;">
                     <div class="trust-badge" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 20px 28px; border-radius: 16px; border: 2px solid #3b82f6;">
