@@ -1,0 +1,391 @@
+/**
+ * SCROLL-TRIGGERED CARD ANIMATIONS
+ * Sections slide up like app cards for effortless navigation
+ */
+
+/* ============================================
+   SMOOTH SCROLL BEHAVIOR
+   ============================================ */
+
+html {
+    scroll-behavior: smooth !important;
+    scroll-padding-top: 80px !important;
+}
+
+/* ============================================
+   SECTION CARD ANIMATIONS
+   ============================================ */
+
+/* Initial state - sections below viewport */
+section {
+    opacity: 0 !important;
+    transform: translateY(60px) !important;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Visible state - when section enters viewport */
+section.visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Stagger animation for child elements */
+.visible .feature-card,
+.visible .integration-card,
+.visible .pricing-card,
+.visible .stat-item,
+.visible .testimonial-card {
+    animation: slide-up-fade 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards !important;
+}
+
+/* Stagger delays */
+.visible .feature-card:nth-child(1),
+.visible .integration-card:nth-child(1),
+.visible .pricing-card:nth-child(1) {
+    animation-delay: 0.1s !important;
+}
+
+.visible .feature-card:nth-child(2),
+.visible .integration-card:nth-child(2),
+.visible .pricing-card:nth-child(2) {
+    animation-delay: 0.2s !important;
+}
+
+.visible .feature-card:nth-child(3),
+.visible .integration-card:nth-child(3),
+.visible .pricing-card:nth-child(3) {
+    animation-delay: 0.3s !important;
+}
+
+.visible .feature-card:nth-child(4),
+.visible .integration-card:nth-child(4) {
+    animation-delay: 0.4s !important;
+}
+
+@keyframes slide-up-fade {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   HERO ENTRANCE ANIMATION
+   ============================================ */
+
+.hero {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+.hero-content > * {
+    opacity: 0 !important;
+    transform: translateY(30px) !important;
+}
+
+.hero-content.loaded > * {
+    animation: hero-fade-up 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+}
+
+.hero-content.loaded h1 {
+    animation-delay: 0.1s !important;
+}
+
+.hero-content.loaded p {
+    animation-delay: 0.2s !important;
+}
+
+.hero-content.loaded .cta-group {
+    animation-delay: 0.3s !important;
+}
+
+.hero-content.loaded .hero-features {
+    animation-delay: 0.4s !important;
+}
+
+.hero-content.loaded .hero-stats {
+    animation-delay: 0.5s !important;
+}
+
+@keyframes hero-fade-up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   PARALLAX SCROLL EFFECT
+   Light parallax for depth
+   ============================================ */
+
+.parallax-section {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.parallax-bg {
+    position: absolute !important;
+    top: -20% !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -20% !important;
+    background-size: cover !important;
+    background-position: center !important;
+    transform: translateY(var(--parallax-offset, 0)) !important;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    z-index: 0 !important;
+}
+
+/* ============================================
+   FLOATING CARD EFFECT
+   Cards have subtle float on hover
+   ============================================ */
+
+.feature-card,
+.integration-card,
+.pricing-card,
+.stat-item {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.feature-card:hover,
+.integration-card:hover,
+.pricing-card:hover,
+.stat-item:hover {
+    transform: translateY(-12px) scale(1.02) !important;
+}
+
+/* ============================================
+   PROGRESS INDICATOR
+   Shows scroll progress
+   ============================================ */
+
+.scroll-progress {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 4px !important;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6) !important;
+    width: 0% !important;
+    z-index: 9999 !important;
+    transition: width 0.1s linear !important;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6) !important;
+}
+
+/* ============================================
+   SECTION TRANSITIONS
+   Each section type has unique animation
+   ============================================ */
+
+/* Stats section - count up animation */
+.visible .stat-item h3 {
+    animation: count-up 1s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes count-up {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* CTA section - pulse attention */
+.visible .cta-section .btn {
+    animation: pulse-cta 2s infinite !important;
+}
+
+@keyframes pulse-cta {
+    0%, 100% {
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    }
+    50% {
+        box-shadow: 0 12px 32px rgba(59, 130, 246, 0.6);
+    }
+}
+
+/* ============================================
+   MOBILE OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Reduce animation complexity on mobile */
+    section {
+        transform: translateY(30px) !important;
+    }
+
+    .feature-card:hover,
+    .integration-card:hover,
+    .pricing-card:hover {
+        transform: translateY(-6px) scale(1.01) !important;
+    }
+
+    /* Faster animations on mobile */
+    section,
+    .feature-card,
+    .integration-card,
+    .pricing-card {
+        transition-duration: 0.4s !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    /* Respect user preference for reduced motion */
+    * {
+        animation: none !important;
+        transition-duration: 0.01s !important;
+    }
+
+    section {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* ============================================
+   SCROLL SNAP SECTIONS
+   Effortless scroll between sections
+   ============================================ */
+
+@media (min-width: 1024px) {
+    /* Optional: Enable scroll snap on desktop */
+    body.scroll-snap-enabled {
+        scroll-snap-type: y proximity !important;
+    }
+
+    body.scroll-snap-enabled section {
+        scroll-snap-align: start !important;
+        scroll-snap-stop: normal !important;
+    }
+}
+
+/* ============================================
+   INTERSECTION LOADING STATES
+   Visual feedback while content loads
+   ============================================ */
+
+.loading-skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(240, 240, 240, 1) 0%,
+        rgba(250, 250, 250, 1) 50%,
+        rgba(240, 240, 240, 1) 100%
+    ) !important;
+    background-size: 200% 100% !important;
+    animation: skeleton-loading 1.5s infinite !important;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ============================================
+   MICRO-INTERACTIONS
+   Subtle feedback for user actions
+   ============================================ */
+
+/* Button press feedback */
+.btn:active {
+    transform: scale(0.96) !important;
+}
+
+/* Link hover underline */
+a:not(.btn) {
+    position: relative !important;
+    transition: color 0.3s !important;
+}
+
+a:not(.btn)::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -2px !important;
+    left: 0 !important;
+    width: 0 !important;
+    height: 2px !important;
+    background: currentColor !important;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+a:not(.btn):hover::after {
+    width: 100% !important;
+}
+
+/* Card lift on focus */
+.feature-card:focus-within,
+.integration-card:focus-within,
+.pricing-card:focus-within {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 16px 48px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* ============================================
+   ENTRANCE ANIMATIONS FOR SPECIFIC ELEMENTS
+   ============================================ */
+
+/* Screenshots fade in */
+.visible .screenshot-slide {
+    animation: fade-in-scale 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards !important;
+}
+
+.visible .screenshot-slide:nth-child(1) { animation-delay: 0.1s !important; }
+.visible .screenshot-slide:nth-child(2) { animation-delay: 0.2s !important; }
+.visible .screenshot-slide:nth-child(3) { animation-delay: 0.3s !important; }
+
+@keyframes fade-in-scale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Section titles */
+.visible .section-title {
+    animation: title-reveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) backwards !important;
+}
+
+@keyframes title-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+        clip-path: inset(0 0 100% 0);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+/* ============================================
+   SMOOTH PAGE TRANSITIONS
+   ============================================ */
+
+.page-transition {
+    animation: page-fade-in 0.5s ease-out !important;
+}
+
+@keyframes page-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
