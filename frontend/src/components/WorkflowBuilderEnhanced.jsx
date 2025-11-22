@@ -162,7 +162,7 @@ const NODE_TYPES = [
 function CustomNode({ data }) {
   return (
     <div
-      className="relative px-3 py-2 shadow-lg rounded-lg border-2 bg-white dark:bg-gray-800 cursor-pointer hover:shadow-2xl transition-all duration-200"
+      className="relative px-3 py-2 shadow-lg rounded-lg border-2 bg-card border border-border cursor-pointer hover:shadow-2xl transition-all duration-200"
       style={{
         borderColor: data.color,
         minWidth: '140px',
@@ -180,8 +180,8 @@ function CustomNode({ data }) {
       <div className="flex items-center gap-2">
         <span className="text-2xl">{data.icon}</span>
         <div className="flex-1 min-w-0">
-          <div className="text-xs font-bold text-gray-900 dark:text-gray-100 truncate">{data.label}</div>
-          <div className="text-[10px] text-gray-500 dark:text-gray-400 truncate">{data.description}</div>
+          <div className="text-xs font-bold text-foreground truncate">{data.label}</div>
+          <div className="text-[10px] text-foreground truncate">{data.description}</div>
         </div>
         {data.configured && (
           <div className="w-1.5 h-1.5 bg-green-500 rounded-full flex-shrink-0" title="Configured"></div>
@@ -246,7 +246,7 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div
-        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-t-2xl">
@@ -271,29 +271,29 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
 
         <div className="p-6 space-y-6">
           <div>
-            <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+            <label className="block text-sm font-semibold text-foreground mb-3">
               Describe your workflow in plain English
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={5}
-              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
+              className="w-full px-4 py-3 border-2 border-border dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-sm"
               placeholder="Example: When someone fills out my contact form, save them as a lead, send them a welcome email, and notify my team on Slack..."
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-xs text-foreground mt-2">
               Be specific about what should happen and when. Claude will design the workflow for you!
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+            <label className="block text-sm font-semibold text-foreground mb-3">
               Workflow Type
             </label>
             <select
               value={workflowType}
               onChange={(e) => setWorkflowType(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full px-4 py-3 border-2 border-border dark:bg-gray-700 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             >
               <option value="general">General Automation</option>
               <option value="voice_agent">Voice Agent Workflow</option>
@@ -304,7 +304,7 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
           </div>
 
           <div>
-            <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">Example prompts:</p>
+            <p className="text-sm font-semibold text-foreground mb-2">Example prompts:</p>
             <div className="space-y-2">
               {examples.map((example, index) => (
                 <button
@@ -325,10 +325,10 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
             </div>
           )}
 
-          <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex gap-3 pt-4 border-t border-border">
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-3 border-2 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-colors text-sm"
+              className="flex-1 px-6 py-3 border-2 border-border text-foreground rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-colors text-sm"
             >
               Cancel
             </button>
@@ -756,18 +756,18 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="h-full flex flex-col bg-secondary">
       {/* Toolbar */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-3 flex items-center justify-between flex-wrap gap-3 shadow-sm">
+      <div className="bg-card border border-border border-b border-border p-3 flex items-center justify-between flex-wrap gap-3 shadow-sm">
         <div className="flex items-center gap-4">
           <input
             type="text"
             value={workflowName}
             onChange={(e) => setWorkflowName(e.target.value)}
-            className="text-lg font-semibold bg-transparent border-b-2 border-transparent hover:border-gray-300 focus:border-blue-500 focus:outline-none dark:text-gray-100 px-2 py-1"
+            className="text-lg font-semibold bg-transparent border-b-2 border-transparent hover:border-gray-300 focus:border-blue-500 focus:outline-none dark:text-white px-2 py-1"
             placeholder="Workflow Name"
           />
-          <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline">
+          <span className="text-sm text-foreground hidden sm:inline">
             {nodes.length} steps
           </span>
         </div>
@@ -782,7 +782,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
           </button>
           <button
             onClick={() => setShowTemplates(!showTemplates)}
-            className="flex items-center gap-2 px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm"
+            className="flex items-center gap-2 px-3 py-2 border border-border text-foreground rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm"
           >
             <Upload className="w-4 h-4" />
             <span className="hidden sm:inline">Templates</span>
@@ -832,20 +832,20 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
             markerEnd: { type: MarkerType.ArrowClosed, color: '#3b82f6', width: 20, height: 20 },
             style: { strokeWidth: 2.5 }
           }}
-          className="bg-gray-50 dark:bg-gray-900"
+          className="bg-secondary"
         >
-          <Controls className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg" />
-          <MiniMap className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg"
+          <Controls className="bg-card border border-border border border-border rounded-lg shadow-lg" />
+          <MiniMap className="bg-card border border-border border border-border rounded-lg shadow-lg"
             nodeColor={(node) => node.data.color}
             maskColor="rgba(0, 0, 0, 0.1)"
           />
-          <Background variant="dots" gap={16} size={1} className="bg-gray-50 dark:bg-gray-900" />
+          <Background variant="dots" gap={16} size={1} className="bg-secondary" />
 
           {/* Templates Panel */}
           {showTemplates && (
             <Panel position="top-center">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-4 border border-gray-200 dark:border-gray-700">
-                <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Quick Start Templates</h3>
+              <div className="bg-card border border-border rounded-lg shadow-xl p-4 border border-border">
+                <h3 className="font-semibold mb-3 text-foreground">Quick Start Templates</h3>
                 <div className="flex gap-2 flex-wrap">
                   <button
                     onClick={() => loadTemplate('lead_capture')}
@@ -873,12 +873,12 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
           {/* Node Palette */}
           {showNodePalette && (
             <Panel position="top-left">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-4 w-72 max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
+              <div className="bg-card border border-border rounded-lg shadow-xl p-4 w-72 max-h-[80vh] overflow-y-auto border border-border">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">Add a Step</h3>
+                  <h3 className="font-semibold text-foreground text-sm">Add a Step</h3>
                   <button
                     onClick={() => setShowNodePalette(false)}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="text-gray-600 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-700 dark:text-gray-100"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -886,19 +886,19 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
 
                 {['Trigger', 'Action', 'Logic', 'Advanced'].map((category) => (
                   <div key={category} className="mb-4">
-                    <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">{category}</h4>
+                    <h4 className="text-xs font-semibold text-foreground uppercase mb-2">{category}</h4>
                     <div className="space-y-2">
                       {NODE_TYPES.filter(nt => nt.category === category).map((nodeType) => (
                         <button
                           key={nodeType.id}
                           onClick={() => addNode(nodeType)}
-                          className="w-full flex items-center gap-2 p-2 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                          className="w-full flex items-center gap-2 p-2 rounded-lg border border-border hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
                           style={{ borderLeftColor: nodeType.color, borderLeftWidth: '3px' }}
                         >
                           <span className="text-xl">{nodeType.icon}</span>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-xs text-gray-900 dark:text-gray-100">{nodeType.name}</div>
-                            <div className="text-[10px] text-gray-500 dark:text-gray-400 truncate">{nodeType.description}</div>
+                            <div className="font-medium text-xs text-foreground">{nodeType.name}</div>
+                            <div className="text-[10px] text-foreground truncate">{nodeType.description}</div>
                           </div>
                         </button>
                       ))}
@@ -912,9 +912,9 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
 
         {/* Properties Panel */}
         {selectedNode && (
-          <div className="absolute right-0 top-0 bottom-0 w-full sm:w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 p-4 overflow-y-auto shadow-xl z-10">
+          <div className="absolute right-0 top-0 bottom-0 w-full sm:w-80 bg-card border border-border border-l border-border p-4 overflow-y-auto shadow-xl z-10">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">Step Settings</h3>
+              <h3 className="font-semibold text-foreground text-sm">Step Settings</h3>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => deleteNode(selectedNode.id)}
@@ -925,7 +925,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
                 </button>
                 <button
                   onClick={() => setSelectedNode(null)}
-                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="p-2 text-gray-600 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-700 dark:text-gray-100"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -934,7 +934,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-xs font-medium text-foreground mb-1">
                   Step Name
                 </label>
                 <input
@@ -949,14 +949,14 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
                       )
                     );
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  className="w-full px-3 py-2 border border-border dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
 
               {/* Dynamic parameter fields */}
               {Object.entries(selectedNode.data.parameters || {}).map(([key, value]) => (
                 <div key={key}>
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1 capitalize">
+                  <label className="block text-xs font-medium text-foreground mb-1 capitalize">
                     {key.replace(/([A-Z])/g, ' $1').trim()}
                   </label>
                   {typeof value === 'boolean' ? (
@@ -970,7 +970,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
                         }}
                         className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                       />
-                      <span className="text-xs text-gray-600 dark:text-gray-400">Enabled</span>
+                      <span className="text-xs text-muted-foreground">Enabled</span>
                     </label>
                   ) : key.includes('Code') || key.includes('Body') || key.includes('text') || key.includes('message') || key.includes('Json') ? (
                     <textarea
@@ -980,7 +980,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
                         updateNodeParams(selectedNode.id, newParams);
                       }}
                       rows={6}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg font-mono text-xs focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-border dark:bg-gray-700 dark:text-white rounded-lg font-mono text-xs focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Enter text..."
                     />
                   ) : (
@@ -991,7 +991,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
                         const newParams = { ...selectedNode.data.parameters, [key]: e.target.value };
                         updateNodeParams(selectedNode.id, newParams);
                       }}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                      className="w-full px-3 py-2 border border-border dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                       placeholder={`Enter ${key}...`}
                     />
                   )}
@@ -999,7 +999,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
               ))}
 
               {/* AI Assistant */}
-              <div className="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+              <div className="mt-6 border-t border-border pt-4">
                 <button
                   onClick={() => setShowNodeAI(!showNodeAI)}
                   className="w-full flex items-center justify-between px-3 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all text-sm font-medium shadow-md"
@@ -1020,7 +1020,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
                         onChange={(e) => setNodeAIRequest(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleNodeAIRequest()}
                         placeholder="e.g., Send SMS to customer with their name"
-                        className="flex-1 px-3 py-2 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="flex-1 px-3 py-2 text-xs border border-border dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                       <button
                         onClick={handleNodeAIRequest}
@@ -1061,10 +1061,10 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
               </div>
 
               {/* Help text for contractors */}
-              <div className="mt-3 p-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+              <div className="mt-3 p-3 bg-secondary/50 border border-border rounded-lg">
+                <p className="text-xs text-muted-foreground">
                   <strong>Tip:</strong> Use {'{{'} and {'}}'} to insert data from previous steps.
-                  Example: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded text-[10px]">{'{{$json.name}}'}</code>
+                  Example: <code className="bg-secondary px-1 rounded text-[10px]">{'{{$json.name}}'}</code>
                 </p>
               </div>
             </div>
@@ -1076,10 +1076,10 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center max-w-md p-8">
               <div className="text-6xl mb-4">🚀</div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <h3 className="text-xl font-bold text-foreground mb-2">
                 Build Your First Workflow
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">
+              <p className="text-muted-foreground mb-6 text-sm">
                 Use the AI Wizard to generate workflows from plain English, or add steps manually.
                 No coding required!
               </p>
@@ -1093,7 +1093,7 @@ export default function WorkflowBuilderEnhanced({ workflowId, onSave }) {
                 </button>
                 <button
                   onClick={() => setShowNodePalette(true)}
-                  className="px-6 py-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-colors"
+                  className="px-6 py-3 bg-card border border-border border-2 border-border text-foreground rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-colors"
                 >
                   Add Manually
                 </button>

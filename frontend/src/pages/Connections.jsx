@@ -402,7 +402,7 @@ export default function IntegrationsNew() {
       'Finance': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
       'Productivity': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300'
     };
-    return colors[category] || 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300';
+    return colors[category] || 'bg-secondary text-gray-700 bg-secondary/30 text-foreground';
   };
 
   // Combined integrations count
@@ -414,24 +414,24 @@ export default function IntegrationsNew() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+        <h1 className="text-3xl font-bold text-gray-900 text-foreground flex items-center gap-3">
           <Zap className="w-8 h-8 text-blue-600" />
           Connect Your Business Accounts
         </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-300 mt-2 font-medium">
+        <p className="text-lg text-gray-900 text-foreground mt-2 font-medium">
           Pull your reviews, leads, invoices, and appointments into one place
         </p>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">
+        <p className="text-gray-800 text-foreground mt-1">
           The CRM is ready from day 1. Connect your accounts to make it even smarter with YOUR business data.
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Connected</p>
+              <p className="text-sm text-gray-800 text-foreground">Connected</p>
               <p className="text-3xl font-bold text-green-600 mt-1">
                 {connectedCount}
               </p>
@@ -442,11 +442,11 @@ export default function IntegrationsNew() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Available</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+              <p className="text-sm text-gray-800 text-foreground">Available</p>
+              <p className="text-3xl font-bold text-gray-900 text-foreground mt-1">
                 {EXTERNAL_INTEGRATIONS.length}
               </p>
             </div>
@@ -456,11 +456,11 @@ export default function IntegrationsNew() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Usage</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+              <p className="text-sm text-gray-800 text-foreground">Total Usage</p>
+              <p className="text-3xl font-bold text-gray-900 text-foreground mt-1">
                 {totalUsage}
               </p>
             </div>
@@ -473,10 +473,10 @@ export default function IntegrationsNew() {
 
       {/* Integrations Grid */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <h2 className="text-2xl font-bold text-gray-900 text-foreground mb-2">
           🔗 Available Integrations
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <p className="text-gray-800 text-foreground mb-6">
           Connect your business accounts with one click - no technical setup required!
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
@@ -488,7 +488,7 @@ export default function IntegrationsNew() {
             return (
               <div
                 key={service.id}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+                className="bg-white dark:bg-secondary rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
               >
                 <div className="p-4 md:p-6">
                   {/* Header */}
@@ -498,7 +498,7 @@ export default function IntegrationsNew() {
                         <Icon className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{service.name}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 text-foreground">{service.name}</h3>
                         <span className={`text-xs px-2 py-1 rounded-full ${getCategoryColor(service.category)}`}>
                           {service.category}
                         </span>
@@ -508,12 +508,12 @@ export default function IntegrationsNew() {
                     {connected ? (
                       <CheckCircle className="w-6 h-6 text-green-500" />
                     ) : (
-                      <XCircle className="w-6 h-6 text-gray-300" />
+                      <XCircle className="w-6 h-6 text-gray-700 dark:text-gray-100" />
                     )}
                   </div>
 
                   {/* Description */}
-                  <p className="text-gray-600 text-sm mb-4">{service.description}</p>
+                  <p className="text-gray-800 text-foreground text-sm mb-4">{service.description}</p>
 
                   {/* Connection Info */}
                   {connected && integration && (
@@ -545,7 +545,7 @@ export default function IntegrationsNew() {
                   {/* Actions */}
                   <div className="flex items-center gap-2">
                     {service.comingSoon ? (
-                      <div className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-lg cursor-not-allowed">
+                      <div className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-secondary bg-secondary text-gray-700 text-foreground rounded-lg cursor-not-allowed">
                         <Calendar className="w-4 h-4" />
                         Coming Soon
                       </div>
@@ -586,7 +586,7 @@ export default function IntegrationsNew() {
       {/* Setup Modal */}
       {showSetupModal && selectedService && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full my-8">
+          <div className="bg-white dark:bg-secondary rounded-lg max-w-md w-full my-8">
             <div className="p-4 md:p-6 max-h-[85vh] overflow-y-auto">
               {/* Modal Header */}
               <div className="flex items-center gap-3 mb-4">
@@ -594,10 +594,10 @@ export default function IntegrationsNew() {
                   {selectedService.icon && <selectedService.icon className="w-6 h-6 text-white" />}
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                  <h2 className="text-xl font-bold text-gray-900 text-foreground">
                     Connect {selectedService.name}
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{selectedService.description}</p>
+                  <p className="text-sm text-gray-800 text-foreground">{selectedService.description}</p>
                 </div>
               </div>
 
@@ -621,7 +621,7 @@ export default function IntegrationsNew() {
               {/* Form Fields */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-900 text-foreground mb-1">
                     Display Name (Optional)
                   </label>
                   <input
@@ -629,13 +629,13 @@ export default function IntegrationsNew() {
                     placeholder={`My ${selectedService.name} Account`}
                     value={formData.displayName || ''}
                     onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 border-border bg-secondary text-foreground rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
                 {selectedService.fields.map(field => (
                   <div key={field.name}>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label className="block text-sm font-medium text-gray-900 text-foreground mb-1">
                       {field.label}
                     </label>
                     <input
@@ -643,7 +643,7 @@ export default function IntegrationsNew() {
                       placeholder={field.placeholder}
                       value={formData[field.name] || ''}
                       onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 border-border bg-secondary text-foreground rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required={!field.label.includes('Optional')}
                     />
                   </div>
@@ -651,8 +651,8 @@ export default function IntegrationsNew() {
               </div>
 
               {/* Info Box */}
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-700">
+              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
                   <Key className="w-4 h-4 inline mr-1" />
                   Your credentials are encrypted and stored securely. They're only used to power your workflows.
                 </p>
@@ -665,7 +665,7 @@ export default function IntegrationsNew() {
                     setShowSetupModal(false);
                     setFormData({});
                   }}
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
+                  className="flex-1 px-4 py-2 border border-gray-300 border-border bg-white bg-secondary text-gray-900 text-foreground rounded-lg hover:bg-secondary/50 hover:bg-secondary/80"
                   disabled={submitting}
                 >
                   Cancel

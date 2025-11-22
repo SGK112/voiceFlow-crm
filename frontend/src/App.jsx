@@ -9,12 +9,17 @@ import Pricing from './pages/Pricing';
 import Dashboard from './pages/Dashboard';
 import AgentsUnified from './pages/AgentsUnified';
 import AgentDetail from './pages/AgentDetail';
+import AgentDetailResponsive from './pages/AgentDetailResponsive';
+import AgentTester from './pages/AgentTester';
 import VoiceFlowBuilder from './components/VoiceFlowBuilder';
 import VoiceFlowBuilderResponsive from './components/VoiceFlowBuilderResponsive';
 import Conversations from './pages/Conversations';
 import CRM from './pages/CRM';
 import LeadDetail from './pages/LeadDetail';
 import Marketplace from './pages/Marketplace';
+import AgentMarketplace from './pages/AgentMarketplace';
+import UnifiedMarketplace from './pages/UnifiedMarketplace';
+import AIBuilder from './pages/AIBuilder';
 import Leads from './pages/Leads';
 import Business from './pages/Business';
 import Messages from './pages/Messages';
@@ -35,18 +40,19 @@ import CustomizableDashboard from './pages/CustomizableDashboard';
 import CRMWorkflowBuilder from './pages/CRMWorkflowBuilder';
 import CRMWorkflowBuilderHybrid from './pages/CRMWorkflowBuilderHybrid';
 import CollaborativeAgentBuilder from './components/CollaborativeAgentBuilder';
-import AgentDashboard from './components/AgentDashboard';
+import AgentDashboardResponsive from './components/AgentDashboardResponsive';
+import AgentsListSimple from './pages/AgentsListSimple';
 import PremiumAgentRequest from './components/PremiumAgentRequest';
 import AIConversationalAgentBuilder from './components/AIConversationalAgentBuilder';
 import PhoneNumberMarketplace from './pages/PhoneNumberMarketplace';
 import VoiceLibraryBrowser from './components/VoiceLibraryBrowser';
 import MyVoices from './pages/MyVoices';
-import AgentStudio from './pages/AgentStudio';
-import AgentStudioWizard from './pages/AgentStudioWizard';
-import VisualAgentBuilder from './components/VisualAgentBuilder';
-import MobileAgentBuilder from './components/MobileAgentBuilder';
-import AgentStudioResponsive from './pages/AgentStudioResponsive';
+import CreateAgent from './pages/CreateAgent';
 import CreditsDashboard from './pages/CreditsDashboard';
+import Credits from './pages/Credits';
+import Checkout from './pages/Checkout';
+import MultimodalAgentDemo from './pages/MultimodalAgentDemo';
+import Onboarding from './pages/Onboarding';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -77,6 +83,7 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/pricing" element={<Pricing />} />
+      <Route path="/checkout" element={<Checkout />} />
       <Route path="/auth/google/callback" element={<GoogleCallback />} />
       <Route path="/auth/integration/callback" element={<IntegrationCallback />} />
 
@@ -91,6 +98,9 @@ function App() {
         {/* Redirect root /app to Dashboard */}
         <Route index element={<Navigate to="/app/dashboard" replace />} />
 
+        {/* Onboarding flow for new users */}
+        <Route path="onboarding" element={<Onboarding />} />
+
         {/* Dashboard as main landing page */}
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="dashboard/custom" element={<CustomizableDashboard />} />
@@ -100,8 +110,10 @@ function App() {
         <Route path="agent-library/setup/:templateId" element={<AgentSetup />} />
 
         {/* Core 5 Sections - Voice Workflow CRM */}
-        <Route path="agents" element={<AgentDashboard />} />
-        <Route path="agents/:id" element={<AgentDetail />} />
+        <Route path="agents" element={<AgentsListSimple />} />
+        <Route path="agents/create" element={<CreateAgent />} />
+        <Route path="agents/:id" element={<AgentDetailResponsive />} />
+        <Route path="agents/:id/test" element={<AgentTester />} />
         <Route path="agents/:id/edit" element={<CollaborativeAgentBuilder />} />
         <Route path="agent-builder" element={<CollaborativeAgentBuilder />} />
         <Route path="ai-agent-builder" element={<AIConversationalAgentBuilder />} />
@@ -118,12 +130,17 @@ function App() {
         <Route path="workflows" element={<Navigate to="/app/voiceflow-builder" replace />} />
         <Route path="workflows/:id" element={<Navigate to="/app/voiceflow-builder" replace />} />
 
-        <Route path="credits" element={<CreditsDashboard />} />
+        <Route path="credits" element={<Credits />} />
+        <Route path="credits-dashboard" element={<CreditsDashboard />} />
+        <Route path="multimodal-agent" element={<MultimodalAgentDemo />} />
         <Route path="crm" element={<CRM />} />
         <Route path="crm/leads/:id" element={<LeadDetail />} />
         <Route path="crm/workflows" element={<CRMWorkflowBuilderHybrid />} />
         <Route path="crm/workflows/basic" element={<CRMWorkflowBuilder />} />
-        <Route path="marketplace" element={<Marketplace />} />
+        <Route path="marketplace" element={<UnifiedMarketplace />} />
+        <Route path="marketplace-agents-old" element={<AgentMarketplace />} />
+        <Route path="marketplace-old" element={<Marketplace />} />
+        <Route path="ai-builder" element={<AIBuilder />} />
         <Route path="settings" element={<Settings />} />
 
         {/* Legacy Pages (kept for backwards compatibility) */}
@@ -134,7 +151,6 @@ function App() {
         <Route path="tasks" element={<Tasks />} />
         <Route path="campaigns" element={<Campaigns />} />
         <Route path="conversations" element={<Conversations />} />
-        <Route path="workflow-marketplace" element={<WorkflowMarketplace />} />
         <Route path="phone-numbers" element={<PhoneNumbers />} />
         <Route path="phone-marketplace" element={<PhoneNumberMarketplace />} />
 

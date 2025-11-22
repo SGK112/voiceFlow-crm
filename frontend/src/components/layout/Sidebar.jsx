@@ -6,11 +6,12 @@ import { useState, useEffect } from 'react';
 // Core sections - Voice Workflow CRM focused navigation
 const navigation = [
   { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard, tourId: 'dashboard', description: 'Analytics & Overview' },
+  { name: 'My Agents', href: '/app/agents', icon: Bot, tourId: 'agents', description: 'Manage Your AI Agents' },
   { name: 'VoiceFlow Builder', href: '/app/voiceflow-builder', icon: Workflow, tourId: 'voiceflow-builder', description: 'Visual Agent & Workflow Builder' },
   { name: 'Voice Library', href: '/app/voice-library', icon: Music, tourId: 'voice-library', description: 'Browse & Add AI Voices' },
   { name: 'My Voices', href: '/app/my-voices', icon: Heart, tourId: 'my-voices', description: 'Your Saved Voices' },
   { name: 'CRM', href: '/app/crm', icon: Users, tourId: 'crm', description: 'Leads & Deals Management' },
-  // { name: 'Marketplace', href: '/app/marketplace', icon: Store, tourId: 'marketplace', description: 'Templates & Integrations' }, // Hidden until ready
+  { name: 'Marketplace', href: '/app/marketplace', icon: Store, tourId: 'marketplace', description: 'Agent Templates' },
   { name: 'Settings', href: '/app/settings', icon: Settings, tourId: 'settings', description: 'Integrations & Configuration' },
 ];
 
@@ -70,43 +71,29 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
       >
         {/* Header */}
         <div className={cn(
-          'border-b border-border flex items-center justify-between transition-all duration-300 relative',
-          isCollapsed ? 'p-4 lg:p-4' : 'p-4 lg:p-6'
+          'border-b border-border flex items-center transition-all duration-300 relative',
+          isCollapsed ? 'p-4 lg:p-4' : 'p-4 lg:p-4'
         )}>
           <div className={cn(
-            'overflow-hidden transition-all duration-300 flex flex-col items-center lg:items-start w-full',
+            'overflow-hidden transition-all duration-300 flex items-center',
             isCollapsed ? 'w-0 opacity-0' : 'opacity-100'
           )}>
-            <h1 className="text-xl sm:text-xl lg:text-2xl font-bold whitespace-nowrap flex items-center gap-2">
-              <span className="text-2xl">🎙️</span>
-              <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">Remodely.ai</span>
+            <h1 className="text-lg font-bold whitespace-nowrap flex items-center gap-2">
+              <span className="text-xl">🎙️</span>
+              <span className="bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">VoiceFlow CRM</span>
             </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap mt-0.5">VoiceFlow CRM</p>
           </div>
 
           {isCollapsed && (
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-2xl shadow-md">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-xl shadow-md">
               🎙️
             </div>
           )}
 
-          {/* Desktop Collapse Toggle - Top Right */}
-          <button
-            onClick={toggleCollapse}
-            className="hidden lg:flex absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 items-center justify-center bg-card border border-border rounded-full hover:bg-accent transition-all shadow-sm hover:shadow-md z-10"
-            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {isCollapsed ? (
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            ) : (
-              <ChevronLeft className="h-4 w-4 text-muted-foreground" />
-            )}
-          </button>
-
           {/* Mobile Close Button */}
           <button
             onClick={() => setIsMobileOpen(false)}
-            className="lg:hidden p-1.5 hover:bg-accent rounded-lg transition-colors flex-shrink-0"
+            className="lg:hidden p-1.5 hover:bg-accent rounded-lg transition-colors flex-shrink-0 ml-auto"
           >
             <X className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
@@ -149,6 +136,21 @@ export default function Sidebar({ isCollapsed, setIsCollapsed, isMobileOpen, set
             );
           })}
         </nav>
+
+        {/* Desktop Collapse Toggle - Bottom of sidebar */}
+        <div className="border-t border-border p-4 relative">
+          <button
+            onClick={toggleCollapse}
+            className="hidden lg:flex absolute -right-3 -top-5 w-6 h-6 items-center justify-center bg-card border border-border rounded-full hover:bg-accent transition-all shadow-sm hover:shadow-md z-10"
+            title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {isCollapsed ? (
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <ChevronLeft className="h-4 w-4 text-muted-foreground" />
+            )}
+          </button>
+        </div>
       </div>
     </>
   );

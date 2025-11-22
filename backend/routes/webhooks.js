@@ -16,7 +16,8 @@ import {
   handlePostCallFollowUp,
   handleConversationEvent,
   testWebhook,
-  handleCallComplete
+  handleCallComplete,
+  routeCall
 } from '../controllers/elevenLabsWebhookController.js';
 import { webhookLimiter } from '../middleware/rateLimiter.js';
 
@@ -36,6 +37,9 @@ router.post('/elevenlabs/post-call-followup', handlePostCallFollowUp);
 router.post('/elevenlabs/conversation-event', handleConversationEvent);
 router.get('/elevenlabs/test', testWebhook);
 router.post('/elevenlabs/test', testWebhook);
+
+// AI Call Routing (LangGraph)
+router.post('/ai/route-call', routeCall);
 
 // Twilio webhooks
 router.post('/twilio/voice', handleTwilioVoice);

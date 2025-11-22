@@ -130,16 +130,16 @@ export default function WorkflowsNew() {
     return (
       <div className="h-screen flex flex-col">
         {/* n8n Header */}
-        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 md:px-6 py-4 flex items-center justify-between flex-wrap gap-3">
+        <div className="bg-transparent border border-border border-b border-gray-200 border-border px-4 md:px-6 py-4 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowN8n(false)}
-              className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100"
+              className="text-gray-600 hover:text-foreground dark:hover:text-gray-100"
             >
               ← Back to Workflows
             </button>
-            <div className="h-6 w-px bg-gray-300 dark:bg-gray-600 hidden md:block"></div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            <div className="h-6 w-px bg-gray-300 bg-secondary hidden md:block"></div>
+            <h2 className="text-lg font-semibold text-foreground">
               {selectedWorkflow ? `Editing: ${selectedWorkflow.name}` : 'n8n Workflow Editor'}
             </h2>
           </div>
@@ -154,18 +154,18 @@ export default function WorkflowsNew() {
         </div>
 
         {/* n8n iframe with fallback */}
-        <div className="flex-1 bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 md:p-8">
-          <div className="max-w-2xl w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 md:p-8 border border-gray-200 dark:border-gray-700">
+        <div className="flex-1 bg-secondary bg-secondary/50 flex items-center justify-center p-4 md:p-8">
+          <div className="max-w-2xl w-full bg-transparent border border-border rounded-lg shadow-lg p-6 md:p-8 border border-gray-200 border-border">
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-100 dark:bg-yellow-900/20 rounded-full mb-4">
                 <ExternalLink className="w-8 h-8 text-yellow-600 dark:text-yellow-500" />
               </div>
 
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <h3 className="text-xl font-bold text-foreground mb-2">
                 Open n8n in a New Window
               </h3>
 
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Due to security restrictions (X-Frame-Options), n8n cannot be embedded directly in the app.
                 Click the button below to open the workflow editor in a new tab.
               </p>
@@ -178,11 +178,11 @@ export default function WorkflowsNew() {
                 Open n8n Workflow Editor
               </button>
 
-              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+              <div className="mt-6 pt-6 border-t border-gray-200 border-border">
+                <p className="text-sm text-foreground mb-2">
                   <strong>n8n URL:</strong>
                 </p>
-                <code className="text-xs bg-gray-100 dark:bg-gray-900 px-3 py-2 rounded border border-gray-200 dark:border-gray-700 inline-block">
+                <code className="text-xs bg-secondary bg-secondary/50 px-3 py-2 rounded border border-gray-200 border-border inline-block">
                   {n8nUrl}
                 </code>
               </div>
@@ -199,11 +199,11 @@ export default function WorkflowsNew() {
       <div className="mb-6 md:mb-8">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
               <WorkflowIcon className="w-8 h-8 text-blue-600" />
               Workflows
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-muted-foreground mt-1">
               Automate your business processes with powerful workflows
             </p>
           </div>
@@ -211,7 +211,7 @@ export default function WorkflowsNew() {
           <div className="flex items-center gap-3 flex-wrap">
             <button
               onClick={() => navigate('/app/marketplace')}
-              className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
+              className="flex items-center gap-2 px-3 py-2 bg-transparent border border-border border border-border text-foreground rounded-lg hover:bg-secondary/50 hover:bg-secondary/80 transition-colors text-sm"
             >
               <ShoppingBag className="w-4 h-4" />
               <span className="hidden sm:inline">Marketplace</span>
@@ -237,11 +237,11 @@ export default function WorkflowsNew() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-transparent border border-border rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Total Workflows</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.total}</p>
+              <p className="text-sm text-muted-foreground">Total Workflows</p>
+              <p className="text-3xl font-bold text-foreground mt-1">{stats.total}</p>
             </div>
             <div className="p-3 bg-blue-100 rounded-lg">
               <WorkflowIcon className="w-6 h-6 text-blue-600" />
@@ -249,10 +249,10 @@ export default function WorkflowsNew() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-transparent border border-border rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Active</p>
+              <p className="text-sm text-muted-foreground">Active</p>
               <p className="text-3xl font-bold text-green-600 mt-1">{stats.active}</p>
             </div>
             <div className="p-3 bg-green-100 dark:bg-green-900/20 rounded-lg">
@@ -261,11 +261,11 @@ export default function WorkflowsNew() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-transparent border border-border rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Executions</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.executions}</p>
+              <p className="text-sm text-muted-foreground">Executions</p>
+              <p className="text-3xl font-bold text-foreground mt-1">{stats.executions}</p>
             </div>
             <div className="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
               <Zap className="w-6 h-6 text-purple-600" />
@@ -273,11 +273,11 @@ export default function WorkflowsNew() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-transparent border border-border rounded-lg shadow-sm p-4 md:p-6 border border-gray-200 border-border">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Success Rate</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{stats.successRate}%</p>
+              <p className="text-sm text-muted-foreground">Success Rate</p>
+              <p className="text-3xl font-bold text-foreground mt-1">{stats.successRate}%</p>
             </div>
             <div className="p-3 bg-yellow-100 rounded-lg">
               <BarChart3 className="w-6 h-6 text-yellow-600" />
@@ -290,18 +290,18 @@ export default function WorkflowsNew() {
       {loading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 md:p-6 animate-pulse">
-              <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            <div key={i} className="bg-transparent border border-border rounded-lg shadow-sm p-4 md:p-6 animate-pulse">
+              <div className="h-6 bg-secondary rounded w-3/4 mb-4"></div>
+              <div className="h-4 bg-secondary rounded w-full mb-2"></div>
+              <div className="h-4 bg-secondary rounded w-5/6"></div>
             </div>
           ))}
         </div>
       ) : workflows.length === 0 ? (
-        <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <WorkflowIcon className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No workflows yet</h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-6 px-4">
+        <div className="text-center py-12 bg-transparent border border-border rounded-lg shadow-sm border border-gray-200 border-border">
+          <WorkflowIcon className="w-16 h-16 text-gray-700 dark:text-gray-100 dark:text-gray-600 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground mb-2">No workflows yet</h3>
+          <p className="text-muted-foreground mb-6 px-4">
             Create your first workflow or browse the marketplace
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap px-4">
@@ -314,7 +314,7 @@ export default function WorkflowsNew() {
             </button>
             <button
               onClick={() => navigate('/app/marketplace')}
-              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+              className="flex items-center gap-2 px-4 py-2 bg-transparent border border-border border border-border text-foreground rounded-lg hover:bg-secondary/50 hover:bg-secondary/80"
             >
               <ShoppingBag className="w-4 h-4" />
               Browse Templates
@@ -326,7 +326,7 @@ export default function WorkflowsNew() {
           {workflows.map(workflow => (
             <div
               key={workflow._id}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
+              className="bg-transparent border border-border rounded-lg shadow-sm border border-gray-200 border-border hover:shadow-md transition-shadow"
             >
               <div className="p-4 md:p-6">
                 {/* Header */}
@@ -334,10 +334,10 @@ export default function WorkflowsNew() {
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">{getTypeIcon(workflow.type)}</span>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100">
+                      <h3 className="text-lg font-semibold text-foreground text-foreground">
                         {workflow.name}
                       </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">{getTypeName(workflow.type)}</p>
+                      <p className="text-sm text-foreground">{getTypeName(workflow.type)}</p>
                     </div>
                   </div>
 
@@ -363,19 +363,19 @@ export default function WorkflowsNew() {
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-4 mb-4 py-4 border-y border-gray-100">
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Executions</p>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100">
+                    <p className="text-xs text-foreground mb-1">Executions</p>
+                    <p className="text-lg font-semibold text-foreground text-foreground">
                       {workflow.executionCount || 0}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Success</p>
+                    <p className="text-xs text-foreground mb-1">Success</p>
                     <p className="text-lg font-semibold text-green-600">
                       {workflow.successCount || 0}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Failed</p>
+                    <p className="text-xs text-foreground mb-1">Failed</p>
                     <p className="text-lg font-semibold text-red-600">
                       {workflow.failureCount || 0}
                     </p>
@@ -384,7 +384,7 @@ export default function WorkflowsNew() {
 
                 {/* Last Executed */}
                 {workflow.lastExecutedAt && (
-                  <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                  <div className="flex items-center gap-2 text-sm text-foreground mb-4">
                     <Clock className="w-4 h-4" />
                     Last executed: {new Date(workflow.lastExecutedAt).toLocaleString()}
                   </div>
@@ -403,7 +403,7 @@ export default function WorkflowsNew() {
                   {workflow.n8nWorkflowId && (
                     <button
                       onClick={() => window.open(`http://5.183.8.119:5678/workflow/${workflow.n8nWorkflowId}`, '_blank')}
-                      className="px-4 py-2 bg-gray-50 dark:bg-gray-700 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                      className="px-4 py-2 bg-secondary/50 bg-secondary text-gray-600 rounded-lg hover:bg-secondary transition-colors"
                       title="Open in n8n"
                     >
                       <ExternalLink className="w-4 h-4" />
@@ -424,10 +424,10 @@ export default function WorkflowsNew() {
               <div className={`px-6 py-3 border-t ${
                 workflow.enabled
                   ? 'bg-green-50 border-green-200'
-                  : 'bg-gray-50 border-gray-200 dark:border-gray-700'
+                  : 'bg-secondary/50 border-gray-200 border-border'
               }`}>
                 <div className="flex items-center justify-between text-sm">
-                  <span className={workflow.enabled ? 'text-green-700' : 'text-gray-600 dark:text-gray-400'}>
+                  <span className={workflow.enabled ? 'text-green-700' : 'text-muted-foreground'}>
                     {workflow.enabled ? '● Active' : '○ Inactive'}
                   </span>
                   {workflow.marketplaceId && (

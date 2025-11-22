@@ -99,7 +99,7 @@ When scheduling, calculate dates from TODAY (${formattedDate}):
 
   async createAgent(config) {
     try {
-      const response = await this.client.post('/convai/agents/create', {
+      const agentConfig = {
         name: config.name,
         conversation_config: {
           tts: {
@@ -114,7 +114,17 @@ When scheduling, calculate dates from TODAY (${formattedDate}):
             language: config.language || 'en'
           }
         }
-      });
+      };
+
+      // Configure client tools webhook (for SMS, email, etc.) if tools are provided
+      if (config.tools && config.tools.length > 0) {
+        const webhookUrl = process.env.WEBHOOK_URL || 'https://voiceflow-crm-1.onrender.com';
+        agentConfig.conversation_config.agent.client_tools = config.tools;
+        agentConfig.conversation_config.agent.client_tools_webhook_url = `${webhookUrl}/api/elevenlabs-webhook/tool-invocation`;
+        console.log('🔗 Tool webhook configured:', agentConfig.conversation_config.agent.client_tools_webhook_url);
+      }
+
+      const response = await this.client.post('/convai/agents/create', agentConfig);
       return response.data;
     } catch (error) {
       console.error('ElevenLabs API Error:', error.response?.data || error.message);
@@ -124,11 +134,48 @@ When scheduling, calculate dates from TODAY (${formattedDate}):
 
   async updateAgent(agentId, config) {
     try {
-      const response = await this.client.patch(`/convai/agents/${agentId}`, {
+      // Get webhook URLs with authentication token
+      const webhookToken = process.env.WEBHOOK_SECRET_TOKEN;
+      const baseUrl = process.env.WEBHOOK_BASE_URL || 'https://voiceflow-crm-1.onrender.com';
+
+      const updateConfig = {
         name: config.name,
         prompt: config.script,
         first_message: config.firstMessage
-      });
+      };
+
+      // Update voice if provided
+      if (config.voiceId) {
+        console.log(`🎙️ Updating agent voice to: ${config.voiceId}`);
+        updateConfig.tts = {
+          voice_id: config.voiceId,
+          model_id: 'eleven_flash_v2'
+        };
+      }
+
+      // Re-apply secure webhooks during update (ElevenLabs may clear them)
+      if (webhookToken) {
+        console.log('🔐 Re-applying secure webhooks during agent update...');
+
+        updateConfig.webhook = {
+          url: `${baseUrl}/api/elevenlabs-webhook/post-call`,
+          headers: {
+            Authorization: `Bearer ${webhookToken}`
+          }
+        };
+
+        // Re-apply client tools webhook if agent has tools
+        if (config.tools && config.tools.length > 0) {
+          updateConfig.client_tools_webhook_url = `${baseUrl}/api/elevenlabs-webhook/tool-invocation`;
+          updateConfig.client_tools_webhook_headers = {
+            Authorization: `Bearer ${webhookToken}`
+          };
+        }
+
+        console.log('✅ Secure webhooks re-applied during update');
+      }
+
+      const response = await this.client.patch(`/convai/agents/${agentId}`, updateConfig);
       return response.data;
     } catch (error) {
       console.error('ElevenLabs API Error:', error.response?.data || error.message);
@@ -307,6 +354,39 @@ When scheduling, calculate dates from TODAY (${formattedDate}):
    * @param {string} agentId - The ElevenLabs agent ID to assign
    * @param {string} webhookUrl - Webhook URL for call completion events
    */
+  /**
+   * Configure post-call webhook for an agent
+   * This is called after agent creation to set up automated post-call processing
+   * @param {string} agentId - The ElevenLabs agent ID
+   * @param {string} webhookUrl - Webhook URL for post-call events (optional, uses WEBHOOK_URL env if not provided)
+   */
+  async configurePostCallWebhook(agentId, webhookUrl = null) {
+    try {
+      const url = webhookUrl || process.env.WEBHOOK_URL || 'https://voiceflow-crm-1.onrender.com';
+      const postCallWebhookUrl = `${url}/api/elevenlabs-webhook/post-call`;
+
+      console.log(`🔗 Configuring post-call webhook for agent ${agentId}:`, postCallWebhookUrl);
+
+      const response = await this.client.patch(`/convai/agents/${agentId}`, {
+        platform_settings: {
+          workspace_overrides: {
+            webhooks: {
+              url: postCallWebhookUrl,
+              events: ["transcript"],
+              send_audio: false
+            }
+          }
+        }
+      });
+
+      console.log(`✅ Post-call webhook configured successfully for agent ${agentId}`);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Failed to configure post-call webhook:', error.response?.data || error.message);
+      throw error;
+    }
+  }
+
   async assignPhoneToAgent(phoneNumberId, agentId, webhookUrl) {
     try {
       const response = await this.client.patch(`/convai/phone-numbers/${phoneNumberId}`, {

@@ -69,7 +69,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    // Clear all localStorage to prevent data leakage between accounts
+    localStorage.clear();
     setUser(null);
     window.location.href = '/'; // Redirect to marketing page
   };

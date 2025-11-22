@@ -153,11 +153,11 @@ export default function PhoneNumbers() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-gray-900 text-foreground flex items-center gap-3">
               <Phone className="w-8 h-8 text-blue-600" />
               Phone Numbers
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-gray-800 text-foreground mt-1">
               Manage your phone numbers for AI agents
             </p>
           </div>
@@ -166,7 +166,7 @@ export default function PhoneNumbers() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setShowPortModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-secondary border border-gray-300 border-border bg-secondary text-foreground text-gray-900 text-foreground rounded-lg hover:bg-secondary/50 hover:bg-secondary/80 bg-secondary transition-colors"
               >
                 <Upload className="w-4 h-4" />
                 Port Existing Number
@@ -206,20 +206,20 @@ export default function PhoneNumbers() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 border border-gray-200 border-border">
             <p className="text-xs text-gray-600 mb-1">Total Numbers</p>
-            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.total}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">of {numberLimit} allowed</p>
+            <p className="text-2xl font-bold text-gray-900 text-foreground">{stats.total}</p>
+            <p className="text-xs text-gray-700 text-foreground mt-1">of {numberLimit} allowed</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 border border-gray-200 border-border">
             <p className="text-xs text-gray-600 mb-1">Active</p>
             <p className="text-2xl font-bold text-green-600">{stats.active}</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 border border-gray-200 border-border">
             <p className="text-xs text-gray-600 mb-1">Assigned to Agents</p>
             <p className="text-2xl font-bold text-purple-600">{stats.assigned}</p>
           </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 border border-gray-200 border-border">
             <p className="text-xs text-gray-600 mb-1">Available Slots</p>
             <p className="text-2xl font-bold text-blue-600">{stats.available}</p>
           </div>
@@ -230,17 +230,17 @@ export default function PhoneNumbers() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[...Array(2)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 animate-pulse">
-              <div className="h-6 bg-gray-200 rounded w-1/2 mb-4"></div>
-              <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-              <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <div key={i} className="bg-white dark:bg-secondary rounded-lg shadow-sm p-6 animate-pulse">
+              <div className="h-6 bg-secondary rounded w-1/2 mb-4"></div>
+              <div className="h-4 bg-secondary rounded w-full mb-2"></div>
+              <div className="h-4 bg-secondary rounded w-2/3"></div>
             </div>
           ))}
         </div>
       ) : phoneNumbers.length === 0 ? (
-        <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <Phone className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No phone numbers yet</h3>
+        <div className="text-center py-12 bg-white dark:bg-secondary rounded-lg shadow-sm border border-gray-200 border-border">
+          <Phone className="w-16 h-16 text-gray-700 dark:text-gray-100 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 text-foreground mb-2">No phone numbers yet</h3>
           <p className="text-gray-600 mb-6">
             {canAddNumbers
               ? 'Buy a new number or port your existing one to get started'
@@ -258,7 +258,7 @@ export default function PhoneNumbers() {
               </button>
               <button
                 onClick={() => setShowPortModal(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
+                className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-secondary border border-gray-300 border-border bg-secondary text-foreground text-gray-900 text-foreground rounded-lg hover:bg-secondary/50 hover:bg-secondary/80 bg-secondary"
               >
                 <Upload className="w-4 h-4" />
                 Port Number
@@ -278,17 +278,17 @@ export default function PhoneNumbers() {
           {phoneNumbers.map((number) => (
             <div
               key={number._id}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow p-6"
+              className="bg-white dark:bg-secondary rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow p-6"
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <Phone className="w-5 h-5 text-blue-600" />
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100">
+                    <h3 className="text-lg font-semibold text-gray-900 text-foreground text-foreground">
                       {formatPhoneNumber(number.phoneNumber)}
                     </h3>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-gray-800 text-foreground">
                     {number.type === 'purchased' ? 'Purchased' : 'Ported'} • {number.status}
                   </p>
                 </div>
@@ -296,7 +296,7 @@ export default function PhoneNumbers() {
                 <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                   number.status === 'active'
                     ? 'bg-green-100 text-green-700'
-                    : 'bg-gray-100 text-gray-700'
+                    : 'bg-secondary text-gray-700'
                 }`}>
                   {number.status}
                 </span>
@@ -305,19 +305,19 @@ export default function PhoneNumbers() {
               {/* Stats */}
               <div className="grid grid-cols-2 gap-3 mb-4 py-3 border-y border-gray-100">
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Calls Received</p>
+                  <p className="text-xs text-gray-700 text-foreground mb-1">Calls Received</p>
                   <div className="flex items-center gap-1">
                     <PhoneIncoming className="w-4 h-4 text-green-600" />
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="text-sm font-semibold text-gray-900 text-foreground">
                       {number.callsReceived || 0}
                     </p>
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Calls Made</p>
+                  <p className="text-xs text-gray-700 text-foreground mb-1">Calls Made</p>
                   <div className="flex items-center gap-1">
                     <PhoneOutgoing className="w-4 h-4 text-blue-600" />
-                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="text-sm font-semibold text-gray-900 text-foreground">
                       {number.callsMade || 0}
                     </p>
                   </div>
@@ -335,8 +335,8 @@ export default function PhoneNumbers() {
                   </div>
                 </div>
               ) : (
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
-                  <p className="text-sm text-gray-600 dark:text-gray-400">No agent assigned</p>
+                <div className="bg-secondary/50 bg-secondary rounded-lg p-3 mb-4">
+                  <p className="text-sm text-gray-800 text-foreground">No agent assigned</p>
                 </div>
               )}
 
@@ -360,8 +360,8 @@ export default function PhoneNumbers() {
               {/* Cost */}
               <div className="mt-3 pt-3 border-t border-gray-100">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-600 dark:text-gray-400">Monthly Cost</span>
-                  <span className="font-semibold text-gray-900 dark:text-gray-100">
+                  <span className="text-gray-800 text-foreground">Monthly Cost</span>
+                  <span className="font-semibold text-gray-900 text-foreground">
                     ${number.monthlyCost || '1.00'}/mo
                   </span>
                 </div>
@@ -374,11 +374,11 @@ export default function PhoneNumbers() {
       {/* Buy Number Modal */}
       {showBuyModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
+          <div className="bg-white dark:bg-secondary rounded-lg p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
             <h2 className="text-xl font-bold mb-4">Buy Phone Number</h2>
 
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-900 text-foreground mb-2">
                 Search by Area Code or City
               </label>
               <div className="flex gap-3">
@@ -387,7 +387,7 @@ export default function PhoneNumbers() {
                   placeholder="e.g., 415 or San Francisco"
                   value={searchArea}
                   onChange={(e) => setSearchArea(e.target.value)}
-                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 border border-gray-300 border-border bg-secondary text-foreground rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
                 <button
                   onClick={searchAvailableNumbers}
@@ -400,15 +400,15 @@ export default function PhoneNumbers() {
 
             {availableNumbers.length > 0 && (
               <div className="space-y-2 mb-4">
-                <h3 className="font-semibold text-gray-900 dark:text-gray-100">Available Numbers</h3>
+                <h3 className="font-semibold text-gray-900 text-foreground">Available Numbers</h3>
                 {availableNumbers.map((num) => (
                   <div
                     key={num.phoneNumber}
-                    className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
+                    className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-secondary/50 hover:bg-secondary/80 bg-secondary"
                   >
                     <span className="font-mono">{formatPhoneNumber(num.phoneNumber)}</span>
                     <div className="flex items-center gap-3">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">$1.00/mo</span>
+                      <span className="text-sm text-gray-800 text-foreground">$1.00/mo</span>
                       <button
                         onClick={() => purchaseNumber(num.phoneNumber)}
                         className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700"
@@ -427,7 +427,7 @@ export default function PhoneNumbers() {
                   setShowBuyModal(false);
                   setAvailableNumbers([]);
                 }}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
+                className="flex-1 px-4 py-2 border border-gray-300 border-border bg-secondary text-foreground rounded-lg hover:bg-secondary/50 hover:bg-secondary/80 bg-secondary"
               >
                 Close
               </button>
@@ -439,7 +439,7 @@ export default function PhoneNumbers() {
       {/* Port Number Modal */}
       {showPortModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white dark:bg-secondary rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Port Existing Number</h2>
             <p className="text-sm text-gray-600 mb-6">
               Bring your existing phone number to our platform. Processing typically takes 1-2 business days.
@@ -447,7 +447,7 @@ export default function PhoneNumbers() {
 
             <form onSubmit={portNumber} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-900 text-foreground mb-1">
                   Phone Number *
                 </label>
                 <input
@@ -456,12 +456,12 @@ export default function PhoneNumbers() {
                   placeholder="+1 (555) 123-4567"
                   value={portForm.phoneNumber}
                   onChange={(e) => setPortForm({ ...portForm, phoneNumber: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 border-border bg-secondary text-foreground rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-900 text-foreground mb-1">
                   Current Provider *
                 </label>
                 <input
@@ -470,12 +470,12 @@ export default function PhoneNumbers() {
                   placeholder="e.g., Verizon, AT&T"
                   value={portForm.currentProvider}
                   onChange={(e) => setPortForm({ ...portForm, currentProvider: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 border-border bg-secondary text-foreground rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-gray-900 text-foreground mb-1">
                   Account Number *
                 </label>
                 <input
@@ -484,7 +484,7 @@ export default function PhoneNumbers() {
                   placeholder="Your account number with current provider"
                   value={portForm.accountNumber}
                   onChange={(e) => setPortForm({ ...portForm, accountNumber: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 border-border bg-secondary text-foreground rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
@@ -498,7 +498,7 @@ export default function PhoneNumbers() {
                 <button
                   type="button"
                   onClick={() => setShowPortModal(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
+                  className="flex-1 px-4 py-2 border border-gray-300 border-border bg-secondary text-foreground rounded-lg hover:bg-secondary/50 hover:bg-secondary/80 bg-secondary"
                 >
                   Cancel
                 </button>

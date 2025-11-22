@@ -159,7 +159,7 @@ export default function QuickBooksInvoiceBuilder({ type = 'invoice', initialData
                 </button>
                 <button
                   onClick={onCancel}
-                  className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                  className="p-2 text-gray-600 dark:text-gray-200 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -369,7 +369,7 @@ export default function QuickBooksInvoiceBuilder({ type = 'invoice', initialData
                         </td>
                         <td className="py-3 px-2">
                           <div className="relative">
-                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
+                            <span className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-200 text-sm">$</span>
                             <input
                               type="number"
                               min="0"
@@ -397,7 +397,7 @@ export default function QuickBooksInvoiceBuilder({ type = 'invoice', initialData
                           {invoice.items.length > 1 && (
                             <button
                               onClick={() => removeItem(index)}
-                              className="p-1 text-gray-400 hover:text-red-600 rounded hover:bg-red-50 transition-colors"
+                              className="p-1 text-gray-600 dark:text-gray-200 hover:text-red-600 rounded hover:bg-red-50 transition-colors"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>

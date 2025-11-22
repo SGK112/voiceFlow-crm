@@ -174,7 +174,7 @@ export default function AIAgents() {
 
   const getStatusBadge = (status) => {
     const badges = {
-      draft: 'bg-gray-100 text-gray-800',
+      draft: 'bg-secondary text-gray-800',
       testing: 'bg-blue-100 text-blue-800',
       active: 'bg-green-100 text-green-800',
       paused: 'bg-yellow-100 text-yellow-800',
@@ -276,7 +276,7 @@ export default function AIAgents() {
                       <button
                         onClick={() => handleToggleEnabled(agent._id, agent.enabled)}
                         className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                          agent.enabled ? 'bg-green-600' : 'bg-gray-300 dark:bg-gray-600'
+                          agent.enabled ? 'bg-green-600' : 'bg-gray-300 bg-secondary'
                         }`}
                         title={agent.enabled ? 'Click to disable' : 'Click to enable'}
                       >

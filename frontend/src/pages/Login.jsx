@@ -33,10 +33,10 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md shadow-xl">
+      <Card className="w-full max-w-md shadow-xl dark:bg-black border-border">
         <CardHeader>
-          <CardTitle className="text-2xl">Welcome to VoiceFlow CRM</CardTitle>
-          <CardDescription>Sign in to your account to continue</CardDescription>
+          <CardTitle className="text-2xl text-gray-900 text-foreground">Welcome to VoiceFlow CRM</CardTitle>
+          <CardDescription className="text-gray-700 text-foreground">Sign in to your account to continue</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -47,7 +47,7 @@ export default function Login() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-gray-900 text-foreground">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -60,8 +60,8 @@ export default function Login() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
-                <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                <Label htmlFor="password" className="text-gray-900 text-foreground">Password</Label>
+                <Link to="/forgot-password" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -89,7 +89,7 @@ export default function Login() {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
+                  <span className="bg-background px-2 text-gray-600 text-foreground">
                     Or continue with
                   </span>
                 </div>
@@ -101,8 +101,8 @@ export default function Login() {
           )}
 
           <div className="mt-4 text-center text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
-            <Link to="/signup" className="text-primary hover:underline">
+            <span className="text-gray-600 text-foreground">Don't have an account? </span>
+            <Link to="/signup" className="text-blue-600 dark:text-blue-400 hover:underline">
               Sign up
             </Link>
           </div>

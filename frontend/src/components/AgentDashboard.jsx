@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import UniversalAIBuilder from './UniversalAIBuilder';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 import axios from 'axios';
 import {
   LineChart,
@@ -357,8 +357,8 @@ const AgentDashboard = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Agent Studio</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <h1 className="text-3xl font-bold text-foreground">Agent Studio</h1>
+          <p className="text-muted-foreground mt-1">
             Build, test, and manage your AI agents across voice, SMS, and email
           </p>
         </div>
@@ -385,7 +385,7 @@ const AgentDashboard = () => {
             AI Builder
           </Button>
           <Button
-            onClick={() => navigate('/app/agent-builder')}
+            onClick={() => navigate('/app/agents/create')}
             variant="outline"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -399,16 +399,16 @@ const AgentDashboard = () => {
         <Card>
           <CardContent className="py-16">
             <div className="text-center">
-              <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone className="w-10 h-10 text-gray-400" />
+              <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Phone className="w-10 h-10 text-gray-600 dark:text-gray-200" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-xl font-semibold text-foreground mb-2">
                 No agents yet
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Create your first voice agent to start automating calls
               </p>
-              <Button onClick={() => navigate('/app/agent-builder')}>
+              <Button onClick={() => navigate('/app/agents/create')}>
                 <Plus className="w-4 h-4 mr-2" />
                 Create Your First Agent
               </Button>
@@ -421,7 +421,7 @@ const AgentDashboard = () => {
           {/* Agent Selector Sidebar */}
           <div className="col-span-12 lg:col-span-3 space-y-3">
             <div className="flex items-center justify-between px-2">
-              <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+              <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide">
                 Agents ({agents.length})
               </h2>
             </div>
@@ -450,10 +450,10 @@ const AgentDashboard = () => {
                         agent.enabled ? 'bg-green-500' : 'bg-gray-400'
                       }`} />
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                        <h3 className="font-medium text-sm text-foreground truncate">
                           {agent.name}
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        <p className="text-xs text-foreground truncate">
                           {agent.performance?.totalCalls || 0} calls
                         </p>
                       </div>
@@ -596,7 +596,7 @@ const AgentDashboard = () => {
                               {availableVoices.map((voice) => (
                                 <SelectItem key={voice.voiceId} value={voice.voiceId}>
                                   <div className="flex items-center gap-2">
-                                    <Volume2 className="w-4 h-4 text-gray-400" />
+                                    <Volume2 className="w-4 h-4 text-gray-600 dark:text-gray-200" />
                                     <span>{voice.name}</span>
                                     {voice.labels && (
                                       <span className="text-xs text-gray-500">
@@ -705,7 +705,7 @@ const AgentDashboard = () => {
                   </CardHeader>
                   <CardContent className="flex-1 flex flex-col">
                     {/* Conversation Display */}
-                    <div className="flex-1 bg-gray-50 dark:bg-gray-900 rounded-lg p-4 mb-4 overflow-y-auto min-h-[300px] max-h-[400px] space-y-3">
+                    <div className="flex-1 bg-secondary rounded-lg p-4 mb-4 overflow-y-auto min-h-[300px] max-h-[400px] space-y-3">
                       {testConversation.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
                           <MessageSquare className="w-12 h-12 mb-3 opacity-50" />
@@ -722,7 +722,7 @@ const AgentDashboard = () => {
                               className={`max-w-[80%] rounded-lg px-3 py-2 ${
                                 msg.role === 'user'
                                   ? 'bg-blue-600 text-white'
-                                  : 'bg-white dark:bg-gray-800 border text-gray-900 dark:text-white'
+                                  : 'bg-card border border-border border text-foreground'
                               }`}
                             >
                               <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
@@ -732,7 +732,7 @@ const AgentDashboard = () => {
                       )}
                       {isTesting && (
                         <div className="flex justify-start">
-                          <div className="bg-white dark:bg-gray-800 border rounded-lg px-3 py-2">
+                          <div className="bg-card border border-border border rounded-lg px-3 py-2">
                             <div className="flex gap-1">
                               <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                               <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -769,7 +769,7 @@ const AgentDashboard = () => {
 
                     {/* Quick Actions */}
                     <div className="mt-4 pt-4 border-t space-y-2">
-                      <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Quick Actions</p>
+                      <p className="text-xs font-medium text-muted-foreground mb-2">Quick Actions</p>
                       <Button
                         variant="outline"
                         size="sm"
@@ -803,7 +803,7 @@ const AgentDashboard = () => {
         <div className="grid grid-cols-12 gap-6">
           {/* Agent List Sidebar */}
           <div className="col-span-12 lg:col-span-4 space-y-3">
-            <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide px-2">
+            <h2 className="text-sm font-semibold text-foreground uppercase tracking-wide px-2">
               Your Agents ({agents.length})
             </h2>
             {agents.map((agent) => (
@@ -819,17 +819,17 @@ const AgentDashboard = () => {
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                      <h3 className="font-semibold text-foreground">
                         {agent.name}
                       </h3>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-foreground mt-1">
                         {agent.type === 'custom' ? agent.customType || 'Custom' : agent.type}
                       </p>
                       <div className="flex items-center gap-2 mt-2 flex-wrap">
                         <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
                           agent.enabled
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                            : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                            : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-600 dark:text-gray-200'
                         }`}>
                           {agent.enabled ? '🟢 Active' : '⚫ Paused'}
                         </span>
@@ -875,10 +875,10 @@ const AgentDashboard = () => {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      <h2 className="text-2xl font-bold text-foreground">
                         {selectedAgent.name}
                       </h2>
-                      <p className="text-gray-600 dark:text-gray-400 mt-1">
+                      <p className="text-muted-foreground mt-1">
                         Voice: {selectedAgent.voiceName || 'Default'} • Language: {selectedAgent.configuration?.language || 'en'}
                       </p>
                     </div>
@@ -948,7 +948,7 @@ const AgentDashboard = () => {
                             <Phone className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                           </div>
                           <div>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                            <p className="text-2xl font-bold text-foreground">
                               {performance.totalCalls}
                             </p>
                             <p className="text-xs text-gray-500">Total Calls</p>
@@ -964,7 +964,7 @@ const AgentDashboard = () => {
                             <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
                           </div>
                           <div>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                            <p className="text-2xl font-bold text-foreground">
                               {performance.successRate}%
                             </p>
                             <p className="text-xs text-gray-500">Success Rate</p>
@@ -980,7 +980,7 @@ const AgentDashboard = () => {
                             <Clock className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                           </div>
                           <div>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                            <p className="text-2xl font-bold text-foreground">
                               {formatDuration(performance.averageDuration)}
                             </p>
                             <p className="text-xs text-gray-500">Avg Duration</p>
@@ -996,7 +996,7 @@ const AgentDashboard = () => {
                             <Users className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                           </div>
                           <div>
-                            <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                            <p className="text-2xl font-bold text-foreground">
                               {performance.leadsGenerated || 0}
                             </p>
                             <p className="text-xs text-gray-500">Leads Generated</p>
@@ -1043,7 +1043,7 @@ const AgentDashboard = () => {
                       {calls.slice(0, 10).map((call) => (
                         <div
                           key={call._id}
-                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                          className="flex items-center justify-between p-3 border rounded-lg hover:bg-secondary/80 transition-colors"
                         >
                           <div className="flex items-center gap-4">
                             <div className={`w-2 h-2 rounded-full ${
@@ -1052,7 +1052,7 @@ const AgentDashboard = () => {
                               'bg-yellow-500'
                             }`} />
                             <div>
-                              <p className="font-medium text-gray-900 dark:text-white">
+                              <p className="font-medium text-foreground">
                                 {call.leadName || 'Unknown'}
                               </p>
                               <p className="text-sm text-gray-500">
@@ -1061,7 +1061,7 @@ const AgentDashboard = () => {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            <p className="text-sm font-medium text-foreground">
                               {formatDuration(call.duration || 0)}
                             </p>
                             <p className="text-xs text-gray-500">
@@ -1181,7 +1181,7 @@ const AgentDashboard = () => {
           <div className="space-y-4 py-4">
             {/* Current Status */}
             <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Current Status:</p>
+              <p className="text-sm text-muted-foreground mb-1">Current Status:</p>
               <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg border ${
                 getDeploymentBadge(selectedAgent?.deployment?.status || 'draft').color
               }`}>
@@ -1224,16 +1224,16 @@ const AgentDashboard = () => {
 
             {/* Changelog */}
             <div>
-              <Label htmlFor="deployment-changes">Changelog (Optional):</Label>
+              <Label htmlFor="deployment-changes" className="dark:text-white">Changelog (Optional):</Label>
               <Textarea
                 id="deployment-changes"
                 placeholder="Describe what changed in this deployment..."
                 value={deploymentChanges}
                 onChange={(e) => setDeploymentChanges(e.target.value)}
-                className="mt-1"
+                className="mt-1 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
                 rows={3}
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-foreground mt-1">
                 Document changes for tracking and team visibility
               </p>
             </div>

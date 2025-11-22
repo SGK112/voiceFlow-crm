@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 import api from '@/lib/api';
 import { ArrowLeft, Save } from 'lucide-react';
 

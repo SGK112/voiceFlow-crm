@@ -41,11 +41,11 @@ const STATUS_COLORS = {
   negotiation: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
   converted: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
   lost: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-  on_hold: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+  on_hold: 'bg-secondary text-gray-800 bg-secondary text-foreground'
 };
 
 const PRIORITY_COLORS = {
-  low: 'bg-gray-100 text-gray-800',
+  low: 'bg-secondary text-gray-800',
   medium: 'bg-blue-100 text-blue-800',
   high: 'bg-orange-100 text-orange-800',
   urgent: 'bg-red-100 text-red-800'
@@ -383,30 +383,30 @@ export default function LeadDetail() {
                   </>
                 ) : (
                   <>
-                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center gap-2 text-gray-900 text-foreground">
                       <Mail className="h-4 w-4" />
                       <a href={`mailto:${lead.email}`} className="hover:underline">{lead.email}</a>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                    <div className="flex items-center gap-2 text-gray-900 text-foreground">
                       <Phone className="h-4 w-4" />
                       <a href={`tel:${lead.phone}`} className="hover:underline">{lead.phone}</a>
                     </div>
                     {lead.alternatePhone && (
-                      <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                      <div className="flex items-center gap-2 text-gray-900 text-foreground">
                         <Phone className="h-4 w-4" />
                         <span className="text-sm text-gray-500">Alt: </span>
                         <a href={`tel:${lead.alternatePhone}`} className="hover:underline">{lead.alternatePhone}</a>
                       </div>
                     )}
                     {lead.company && (
-                      <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                      <div className="flex items-center gap-2 text-gray-900 text-foreground">
                         <Building2 className="h-4 w-4" />
                         {lead.company}
                         {lead.jobTitle && <span className="text-sm text-gray-500">- {lead.jobTitle}</span>}
                       </div>
                     )}
                     {lead.address && (
-                      <div className="flex items-start gap-2 text-gray-700 dark:text-gray-300">
+                      <div className="flex items-start gap-2 text-gray-900 text-foreground">
                         <MapPin className="h-4 w-4 mt-1" />
                         <div>
                           {lead.address.street && <div>{lead.address.street}</div>}
@@ -575,7 +575,7 @@ export default function LeadDetail() {
                           {new Date(note.createdAt).toLocaleString()}
                         </span>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300">{note.content}</p>
+                      <p className="text-gray-900 text-foreground">{note.content}</p>
                       {note.tags && note.tags.length > 0 && (
                         <div className="flex gap-2 mt-2">
                           {note.tags.map((tag, idx) => (
@@ -620,7 +620,7 @@ export default function LeadDetail() {
                             project.status === 'completed' ? 'bg-green-100 text-green-800' :
                             project.status === 'active' ? 'bg-blue-100 text-blue-800' :
                             project.status === 'on_hold' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-gray-100 text-gray-800'
+                            'bg-secondary text-gray-800'
                           }>
                             {project.status.replace('_', ' ').toUpperCase()}
                           </Badge>
@@ -656,7 +656,7 @@ export default function LeadDetail() {
                         <div>
                           <span className="text-gray-500">Progress:</span>
                           <div className="flex items-center gap-2">
-                            <div className="flex-1 bg-gray-200 rounded-full h-2">
+                            <div className="flex-1 bg-secondary rounded-full h-2">
                               <div
                                 className="bg-blue-600 h-2 rounded-full transition-all"
                                 style={{ width: `${project.progress || 0}%` }}

@@ -743,6 +743,19 @@ class N8nService {
   }
 
   /**
+   * Get a specific workflow by ID
+   */
+  async getWorkflow(workflowId) {
+    try {
+      const response = await this.client.get(`/api/v1/workflows/${workflowId}`);
+      return response.data;
+    } catch (error) {
+      console.error('N8N API Error:', error.response?.data || error.message);
+      return null;
+    }
+  }
+
+  /**
    * List all workflows
    */
   async listWorkflows() {

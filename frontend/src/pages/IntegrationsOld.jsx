@@ -14,7 +14,7 @@ import {
   Sparkles,
   Loader2
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 import api from '@/lib/api';
 import OAuthConnectButton from '@/components/OAuthConnectButton';
 
@@ -98,7 +98,7 @@ export default function IntegrationsUpdated() {
       case 'Easy': return 'text-green-600 bg-green-50 dark:bg-green-950/30';
       case 'Medium': return 'text-yellow-600 bg-yellow-50 dark:bg-yellow-950/30';
       case 'Hard': return 'text-red-600 bg-red-50 dark:bg-red-950/30';
-      default: return 'text-gray-600 bg-gray-50 dark:bg-gray-950/30';
+      default: return 'text-gray-600 bg-secondary/50 dark:bg-gray-950/30';
     }
   };
 

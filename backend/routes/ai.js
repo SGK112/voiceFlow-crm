@@ -15,6 +15,10 @@ import {
   aiExtract,
   aiGenerate
 } from '../controllers/aiController.js';
+import {
+  generateAgentScript,
+  generateFirstMessage
+} from '../controllers/aiGenerationController.js';
 
 const router = express.Router();
 
@@ -31,6 +35,10 @@ router.post('/chat', aiChat);
 router.post('/improve-script', improveScript);
 router.post('/suggestions', getScriptSuggestions);
 router.post('/generate-script', generateScript);
+
+// Agent creation AI assistance
+router.post('/generate-agent-script', generateAgentScript);
+router.post('/generate-first-message', generateFirstMessage);
 
 // Workflow generation
 router.post('/generate-workflow', generateWorkflow);

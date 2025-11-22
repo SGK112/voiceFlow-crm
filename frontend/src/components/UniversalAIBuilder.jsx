@@ -498,7 +498,7 @@ Your workflow is now ready${nodeCount > 0 ? ' to automate your tasks' : '. You c
                 </div>
                 <div>
                   <DialogTitle className="text-xl font-bold">AI Builder</DialogTitle>
-                  <DialogDescription className="text-sm text-gray-500 dark:text-gray-400">
+                  <DialogDescription className="text-sm text-foreground">
                     Chat with AI to build in minutes
                   </DialogDescription>
                 </div>
@@ -529,7 +529,7 @@ Your workflow is now ready${nodeCount > 0 ? ' to automate your tasks' : '. You c
           </DialogHeader>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 dark:bg-gray-900">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-secondary">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -547,7 +547,7 @@ Your workflow is now ready${nodeCount > 0 ? ' to automate your tasks' : '. You c
                   className={`max-w-[75%] rounded-lg p-4 ${
                     message.role === 'user'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-md'
+                      : 'bg-card border border-border text-foreground shadow-md'
                   }`}
                 >
                   <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
@@ -637,10 +637,10 @@ Your workflow is now ready${nodeCount > 0 ? ' to automate your tasks' : '. You c
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
                   <Bot className="w-5 h-5 text-white" />
                 </div>
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md">
+                <div className="bg-card border border-border rounded-lg p-4 shadow-md">
                   <div className="flex items-center gap-2">
                     <Loader2 className="w-4 h-4 animate-spin text-purple-600" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">AI is thinking...</span>
+                    <span className="text-sm text-muted-foreground">AI is thinking...</span>
                   </div>
                 </div>
               </div>
@@ -651,7 +651,7 @@ Your workflow is now ready${nodeCount > 0 ? ' to automate your tasks' : '. You c
 
           {/* Input */}
           {(step === 'building') && (
-            <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <div className="border-t border-border p-4 bg-card border border-border">
               <div className="flex gap-2">
                 <Input
                   value={input}
@@ -673,7 +673,7 @@ Your workflow is now ready${nodeCount > 0 ? ' to automate your tasks' : '. You c
                   )}
                 </Button>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              <p className="text-xs text-foreground mt-2">
                 Press Enter to send • Shift + Enter for new line
               </p>
             </div>

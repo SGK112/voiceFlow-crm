@@ -150,10 +150,10 @@ const PhoneNumberMarketplace = () => {
             <Phone className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-gray-900 text-foreground">
               Phone Number Marketplace
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-800 text-foreground">
               Buy local, toll-free, and international numbers • Port existing numbers • Manage SMS/Voice services
             </p>
           </div>
@@ -356,7 +356,7 @@ const PhoneNumberMarketplace = () => {
                       </div>
 
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">
+                        <span className="text-gray-800 text-foreground">
                           ${number.price || '1.00'}/month
                         </span>
                         <Button
@@ -429,8 +429,8 @@ const PhoneNumberMarketplace = () => {
                   Letter of Authorization (LOA)
                 </label>
                 <div className="border-2 border-dashed rounded-lg p-8 text-center">
-                  <Upload className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <Upload className="w-12 h-12 text-gray-600 text-muted-foreground mx-auto mb-3" />
+                  <p className="text-sm text-gray-800 text-foreground mb-2">
                     Upload signed LOA document
                   </p>
                   <Button variant="outline">Choose File</Button>
@@ -454,8 +454,8 @@ const PhoneNumberMarketplace = () => {
             <CardContent>
               {myNumbers.length === 0 ? (
                 <div className="text-center py-12">
-                  <Phone className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                  <Phone className="w-16 h-16 text-gray-600 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-gray-800 text-foreground mb-4">
                     You don't have any phone numbers yet
                   </p>
                   <Button onClick={() => document.querySelector('[value="buy"]').click()}>
@@ -468,7 +468,7 @@ const PhoneNumberMarketplace = () => {
                   {myNumbers.map((number) => (
                     <div
                       key={number.sid}
-                      className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                      className="border rounded-lg p-4 hover:bg-secondary/50 dark:hover:bg-secondary transition-colors"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">

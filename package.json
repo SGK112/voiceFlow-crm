@@ -26,6 +26,10 @@
     "@elevenlabs/elevenlabs-js": "^2.24.1",
     "@google-cloud/vertexai": "^1.10.0",
     "@google/generative-ai": "^0.24.1",
+    "@langchain/community": "^1.0.4",
+    "@langchain/core": "^1.0.6",
+    "@langchain/langgraph": "^1.0.2",
+    "@langchain/openai": "^1.1.2",
     "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.41.3",
@@ -33,6 +37,7 @@
     "crypto": "^1.0.1",
     "csv-parser": "^3.2.0",
     "dotenv": "^16.3.1",
+    "elevenlabs": "^1.59.0",
     "express": "^4.18.2",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.1.5",
@@ -56,7 +61,9 @@
     "twilio": "^5.10.4",
     "uuid": "^9.0.1",
     "validator": "^13.11.0",
-    "ws": "^8.18.3"
+    "ws": "^8.18.3",
+    "xlsx": "^0.18.5",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

@@ -42,7 +42,7 @@ const ElevenLabsEmbed = ({
 
   return (
     <div
-      className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+      className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-lg overflow-hidden border border-border"
       style={{ height: `${height}px` }}
     >
       <div className="flex flex-col items-center justify-center h-full p-8 text-center">
@@ -52,13 +52,13 @@ const ElevenLabsEmbed = ({
         </div>
 
         {/* Title */}
-        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+        <h3 className="text-2xl font-bold text-foreground mb-3">
           {title}
         </h3>
 
         {/* Description */}
         {description && (
-          <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md">
+          <p className="text-muted-foreground mb-6 max-w-md">
             {description}
           </p>
         )}
@@ -79,13 +79,13 @@ const ElevenLabsEmbed = ({
 
         {/* Instructions (if provided) */}
         {instructions.length > 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6 max-w-2xl border border-gray-200 dark:border-gray-700">
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+          <div className="bg-card border border-border rounded-lg p-4 mb-6 max-w-2xl border border-border">
+            <h4 className="text-sm font-semibold text-foreground mb-3">
               Quick Steps:
             </h4>
             <ol className="text-left space-y-2">
               {instructions.map((instruction, index) => (
-                <li key={index} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <li key={index} className="flex items-start gap-2 text-sm text-foreground">
                   <span className="flex-shrink-0 w-5 h-5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-xs font-bold">
                     {index + 1}
                   </span>
@@ -117,7 +117,7 @@ const ElevenLabsEmbed = ({
         )}
 
         {/* Direct Link Fallback */}
-        <p className="mt-6 text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-6 text-xs text-foreground">
           Popup blocked?{' '}
           <a
             href={url}

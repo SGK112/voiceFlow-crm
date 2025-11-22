@@ -30,7 +30,7 @@ export default function UpcomingAppointmentsWidget() {
         {appointments.length === 0 ? (
           <div className="flex items-center justify-center h-full text-center py-8">
             <div>
-              <Calendar className="h-8 w-8 mx-auto text-muted-foreground opacity-50 mb-2" />
+              <Calendar className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">No upcoming appointments</p>
             </div>
           </div>

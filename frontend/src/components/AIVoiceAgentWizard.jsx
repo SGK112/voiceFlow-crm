@@ -610,7 +610,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-6xl my-4 md:max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-6xl my-4 md:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 p-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
@@ -664,8 +664,8 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
           {/* Step 1: Choose Template */}
           {step === 1 && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Choose Agent Type</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
+              <h3 className="text-xl font-bold text-foreground mb-2">Choose Agent Type</h3>
+              <p className="text-muted-foreground mb-4">
                 Select a pre-built template or use Manual Builder for complete customization
               </p>
 
@@ -678,7 +678,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     className={`px-4 py-2 rounded-full text-xs whitespace-nowrap transition-colors ${
                       selectedCategory === category
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        : 'bg-gray-100 dark:bg-gray-700 text-foreground hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                   >
                     {category}
@@ -694,14 +694,14 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     className={`p-4 rounded-lg border-2 text-left transition-all ${
                       selectedTemplate?.id === template.id
                         ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 shadow-lg'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-blue-400'
+                        : 'border-border hover:border-blue-400'
                     }`}
                   >
                     <div className="text-3xl mb-2">{template.icon}</div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm mb-1">
+                    <h4 className="font-semibold text-foreground text-sm mb-1">
                       {template.name}
                     </h4>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                    <p className="text-xs text-muted-foreground line-clamp-2">
                       {template.description}
                     </p>
                     {template.id === 'manual' && (
@@ -719,19 +719,19 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
           {/* Step 2: Configure Voice */}
           {step === 2 && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Configure Voice</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">
+              <h3 className="text-xl font-bold text-foreground mb-2">Configure Voice</h3>
+              <p className="text-muted-foreground mb-4">
                 Choose from preset voices, clone your own, or design a custom voice
               </p>
 
               {/* Voice Source Tabs */}
-              <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="flex gap-2 mb-6 border-b border-border">
                 <button
                   onClick={() => setVoiceSource('preset')}
                   className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
                     voiceSource === 'preset'
                       ? 'border-blue-600 text-blue-600'
-                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                      : 'border-transparent text-muted-foreground hover:text-gray-900 dark:hover:text-gray-200'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -744,7 +744,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
                     voiceSource === 'clone'
                       ? 'border-purple-600 text-purple-600'
-                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                      : 'border-transparent text-muted-foreground hover:text-gray-900 dark:hover:text-gray-200'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -757,7 +757,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
                     voiceSource === 'design'
                       ? 'border-green-600 text-green-600'
-                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                      : 'border-transparent text-muted-foreground hover:text-gray-900 dark:hover:text-gray-200'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -770,7 +770,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
                     voiceSource === 'cloned'
                       ? 'border-orange-600 text-orange-600'
-                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                      : 'border-transparent text-muted-foreground hover:text-gray-900 dark:hover:text-gray-200'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -783,7 +783,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 ${
                     voiceSource === 'library'
                       ? 'border-pink-600 text-pink-600'
-                      : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                      : 'border-transparent text-muted-foreground hover:text-gray-900 dark:hover:text-gray-200'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -799,13 +799,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   {/* Voice Search and Filters */}
                   <div className="mb-4 space-y-3">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-200 w-4 h-4" />
                       <input
                         type="text"
                         placeholder="Search voices by name, tone, or accent..."
                         value={voiceSearch}
                         onChange={(e) => setVoiceSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm"
+                        className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-card text-foreground text-sm"
                       />
                     </div>
 
@@ -817,7 +817,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                           className={`px-3 py-1 rounded-full text-xs whitespace-nowrap transition-colors ${
                             selectedVoiceCategory === category
                               ? 'bg-blue-600 text-white'
-                              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                              : 'bg-gray-100 dark:bg-gray-700 text-foreground hover:bg-gray-200 dark:hover:bg-gray-600'
                           }`}
                         >
                           {category}
@@ -829,7 +829,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                       <button
                         onClick={() => setSelectedGender('All')}
                         className={`px-4 py-1.5 rounded-lg text-xs ${
-                          selectedGender === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                          selectedGender === 'All' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-foreground'
                         }`}
                       >
                         All Genders
@@ -837,7 +837,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                       <button
                         onClick={() => setSelectedGender('Male')}
                         className={`px-4 py-1.5 rounded-lg text-xs ${
-                          selectedGender === 'Male' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                          selectedGender === 'Male' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-foreground'
                         }`}
                       >
                         Male
@@ -845,7 +845,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                       <button
                         onClick={() => setSelectedGender('Female')}
                         className={`px-4 py-1.5 rounded-lg text-xs ${
-                          selectedGender === 'Female' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                          selectedGender === 'Female' ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-foreground'
                         }`}
                       >
                         Female
@@ -862,7 +862,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                         className={`p-3 rounded-lg border-2 text-left transition-all ${
                           selectedVoice?.id === voice.id
                             ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-blue-400'
+                            : 'border-border hover:border-blue-400'
                         }`}
                       >
                         <div className="flex items-start gap-3">
@@ -871,7 +871,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between mb-1">
-                              <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{voice.name}</h4>
+                              <h4 className="font-semibold text-foreground text-sm">{voice.name}</h4>
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -882,7 +882,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                                 <Play className="w-3 h-3 text-blue-600" />
                               </button>
                             </div>
-                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                            <p className="text-xs text-muted-foreground mb-1">
                               {voice.gender} • {voice.accent} • {voice.age}
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-500 line-clamp-1">{voice.tone}</p>
@@ -914,7 +914,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
 
                   {/* Clone Type Selection */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Clone Type
                     </label>
                     <div className="flex gap-3">
@@ -923,29 +923,29 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                         className={`flex-1 p-4 rounded-lg border-2 text-left transition-all ${
                           cloneType === 'instant'
                             ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20'
-                            : 'border-gray-200 dark:border-gray-700'
+                            : 'border-border'
                         }`}
                       >
-                        <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Instant Clone</div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">1-2 min audio • Fast • Good quality</div>
+                        <div className="font-semibold text-foreground mb-1">Instant Clone</div>
+                        <div className="text-xs text-muted-foreground">1-2 min audio • Fast • Good quality</div>
                       </button>
                       <button
                         onClick={() => setCloneType('professional')}
                         className={`flex-1 p-4 rounded-lg border-2 text-left transition-all ${
                           cloneType === 'professional'
                             ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20'
-                            : 'border-gray-200 dark:border-gray-700'
+                            : 'border-border'
                         }`}
                       >
-                        <div className="font-semibold text-gray-900 dark:text-gray-100 mb-1">Professional Clone</div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">30+ min audio • Best quality • Premium</div>
+                        <div className="font-semibold text-foreground mb-1">Professional Clone</div>
+                        <div className="text-xs text-muted-foreground">30+ min audio • Best quality • Premium</div>
                       </button>
                     </div>
                   </div>
 
                   {/* Voice Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Voice Name *
                     </label>
                     <input
@@ -953,13 +953,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                       value={cloneName}
                       onChange={(e) => setCloneName(e.target.value)}
                       placeholder="e.g., My Voice, CEO Voice, Brand Voice"
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground"
                     />
                   </div>
 
                   {/* Voice Description */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Description (Optional)
                     </label>
                     <input
@@ -967,13 +967,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                       value={cloneDescription}
                       onChange={(e) => setCloneDescription(e.target.value)}
                       placeholder="Brief description of this voice"
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground"
                     />
                   </div>
 
                   {/* File Upload */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Upload Audio Samples *
                     </label>
                     <input
@@ -986,21 +986,21 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     />
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full px-4 py-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-purple-400 transition-colors flex flex-col items-center gap-2"
+                      className="w-full px-4 py-8 border-2 border-dashed border-border rounded-lg hover:border-purple-400 transition-colors flex flex-col items-center gap-2"
                     >
-                      <Upload className="w-8 h-8 text-gray-400" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Click to upload audio files</span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">MP3, WAV, M4A, OGG</span>
+                      <Upload className="w-8 h-8 text-gray-600 dark:text-gray-200" />
+                      <span className="text-sm font-medium text-foreground">Click to upload audio files</span>
+                      <span className="text-xs text-foreground">MP3, WAV, M4A, OGG</span>
                     </button>
 
                     {/* Uploaded Files List */}
                     {uploadedFiles.length > 0 && (
                       <div className="mt-3 space-y-2">
                         {uploadedFiles.map((file, index) => (
-                          <div key={index} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700">
+                          <div key={index} className="flex items-center justify-between p-2 bg-secondary rounded border border-border">
                             <div className="flex items-center gap-2 flex-1 min-w-0">
                               <Mic className="w-4 h-4 text-purple-600 flex-shrink-0" />
-                              <span className="text-sm text-gray-700 dark:text-gray-300 truncate">{file.name}</span>
+                              <span className="text-sm text-foreground truncate">{file.name}</span>
                               <span className="text-xs text-gray-500">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
                             </div>
                             <button
@@ -1051,7 +1051,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
 
                   {/* Voice Description */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Voice Description *
                     </label>
                     <textarea
@@ -1059,9 +1059,9 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                       onChange={(e) => setDesignDescription(e.target.value)}
                       rows={4}
                       placeholder="Describe the voice you want... e.g., 'A warm, friendly female voice with a slight British accent, sounding confident but approachable, mid-30s age range'"
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none"
+                      className="w-full px-4 py-3 border border-border rounded-lg bg-card text-foreground resize-none"
                     />
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    <p className="text-xs text-foreground mt-2">
                       Be specific about tone, personality, age, and any unique characteristics
                     </p>
                   </div>
@@ -1069,13 +1069,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   {/* Voice Attributes */}
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
                         Gender
                       </label>
                       <select
                         value={designGender}
                         onChange={(e) => setDesignGender(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground"
                       >
                         <option value="female">Female</option>
                         <option value="male">Male</option>
@@ -1084,13 +1084,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
                         Age
                       </label>
                       <select
                         value={designAge}
                         onChange={(e) => setDesignAge(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground"
                       >
                         <option value="young">Young (20s)</option>
                         <option value="middle">Middle (30s-40s)</option>
@@ -1099,13 +1099,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
                         Accent
                       </label>
                       <select
                         value={designAccent}
                         onChange={(e) => setDesignAccent(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-card text-foreground"
                       >
                         <option value="american">American</option>
                         <option value="british">British</option>
@@ -1137,7 +1137,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   {/* Generated Voices */}
                   {generatedVoices.length > 0 && (
                     <div>
-                      <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Generated Voices</h5>
+                      <h5 className="text-sm font-medium text-foreground mb-3">Generated Voices</h5>
                       <div className="grid grid-cols-2 gap-3">
                         {generatedVoices.map((voice, index) => (
                           <button
@@ -1146,14 +1146,14 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                             className={`p-3 rounded-lg border-2 text-left transition-all ${
                               selectedVoice?.id === voice.id
                                 ? 'border-green-600 bg-green-50 dark:bg-green-900/20'
-                                : 'border-gray-200 dark:border-gray-700 hover:border-green-400'
+                                : 'border-border hover:border-green-400'
                             }`}
                           >
                             <div className="flex items-center gap-2 mb-2">
                               <Wand2 className="w-4 h-4 text-green-600" />
-                              <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{voice.name}</span>
+                              <span className="font-semibold text-foreground text-sm">{voice.name}</span>
                             </div>
-                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                            <p className="text-xs text-muted-foreground">
                               {voice.gender} • {voice.age} • {voice.accent}
                             </p>
                           </button>
@@ -1169,9 +1169,9 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                 <div>
                   {clonedVoices.length === 0 ? (
                     <div className="text-center py-12">
-                      <Mic className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                      <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No Cloned Voices Yet</h4>
-                      <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      <Mic className="w-16 h-16 text-gray-700 dark:text-gray-100 mx-auto mb-4" />
+                      <h4 className="text-lg font-medium text-foreground mb-2">No Cloned Voices Yet</h4>
+                      <p className="text-muted-foreground mb-4">
                         Create your first cloned voice using the "Clone Voice" tab
                       </p>
                       <button
@@ -1190,7 +1190,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                           className={`p-4 rounded-lg border-2 transition-all ${
                             selectedVoice?.id === voice.id
                               ? 'border-orange-600 bg-orange-50 dark:bg-orange-900/20'
-                              : 'border-gray-200 dark:border-gray-700'
+                              : 'border-border'
                           }`}
                         >
                           <div className="flex items-start justify-between mb-3">
@@ -1199,8 +1199,8 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                                 <span className="text-white font-bold">{voice.name[0]}</span>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h4 className="font-semibold text-gray-900 dark:text-gray-100">{voice.name}</h4>
-                                <p className="text-xs text-gray-600 dark:text-gray-400">{voice.description || 'Custom cloned voice'}</p>
+                                <h4 className="font-semibold text-foreground">{voice.name}</h4>
+                                <p className="text-xs text-muted-foreground">{voice.description || 'Custom cloned voice'}</p>
                               </div>
                             </div>
                           </div>
@@ -1214,7 +1214,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                             </button>
                             <button
                               onClick={() => handlePreviewVoice(voice)}
-                              className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 text-sm"
+                              className="px-3 py-2 border border-border rounded-lg hover:bg-secondary/80 text-sm"
                             >
                               <Play className="w-4 h-4" />
                             </button>
@@ -1234,7 +1234,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
 
               {/* Voice Library Tab */}
               {voiceSource === 'library' && (
-                <div className="bg-white dark:bg-gray-900 rounded-lg">
+                <div className="bg-card rounded-lg">
                   <VoiceLibraryBrowser
                     embedded={true}
                     onVoiceSelect={(voice) => {
@@ -1256,10 +1256,10 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
               )}
 
               {/* Advanced Voice Settings */}
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+              <div className="border-t border-border pt-4">
                 <button
                   onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
-                  className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-gray-100 mb-3"
+                  className="flex items-center gap-2 text-sm font-medium text-foreground mb-3"
                 >
                   <Sliders className="w-4 h-4" />
                   Advanced Voice Settings
@@ -1267,16 +1267,16 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                 </button>
 
                 {showAdvancedSettings && (
-                  <div className="space-y-4 bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
+                  <div className="space-y-4 bg-secondary p-4 rounded-lg">
                     {/* Model Selection */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label className="block text-sm font-medium text-foreground mb-2">
                         Voice Model
                       </label>
                       <select
                         value={voiceSettings.model}
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, model: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+                        className="w-full px-3 py-2 border border-border rounded-lg bg-card border border-border text-foreground text-sm"
                       >
                         {VOICE_MODELS.map((model) => (
                           <option key={model.id} value={model.id}>
@@ -1289,10 +1289,10 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     {/* Stability */}
                     <div>
                       <div className="flex justify-between mb-2">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label className="text-sm font-medium text-foreground">
                           Stability
                         </label>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{voiceSettings.stability}%</span>
+                        <span className="text-sm text-muted-foreground">{voiceSettings.stability}%</span>
                       </div>
                       <input
                         type="range"
@@ -1302,7 +1302,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, stability: parseInt(e.target.value) })}
                         className="w-full"
                       />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-foreground mt-1">
                         Higher = more consistent, Lower = more expressive
                       </p>
                     </div>
@@ -1310,10 +1310,10 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     {/* Similarity Boost */}
                     <div>
                       <div className="flex justify-between mb-2">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label className="text-sm font-medium text-foreground">
                           Clarity + Similarity
                         </label>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{voiceSettings.similarityBoost}%</span>
+                        <span className="text-sm text-muted-foreground">{voiceSettings.similarityBoost}%</span>
                       </div>
                       <input
                         type="range"
@@ -1323,7 +1323,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, similarityBoost: parseInt(e.target.value) })}
                         className="w-full"
                       />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-foreground mt-1">
                         Higher = more similar to original voice
                       </p>
                     </div>
@@ -1331,10 +1331,10 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     {/* Style */}
                     <div>
                       <div className="flex justify-between mb-2">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label className="text-sm font-medium text-foreground">
                           Style Exaggeration
                         </label>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{voiceSettings.style}%</span>
+                        <span className="text-sm text-muted-foreground">{voiceSettings.style}%</span>
                       </div>
                       <input
                         type="range"
@@ -1344,7 +1344,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                         onChange={(e) => setVoiceSettings({ ...voiceSettings, style: parseInt(e.target.value) })}
                         className="w-full"
                       />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-foreground mt-1">
                         Higher = more exaggerated emotion and style
                       </p>
                     </div>
@@ -1352,10 +1352,10 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     {/* Speaker Boost */}
                     <div className="flex items-center justify-between">
                       <div>
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label className="text-sm font-medium text-foreground">
                           Speaker Boost
                         </label>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                        <p className="text-xs text-foreground">
                           Enhance voice similarity and reduce background noise
                         </p>
                       </div>
@@ -1374,13 +1374,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     </div>
 
                     {/* Language Detection */}
-                    <div className="pt-4 border-t border-gray-200 dark:border-gray-600">
+                    <div className="pt-4 border-t border-border">
                       <div className="flex items-center justify-between mb-3">
                         <div>
-                          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          <label className="text-sm font-medium text-foreground">
                             Auto Language Detection
                           </label>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                          <p className="text-xs text-foreground">
                             Automatically detect and respond in caller's language
                           </p>
                         </div>
@@ -1400,13 +1400,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
 
                       {/* Primary Language */}
                       <div className="mb-3">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-foreground mb-2">
                           Primary Language
                         </label>
                         <select
                           value={primaryLanguage}
                           onChange={(e) => setPrimaryLanguage(e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm"
+                          className="w-full px-3 py-2 border border-border rounded-lg bg-card border border-border text-foreground text-sm"
                         >
                           {SUPPORTED_LANGUAGES.map((lang) => (
                             <option key={lang.code} value={lang.code}>
@@ -1419,13 +1419,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                       {/* Supported Languages */}
                       {enableLanguageDetection && (
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          <label className="block text-sm font-medium text-foreground mb-2">
                             Supported Languages ({supportedLanguages.length})
                           </label>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                          <p className="text-xs text-foreground mb-2">
                             Select languages your agent can understand and speak
                           </p>
-                          <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-2 border border-gray-200 dark:border-gray-600 rounded-lg p-3 bg-gray-50 dark:bg-gray-900">
+                          <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-2 border border-border rounded-lg p-3 bg-secondary">
                             {SUPPORTED_LANGUAGES.map((lang) => (
                               <button
                                 key={lang.code}
@@ -1433,8 +1433,8 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                                 disabled={lang.code === 'en'}
                                 className={`flex items-center gap-2 px-3 py-2 rounded-lg text-left text-sm transition-all ${
                                   supportedLanguages.includes(lang.code)
-                                    ? 'bg-green-100 dark:bg-green-900/30 border-2 border-green-500 text-gray-900 dark:text-gray-100'
-                                    : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-green-300'
+                                    ? 'bg-green-100 dark:bg-green-900/30 border-2 border-green-500 text-foreground'
+                                    : 'bg-card border border-border border-2 border-border text-muted-foreground hover:border-green-300'
                                 } ${lang.code === 'en' ? 'opacity-100 cursor-default' : 'cursor-pointer'}`}
                               >
                                 <span className="text-lg">{lang.flag}</span>
@@ -1448,7 +1448,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                               </button>
                             ))}
                           </div>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                          <p className="text-xs text-foreground mt-2">
                             💡 Tip: Use Multilingual v2 model for best results with multiple languages
                           </p>
                         </div>
@@ -1461,7 +1461,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
               {/* Agent Name & Description */}
               <div className="space-y-4 mt-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Agent Name
                   </label>
                   <input
@@ -1469,12 +1469,12 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     value={agentName}
                     onChange={(e) => setAgentName(e.target.value)}
                     placeholder="My Sales Agent"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Description
                   </label>
                   <input
@@ -1482,7 +1482,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     value={agentDescription}
                     onChange={(e) => setAgentDescription(e.target.value)}
                     placeholder="Brief description of what this agent does"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-card text-foreground"
                   />
                 </div>
               </div>
@@ -1493,8 +1493,8 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
           {step === 3 && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Knowledge Base & Training</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                <h3 className="text-xl font-bold text-foreground mb-2">Knowledge Base & Training</h3>
+                <p className="text-muted-foreground mb-6">
                   Provide domain knowledge and training examples to make your agent smarter
                 </p>
               </div>
@@ -1504,16 +1504,16 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                 <div className="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-2 border-purple-200 dark:border-purple-700 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">AI Assistant Chat</h4>
+                    <h4 className="font-semibold text-foreground">AI Assistant Chat</h4>
                   </div>
 
-                  <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 mb-3 max-h-64 overflow-y-auto">
+                  <div className="bg-card border border-border rounded-lg border border-border p-3 mb-3 max-h-64 overflow-y-auto">
                     {aiChatMessages.map((msg, idx) => (
                       <div key={idx} className={`mb-3 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                         <div className={`inline-block px-3 py-2 rounded-lg text-sm ${
                           msg.role === 'user'
                             ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                            : 'bg-gray-100 dark:bg-gray-700 text-foreground'
                         }`}>
                           {msg.content}
                         </div>
@@ -1539,7 +1539,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                       onChange={(e) => setAiChatInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleAIChat()}
                       placeholder="Describe what you want your agent to do..."
-                      className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                      className="flex-1 px-3 py-2 border border-border rounded-lg text-sm bg-card text-foreground"
                     />
                     <button
                       onClick={handleAIChat}
@@ -1555,7 +1555,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
 
               {/* Agent Instructions */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Agent Instructions & Behavior
                 </label>
                 <textarea
@@ -1563,9 +1563,9 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   onChange={(e) => setCustomPrompt(e.target.value)}
                   rows={6}
                   placeholder="Describe how the agent should behave, what it should say, and how it should handle different scenarios..."
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none text-sm"
+                  className="w-full px-4 py-3 border border-border rounded-lg bg-card text-foreground resize-none text-sm"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <p className="text-xs text-foreground mt-2">
                   💡 Tip: Be specific about tone, goals, objection handling, and escalation procedures
                 </p>
               </div>
@@ -1574,7 +1574,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Book className="w-4 h-4 text-gray-500" />
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label className="text-sm font-medium text-foreground">
                     Knowledge Base (Optional)
                   </label>
                 </div>
@@ -1583,9 +1583,9 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                   onChange={(e) => setKnowledgeBase(e.target.value)}
                   rows={4}
                   placeholder="Add product information, FAQs, company policies, or any domain knowledge the agent should know about..."
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none text-sm"
+                  className="w-full px-4 py-3 border border-border rounded-lg bg-card text-foreground resize-none text-sm"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <p className="text-xs text-foreground mt-2">
                   Examples: pricing tiers, service offerings, business hours, common customer questions
                 </p>
               </div>
@@ -1595,7 +1595,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-gray-500" />
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <label className="text-sm font-medium text-foreground">
                       Training Examples (Optional)
                     </label>
                   </div>
@@ -1606,13 +1606,13 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                 {trainingExamples.length > 0 && (
                   <div className="space-y-2 mb-3">
                     {trainingExamples.map((example, idx) => (
-                      <div key={idx} className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                      <div key={idx} className="bg-secondary border border-border rounded-lg p-3">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1 text-sm">
-                            <p className="text-gray-700 dark:text-gray-300 mb-1">
+                            <p className="text-foreground mb-1">
                               <strong>Q:</strong> {example.question}
                             </p>
-                            <p className="text-gray-600 dark:text-gray-400">
+                            <p className="text-muted-foreground">
                               <strong>A:</strong> {example.response}
                             </p>
                           </div>
@@ -1629,20 +1629,20 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                 )}
 
                 {/* Add Training Example */}
-                <div className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 bg-white dark:bg-gray-900">
+                <div className="border border-border rounded-lg p-3 bg-card">
                   <input
                     type="text"
                     value={newExample.question}
                     onChange={(e) => setNewExample({ ...newExample, question: e.target.value })}
                     placeholder="Example customer question..."
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-2"
+                    className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card border border-border text-foreground mb-2"
                   />
                   <input
                     type="text"
                     value={newExample.response}
                     onChange={(e) => setNewExample({ ...newExample, response: e.target.value })}
                     placeholder="Ideal agent response..."
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-2"
+                    className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card border border-border text-foreground mb-2"
                   />
                   <button
                     onClick={addTrainingExample}
@@ -1653,7 +1653,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                     Add Training Example
                   </button>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                <p className="text-xs text-foreground mt-2">
                   Training examples help the agent learn your preferred responses to common scenarios
                 </p>
               </div>
@@ -1663,57 +1663,57 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
           {/* Step 4: Review & Create */}
           {step === 4 && (
             <div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Review Your Agent</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <h3 className="text-xl font-bold text-foreground mb-2">Review Your Agent</h3>
+              <p className="text-muted-foreground mb-6">
                 Review all configuration before creating your AI voice agent
               </p>
 
               {/* Summary */}
               <div className="space-y-4">
                 {/* Basic Info */}
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <div className="p-4 bg-secondary rounded-lg border border-border">
+                  <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                     <Bot className="w-4 h-4" />
                     Basic Information
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Name:</span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">{agentName || 'Unnamed Agent'}</span>
+                      <span className="text-muted-foreground min-w-[100px]">Name:</span>
+                      <span className="font-medium text-foreground">{agentName || 'Unnamed Agent'}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Type:</span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">{selectedTemplate?.name || 'Custom'}</span>
+                      <span className="text-muted-foreground min-w-[100px]">Type:</span>
+                      <span className="font-medium text-foreground">{selectedTemplate?.name || 'Custom'}</span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Description:</span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">{agentDescription || 'No description'}</span>
+                      <span className="text-muted-foreground min-w-[100px]">Description:</span>
+                      <span className="font-medium text-foreground">{agentDescription || 'No description'}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Voice Configuration */}
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <div className="p-4 bg-secondary rounded-lg border border-border">
+                  <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                     <Mic className="w-4 h-4" />
                     Voice Configuration
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Voice:</span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">
+                      <span className="text-muted-foreground min-w-[100px]">Voice:</span>
+                      <span className="font-medium text-foreground">
                         {selectedVoice.name} ({selectedVoice.gender}, {selectedVoice.accent})
                       </span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Model:</span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">
+                      <span className="text-muted-foreground min-w-[100px]">Model:</span>
+                      <span className="font-medium text-foreground">
                         {VOICE_MODELS.find(m => m.id === voiceSettings.model)?.name}
                       </span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-600 dark:text-gray-400 min-w-[100px]">Settings:</span>
-                      <span className="text-gray-900 dark:text-gray-100">
+                      <span className="text-muted-foreground min-w-[100px]">Settings:</span>
+                      <span className="text-foreground">
                         Stability: {voiceSettings.stability}% • Similarity: {voiceSettings.similarityBoost}% • Style: {voiceSettings.style}%
                       </span>
                     </div>
@@ -1721,34 +1721,34 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                 </div>
 
                 {/* Instructions */}
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <div className="p-4 bg-secondary rounded-lg border border-border">
+                  <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                     <MessageSquare className="w-4 h-4" />
                     Agent Instructions
                   </h4>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                  <p className="text-sm text-foreground whitespace-pre-wrap">
                     {customPrompt || 'No specific instructions provided'}
                   </p>
                 </div>
 
                 {/* Knowledge & Training */}
                 {(knowledgeBase || trainingExamples.length > 0) && (
-                  <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                  <div className="p-4 bg-secondary rounded-lg border border-border">
+                    <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                       <Brain className="w-4 h-4" />
                       Knowledge & Training
                     </h4>
                     <div className="space-y-2 text-sm">
                       {knowledgeBase && (
                         <div>
-                          <span className="text-gray-600 dark:text-gray-400">Knowledge Base:</span>
-                          <p className="text-gray-900 dark:text-gray-100 mt-1">{knowledgeBase.substring(0, 200)}{knowledgeBase.length > 200 ? '...' : ''}</p>
+                          <span className="text-muted-foreground">Knowledge Base:</span>
+                          <p className="text-foreground mt-1">{knowledgeBase.substring(0, 200)}{knowledgeBase.length > 200 ? '...' : ''}</p>
                         </div>
                       )}
                       {trainingExamples.length > 0 && (
                         <div>
-                          <span className="text-gray-600 dark:text-gray-400">Training Examples:</span>
-                          <p className="text-gray-900 dark:text-gray-100">{trainingExamples.length} example{trainingExamples.length !== 1 ? 's' : ''} provided</p>
+                          <span className="text-muted-foreground">Training Examples:</span>
+                          <p className="text-foreground">{trainingExamples.length} example{trainingExamples.length !== 1 ? 's' : ''} provided</p>
                         </div>
                       )}
                     </div>
@@ -1756,26 +1756,26 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                 )}
 
                 {/* Language Settings */}
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                <div className="p-4 bg-secondary rounded-lg border border-border">
+                  <h4 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                     🌍 Language Settings
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-600 dark:text-gray-400 min-w-[140px]">Auto Detection:</span>
+                      <span className="text-muted-foreground min-w-[140px]">Auto Detection:</span>
                       <span className={`font-medium ${enableLanguageDetection ? 'text-green-600' : 'text-gray-500'}`}>
                         {enableLanguageDetection ? 'Enabled' : 'Disabled'}
                       </span>
                     </div>
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-600 dark:text-gray-400 min-w-[140px]">Primary Language:</span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">
+                      <span className="text-muted-foreground min-w-[140px]">Primary Language:</span>
+                      <span className="font-medium text-foreground">
                         {SUPPORTED_LANGUAGES.find(l => l.code === primaryLanguage)?.flag} {SUPPORTED_LANGUAGES.find(l => l.code === primaryLanguage)?.name}
                       </span>
                     </div>
                     {enableLanguageDetection && supportedLanguages.length > 1 && (
                       <div className="flex items-start gap-2">
-                        <span className="text-gray-600 dark:text-gray-400 min-w-[140px]">Supported Languages:</span>
+                        <span className="text-muted-foreground min-w-[140px]">Supported Languages:</span>
                         <div className="flex-1">
                           <div className="flex flex-wrap gap-1">
                             {supportedLanguages.slice(0, 10).map(code => {
@@ -1787,7 +1787,7 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
                               ) : null;
                             })}
                             {supportedLanguages.length > 10 && (
-                              <span className="inline-flex items-center px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded text-xs">
+                              <span className="inline-flex items-center px-2 py-1 bg-gray-200 dark:bg-gray-700 text-muted-foreground rounded text-xs">
                                 +{supportedLanguages.length - 10} more
                               </span>
                             )}
@@ -1803,10 +1803,10 @@ export default function AIVoiceAgentWizard({ onClose, onCreate }) {
         </div>
 
         {/* Footer */}
-        <div className="p-6 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+        <div className="p-6 bg-secondary border-t border-border flex items-center justify-between">
           <button
             onClick={() => step > 1 ? setStep(step - 1) : onClose()}
-            className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
+            className="px-4 py-2 text-foreground hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
             {step > 1 ? 'Back' : 'Cancel'}
           </button>

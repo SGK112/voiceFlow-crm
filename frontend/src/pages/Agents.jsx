@@ -17,7 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 import AIPromptHelper from '@/components/AIPromptHelper';
 import AgentStudioV2 from '@/components/AgentStudioV2';
 

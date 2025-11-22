@@ -174,7 +174,7 @@ const VoiceLibrary = ({ open, onOpenChange, onSelectVoice, selectedVoiceId }) =>
         {/* Search and Filters */}
         <div className="flex gap-3 mb-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-200" />
             <Input
               placeholder="Search voices by name or description..."
               value={searchQuery}
@@ -212,7 +212,7 @@ const VoiceLibrary = ({ open, onOpenChange, onSelectVoice, selectedVoiceId }) =>
         <div className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="flex items-center justify-center h-64">
-              <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+              <Loader2 className="w-8 h-8 animate-spin text-gray-600 dark:text-gray-200" />
               <span className="ml-3 text-gray-500">Loading voices...</span>
             </div>
           ) : error ? (
@@ -253,14 +253,14 @@ const VoiceLibrary = ({ open, onOpenChange, onSelectVoice, selectedVoiceId }) =>
                     className={`border rounded-lg p-4 transition-all hover:shadow-md cursor-pointer ${
                       isSelected
                         ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-700'
+                        : 'border-border'
                     }`}
                     onClick={() => handleSelectVoice(voice)}
                   >
                     {/* Voice Header */}
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                        <h3 className="font-semibold text-foreground flex items-center gap-2">
                           {voice.name}
                           {isSelected && (
                             <Check className="w-4 h-4 text-blue-600" />
@@ -297,7 +297,7 @@ const VoiceLibrary = ({ open, onOpenChange, onSelectVoice, selectedVoiceId }) =>
 
                     {/* Voice Description */}
                     {labels.description && (
-                      <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                      <p className="text-xs text-muted-foreground line-clamp-2">
                         {labels.description}
                       </p>
                     )}
@@ -305,7 +305,7 @@ const VoiceLibrary = ({ open, onOpenChange, onSelectVoice, selectedVoiceId }) =>
                     {/* Voice Tags */}
                     <div className="flex flex-wrap gap-1 mt-2">
                       {labels.age && (
-                        <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-xs text-gray-600 dark:text-gray-400">
+                        <span className="px-2 py-0.5 bg-secondary rounded text-xs text-muted-foreground">
                           {labels.age}
                         </span>
                       )}

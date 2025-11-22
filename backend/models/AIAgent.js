@@ -161,6 +161,36 @@ const aiAgentSchema = new mongoose.Schema({
     type: Number,
     default: 1
   },
+  // Organizational Structure - for multi-department companies
+  organization: {
+    company: {
+      type: String,
+      trim: true,
+      index: true
+      // e.g., "Acme Construction", "Smith Plumbing"
+    },
+    department: {
+      type: String,
+      trim: true,
+      index: true
+      // e.g., "Sales", "Customer Support", "Billing", "Scheduling"
+    },
+    role: {
+      type: String,
+      trim: true
+      // e.g., "Lead Qualifier", "Appointment Setter", "Payment Collector"
+    },
+    team: {
+      type: String,
+      trim: true
+      // e.g., "West Coast Team", "Night Shift", "Enterprise Sales"
+    },
+    tags: [{
+      type: String,
+      trim: true
+    }]
+    // e.g., ["inbound", "spanish", "commercial-clients"]
+  },
   category: {
     type: String,
     enum: ['customer_support', 'sales', 'lead_qualification', 'faq', 'general', 'custom'],
@@ -186,6 +216,12 @@ aiAgentSchema.index({ userId: 1, enabled: 1 });
 aiAgentSchema.index({ userId: 1, archived: 1 });
 aiAgentSchema.index({ 'deployment.apiKey': 1 });
 aiAgentSchema.index({ provider: 1, model: 1 });
+
+// Organizational indexes - for filtering by company/department/role
+aiAgentSchema.index({ userId: 1, 'organization.company': 1 });
+aiAgentSchema.index({ userId: 1, 'organization.department': 1 });
+aiAgentSchema.index({ userId: 1, 'organization.team': 1 });
+aiAgentSchema.index({ userId: 1, 'organization.tags': 1 });
 
 // Virtual for cost estimation
 aiAgentSchema.virtual('estimatedCostPerMessage').get(function() {

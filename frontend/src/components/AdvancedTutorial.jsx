@@ -205,7 +205,7 @@ export default function AdvancedTutorial({
         <Card className="w-[600px] shadow-2xl border-2 border-primary">
           <CardContent className="p-0">
             {/* Progress Bar */}
-            <div className="h-2 bg-gray-200 dark:bg-gray-800 rounded-t-lg overflow-hidden">
+            <div className="h-2 bg-secondary rounded-t-lg overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
@@ -256,7 +256,7 @@ export default function AdvancedTutorial({
             {/* Content */}
             <div className="p-6">
               {currentStepData?.image && (
-                <div className="mb-4 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                <div className="mb-4 rounded-lg overflow-hidden border border-border">
                   <img
                     src={currentStepData.image}
                     alt={currentStepData.title}
@@ -284,11 +284,11 @@ export default function AdvancedTutorial({
                 )}
               </div>
 
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <h3 className="text-xl font-bold text-foreground mb-2">
                 {currentStepData?.title}
               </h3>
 
-              <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+              <p className="text-muted-foreground mb-4 leading-relaxed">
                 {currentStepData?.description}
               </p>
 
@@ -313,7 +313,7 @@ export default function AdvancedTutorial({
                   {currentStepData.bullets.map((bullet, index) => (
                     <li key={index} className="flex items-start gap-2">
                       <Check className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">{bullet}</span>
+                      <span className="text-sm text-foreground">{bullet}</span>
                     </li>
                   ))}
                 </ul>

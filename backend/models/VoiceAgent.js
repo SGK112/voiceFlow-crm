@@ -122,6 +122,25 @@ const voiceAgentSchema = new mongoose.Schema({
       default: ''
     }
   },
+  callTransfer: {
+    enabled: { type: Boolean, default: false },
+    transferNumber: String, // Phone number to transfer to
+    transferType: {
+      type: String,
+      enum: ['warm', 'cold', 'conference'],
+      default: 'conference' // conference = both parties on call, warm = agent introduces, cold = direct transfer
+    },
+    transferConditions: [String], // Array of conditions when to transfer (e.g., "Customer asks for manager", "Pricing questions")
+    transferMessage: {
+      type: String,
+      default: 'Let me connect you with someone who can help you with that. One moment please.'
+    },
+    fallbackBehavior: {
+      type: String,
+      enum: ['voicemail', 'callback', 'end_call'],
+      default: 'voicemail'
+    }
+  },
   performance: {
     totalCalls: { type: Number, default: 0 },
     successfulCalls: { type: Number, default: 0 },
@@ -161,7 +180,7 @@ const voiceAgentSchema = new mongoose.Schema({
       notes: String,
       status: {
         type: String,
-        enum: ['passed', 'failed', 'needs_improvement']
+        enum: ['initiated', 'in_progress', 'passed', 'failed', 'needs_improvement']
       }
     }],
     changelog: [{

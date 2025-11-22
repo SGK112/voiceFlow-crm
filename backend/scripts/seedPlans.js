@@ -8,7 +8,7 @@ const plans = [
   {
     name: 'starter',
     displayName: 'Starter',
-    price: 99,
+    price: 149,
     stripePriceId: process.env.STRIPE_STARTER_PRICE_ID || 'price_starter',
     callLimit: 100,
     agentsIncluded: ['lead_gen'],
@@ -44,7 +44,7 @@ const plans = [
   {
     name: 'enterprise',
     displayName: 'Enterprise',
-    price: 999,
+    price: 799,
     stripePriceId: process.env.STRIPE_ENTERPRISE_PRICE_ID || 'price_enterprise',
     callLimit: -1,
     agentsIncluded: ['lead_gen', 'booking', 'collections', 'promo', 'support'],

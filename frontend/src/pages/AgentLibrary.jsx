@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import agentLibraryApi from '@/services/agentLibraryApi';
 import CommunityMarketplace from '@/components/CommunityMarketplace';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 import {
   Phone,
   Calendar,

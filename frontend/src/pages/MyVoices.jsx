@@ -160,30 +160,30 @@ export default function MyVoices() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-12 min-h-screen bg-white dark:bg-gray-900">
+      <div className="flex items-center justify-center p-12 min-h-screen bg-card">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400 mx-auto mb-4"></div>
-          <p className="text-gray-900 dark:text-white font-medium text-lg">Loading your voice library...</p>
+          <p className="text-gray-900 text-foreground font-medium text-lg">Loading your voice library...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="my-voices-page min-h-screen bg-white dark:bg-gray-900 p-6">
+    <div className="my-voices-page min-h-screen bg-card p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+          <div className="bg-card rounded-2xl shadow-sm border border-gray-200 border-border p-8">
             <div className="flex items-start gap-4">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
                 <Music className="text-white" size={32} />
               </div>
               <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                <h1 className="text-3xl font-bold text-gray-900 text-foreground mb-2">
                   My Voice Library
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400 text-base mb-4">
+                <p className="text-gray-800 text-foreground text-base mb-4">
                   Manage your saved voices and use them for calls and agents
                 </p>
                 <div className="flex flex-wrap gap-3">
@@ -198,17 +198,17 @@ export default function MyVoices() {
         </div>
 
         {/* Search and View Mode */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
+        <div className="bg-card rounded-2xl border border-gray-200 border-border shadow-sm p-6 mb-6">
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             <div className="flex-1 w-full">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-600 text-muted-foreground" size={20} />
                 <input
                   type="text"
                   placeholder="Search by name, description, accent, or tags..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 transition-all text-gray-900 dark:text-white text-base"
+                  className="w-full pl-12 pr-4 py-3 bg-secondary/50 dark:bg-black border-2 border-gray-200 border-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 transition-all text-gray-900 text-foreground text-base"
                 />
               </div>
             </div>
@@ -218,7 +218,7 @@ export default function MyVoices() {
                 className={`p-3 rounded-lg transition-all ${
                   viewMode === 'grid'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    : 'bg-secondary bg-secondary text-gray-900 text-foreground hover:bg-secondary hover:bg-secondary/80'
                 }`}
               >
                 <Grid size={20} />
@@ -228,7 +228,7 @@ export default function MyVoices() {
                 className={`p-3 rounded-lg transition-all ${
                   viewMode === 'list'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    : 'bg-secondary bg-secondary text-gray-900 text-foreground hover:bg-secondary hover:bg-secondary/80'
                 }`}
               >
                 <List size={20} />
@@ -250,12 +250,12 @@ export default function MyVoices() {
 
         {/* Voice Grid/List */}
         {filteredVoices.length === 0 && voices.length > 0 && (
-          <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700">
-            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Search className="text-gray-400 dark:text-gray-500" size={36} />
+          <div className="text-center py-20 bg-card rounded-2xl border-2 border-dashed border-gray-300 border-border">
+            <div className="w-20 h-20 bg-secondary bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="text-gray-600 text-muted-foreground" size={36} />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">No voices match your search</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 text-lg">
+            <h3 className="text-2xl font-bold text-gray-900 text-foreground mb-3">No voices match your search</h3>
+            <p className="text-gray-800 text-foreground mb-6 text-lg">
               Try a different search term
             </p>
             <button
@@ -268,12 +268,12 @@ export default function MyVoices() {
         )}
 
         {filteredVoices.length === 0 && voices.length === 0 && (
-          <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700">
-            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Music className="text-gray-400 dark:text-gray-500" size={36} />
+          <div className="text-center py-20 bg-card rounded-2xl border-2 border-dashed border-gray-300 border-border">
+            <div className="w-20 h-20 bg-secondary bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+              <Music className="text-gray-600 text-muted-foreground" size={36} />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Your voice library is empty</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 text-lg">
+            <h3 className="text-2xl font-bold text-gray-900 text-foreground mb-3">Your voice library is empty</h3>
+            <p className="text-gray-800 text-foreground mb-6 text-lg">
               Browse the voice library to add voices
             </p>
             <a
@@ -289,7 +289,7 @@ export default function MyVoices() {
           {filteredVoices.map(voice => (
             <div
               key={voice.voiceId}
-              className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-xl transition-all overflow-hidden"
+              className="bg-card rounded-xl border-2 border-gray-200 border-border hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-xl transition-all overflow-hidden"
             >
               {/* Header */}
               <div className="bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-600 p-4">
@@ -314,7 +314,7 @@ export default function MyVoices() {
 
               {/* Card Content */}
               <div className="p-5">
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-3">
+                <h3 className="font-bold text-xl text-gray-900 text-foreground mb-3">
                   {voice.name}
                 </h3>
 
@@ -326,7 +326,7 @@ export default function MyVoices() {
                         ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400'
                         : voice.gender === 'male'
                         ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                        : 'bg-secondary bg-secondary text-gray-900 text-foreground'
                     }`}>
                       {voice.gender.toUpperCase()}
                     </span>
@@ -342,7 +342,7 @@ export default function MyVoices() {
                 </div>
 
                 {/* Description */}
-                <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 min-h-[3rem]">
+                <p className="text-gray-800 text-foreground mb-4 line-clamp-2 min-h-[3rem]">
                   {voice.description || 'Professional quality voice'}
                 </p>
 
@@ -374,7 +374,7 @@ export default function MyVoices() {
                       className={`w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl font-bold text-base transition-all ${
                         playingPreview === voice.voiceId
                           ? 'bg-green-500 dark:bg-green-600 text-white shadow-lg'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 border-2 border-gray-300 dark:border-gray-600'
+                          : 'bg-secondary text-foreground hover:bg-secondary/80 border-2 border-border'
                       }`}
                     >
                       {playingPreview === voice.voiceId ? (
@@ -427,16 +427,16 @@ export default function MyVoices() {
       {/* Edit Modal */}
       {editingVoice && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Edit Voice</h2>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">{editingVoice.name}</p>
+          <div className="bg-card rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200 border-border">
+              <h2 className="text-2xl font-bold text-gray-900 text-foreground">Edit Voice</h2>
+              <p className="text-gray-800 text-foreground mt-1">{editingVoice.name}</p>
             </div>
 
             <div className="p-6 space-y-4">
               {/* Tags */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-gray-900 text-foreground mb-2">
                   Tags (comma-separated)
                 </label>
                 <input
@@ -444,13 +444,13 @@ export default function MyVoices() {
                   defaultValue={editingVoice.tags?.join(', ') || ''}
                   id="edit-tags"
                   placeholder="e.g., professional, energetic, friendly"
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 bg-secondary/50 dark:bg-black border-2 border-gray-200 border-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-gray-900 text-foreground"
                 />
               </div>
 
               {/* Notes */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-gray-900 text-foreground mb-2">
                   Notes
                 </label>
                 <textarea
@@ -458,15 +458,15 @@ export default function MyVoices() {
                   id="edit-notes"
                   rows={4}
                   placeholder="Add personal notes about this voice..."
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 bg-secondary/50 dark:bg-black border-2 border-gray-200 border-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-gray-900 text-foreground"
                 />
               </div>
             </div>
 
-            <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex gap-3">
+            <div className="p-6 border-t border-gray-200 border-border flex gap-3">
               <button
                 onClick={() => setEditingVoice(null)}
-                className="flex-1 px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all font-bold"
+                className="flex-1 px-6 py-3 bg-secondary bg-secondary text-gray-900 text-foreground rounded-lg hover:bg-secondary/80 hover:bg-secondary/80 transition-all font-bold"
               >
                 Cancel
               </button>

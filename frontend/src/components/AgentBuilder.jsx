@@ -128,10 +128,10 @@ const AgentBuilder = () => {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             Create Your Voice Agent
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground">
             Choose how you'd like to get started
           </p>
         </div>
@@ -152,7 +152,7 @@ const AgentBuilder = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-600" />
                   <span>Pre-built conversation flows</span>
@@ -188,7 +188,7 @@ const AgentBuilder = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-green-600" />
                   <span>Complete customization</span>
@@ -250,10 +250,10 @@ const AgentBuilder = () => {
         </div>
 
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             Choose an Agent Template
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground">
             Select a pre-built template and customize it for your business
           </p>
         </div>
@@ -273,7 +273,7 @@ const AgentBuilder = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2 text-xs text-gray-600 dark:text-gray-400 mb-4">
+                <div className="space-y-2 text-xs text-muted-foreground mb-4">
                   {template.features?.slice(0, 3).map((feature, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                       <Check className="w-3 h-3 text-green-600 shrink-0" />
@@ -303,10 +303,10 @@ const AgentBuilder = () => {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-foreground mb-2">
             {selectedTemplate ? `Customize ${selectedTemplate.name}` : 'Build Your Agent'}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-muted-foreground">
             Configure your voice agent settings
           </p>
         </div>
@@ -338,7 +338,7 @@ const AgentBuilder = () => {
               Choose the voice your agent will use
             </p>
             <div className="flex items-center gap-3">
-              <div className="flex-1 px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-lg border">
+              <div className="flex-1 px-4 py-3 bg-secondary rounded-lg border">
                 <p className="font-medium text-sm">{formData.voice_name}</p>
               </div>
               <Button
@@ -465,7 +465,7 @@ const AgentBuilder = () => {
           <CardContent className="pt-12 pb-12">
             <div className="text-center">
               <Loader2 className="w-16 h-16 animate-spin text-blue-600 mx-auto mb-6" />
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              <h2 className="text-2xl font-bold text-foreground mb-2">
                 Creating Your Voice Agent...
               </h2>
               <div className="space-y-2 mt-6 text-sm text-gray-600">
@@ -500,14 +500,14 @@ const AgentBuilder = () => {
                 <Check className="w-10 h-10 text-green-600" />
               </div>
 
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <h2 className="text-3xl font-bold text-foreground mb-2">
                 Success!
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-xl text-muted-foreground mb-8">
                 Your Voice Agent is Ready to Work!
               </p>
 
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-6 text-left">
+              <div className="bg-secondary rounded-lg p-6 mb-6 text-left">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-500">Agent Name</p>

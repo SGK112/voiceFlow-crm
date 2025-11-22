@@ -195,7 +195,7 @@ export default function AIPromptHelper({ script, agentType, onScriptUpdate }) {
         <div className="mt-4 space-y-2">
           <h4 className="font-semibold text-xs">Suggestions:</h4>
           {suggestions.map((suggestion, index) => (
-            <div key={index} className="bg-white dark:bg-gray-900 rounded p-3 text-xs">
+            <div key={index} className="bg-card rounded p-3 text-xs">
               <div className="font-semibold text-purple-600 dark:text-purple-400 mb-1">
                 {suggestion.title}
               </div>

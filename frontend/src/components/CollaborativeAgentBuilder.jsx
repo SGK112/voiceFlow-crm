@@ -372,7 +372,7 @@ Remember: You represent VoiceFlow CRM and our customer's business. Be excellent!
                 <div>
                   <Label>Select Your Agent's Voice *</Label>
                   <div className="flex items-center gap-3 mt-2">
-                    <div className="flex-1 px-4 py-3 bg-gray-50 dark:bg-gray-900 rounded-lg border">
+                    <div className="flex-1 px-4 py-3 bg-secondary rounded-lg border">
                       <p className="font-medium text-sm">{config.voice_name}</p>
                     </div>
                     <Button
@@ -599,7 +599,7 @@ Remember: You represent VoiceFlow CRM and our customer's business. Be excellent!
 
               {workflows.length === 0 ? (
                 <div className="text-center py-8 border-2 border-dashed rounded-lg">
-                  <Workflow className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <Workflow className="w-12 h-12 text-gray-600 dark:text-gray-200 mx-auto mb-3" />
                   <p className="text-sm text-gray-600 mb-4">No workflows yet</p>
                   <Button variant="outline" onClick={() => navigate('/workflows')}>
                     Create Your First Workflow
@@ -778,14 +778,14 @@ Remember: You represent VoiceFlow CRM and our customer's business. Be excellent!
                 <Check className="w-10 h-10 text-green-600" />
               </div>
 
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <h2 className="text-3xl font-bold text-foreground mb-2">
                 Your Agent is Live!
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-xl text-muted-foreground mb-8">
                 {config.name} is ready to handle calls
               </p>
 
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-8 text-left max-w-2xl mx-auto">
+              <div className="bg-secondary rounded-lg p-6 mb-8 text-left max-w-2xl mx-auto">
                 <h3 className="font-semibold mb-4">What happens next:</h3>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3">

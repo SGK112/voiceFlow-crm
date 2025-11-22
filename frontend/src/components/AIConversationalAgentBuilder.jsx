@@ -265,10 +265,10 @@ Please try again or contact support if the issue persists.`);
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               AI Voice Agent Builder
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-muted-foreground">
               Chat with AI to build the perfect voice agent in minutes
             </p>
           </div>
@@ -279,7 +279,7 @@ Please try again or contact support if the issue persists.`);
       {step === 'topic' && (
         <>
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-xl font-semibold text-foreground mb-4">
               What kind of voice agent do you want to create?
             </h2>
           </div>
@@ -298,7 +298,7 @@ Please try again or contact support if the issue persists.`);
                   <CardDescription>{topic.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 italic">
+                  <p className="text-sm text-foreground italic">
                     "{topic.example}"
                   </p>
                   <div className="mt-3 text-blue-600 dark:text-blue-400 text-sm font-medium group-hover:underline">
@@ -313,7 +313,7 @@ Please try again or contact support if the issue persists.`);
 
       {/* Chat Interface */}
       {step !== 'topic' && (
-        <div className="flex-1 flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div className="flex-1 flex flex-col bg-card border border-border rounded-lg shadow-lg overflow-hidden">
           {/* Topic Badge */}
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4">
             <div className="flex items-center justify-between">
@@ -334,7 +334,7 @@ Please try again or contact support if the issue persists.`);
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 dark:bg-gray-900">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-secondary">
             {messages.map((message, index) => (
               <div
                 key={index}
@@ -352,7 +352,7 @@ Please try again or contact support if the issue persists.`);
                   className={`max-w-[70%] rounded-lg p-4 ${
                     message.role === 'user'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-md'
+                      : 'bg-card border border-border text-foreground shadow-md'
                   }`}
                 >
                   <div className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</div>
@@ -437,10 +437,10 @@ Please try again or contact support if the issue persists.`);
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
                   <Bot className="w-5 h-5 text-white" />
                 </div>
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md">
+                <div className="bg-card border border-border rounded-lg p-4 shadow-md">
                   <div className="flex items-center gap-2">
                     <Loader2 className="w-4 h-4 animate-spin text-purple-600" />
-                    <span className="text-sm text-gray-600 dark:text-gray-400">AI is thinking...</span>
+                    <span className="text-sm text-muted-foreground">AI is thinking...</span>
                   </div>
                 </div>
               </div>
@@ -451,7 +451,7 @@ Please try again or contact support if the issue persists.`);
 
           {/* Input */}
           {(step === 'building') && (
-            <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <div className="border-t border-border p-4 bg-card border border-border">
               <div className="flex gap-2">
                 <Input
                   value={input}
@@ -473,7 +473,7 @@ Please try again or contact support if the issue persists.`);
                   )}
                 </Button>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              <p className="text-xs text-foreground mt-2">
                 Press Enter to send • Shift + Enter for new line
               </p>
             </div>

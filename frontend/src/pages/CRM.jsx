@@ -32,7 +32,7 @@ import { formatCurrency, formatDateTime } from '@/lib/utils';
 import LeadImporter from '@/components/LeadImporter';
 
 const LEAD_STAGES = [
-  { id: 'new', name: 'New', color: 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600' },
+  { id: 'new', name: 'New', color: 'bg-secondary bg-secondary border-gray-300 border-border' },
   { id: 'contacted', name: 'Contacted', color: 'bg-blue-100 dark:bg-blue-900 border-blue-300 dark:border-blue-700' },
   { id: 'qualified', name: 'Qualified', color: 'bg-purple-100 dark:bg-purple-900 border-purple-300 dark:border-purple-700' },
   { id: 'proposal', name: 'Proposal', color: 'bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700' },
@@ -41,12 +41,12 @@ const LEAD_STAGES = [
 ];
 
 const DEAL_STAGES = [
-  { value: 'lead', label: 'Lead', color: 'bg-gray-500' },
-  { value: 'qualified', label: 'Qualified', color: 'bg-blue-500' },
-  { value: 'proposal', label: 'Proposal', color: 'bg-purple-500' },
-  { value: 'negotiation', label: 'Negotiation', color: 'bg-yellow-500' },
-  { value: 'won', label: 'Won', color: 'bg-green-500' },
-  { value: 'lost', label: 'Lost', color: 'bg-red-500' },
+  { value: 'lead', label: 'Lead', color: 'bg-secondary bg-secondary border-gray-300 border-border' },
+  { value: 'qualified', label: 'Qualified', color: 'bg-blue-100 dark:bg-blue-900 border-blue-300 dark:border-blue-700' },
+  { value: 'proposal', label: 'Proposal', color: 'bg-purple-100 dark:bg-purple-900 border-purple-300 dark:border-purple-700' },
+  { value: 'negotiation', label: 'Negotiation', color: 'bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700' },
+  { value: 'won', label: 'Won', color: 'bg-green-100 dark:bg-green-900 border-green-300 dark:border-green-700' },
+  { value: 'lost', label: 'Lost', color: 'bg-red-100 dark:bg-red-900 border-red-300 dark:border-red-700' },
 ];
 
 export default function CRM() {
@@ -256,7 +256,7 @@ export default function CRM() {
             <Users className="w-5 h-5 text-blue-600" />
             CRM
           </h2>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-gray-800 text-foreground mt-1">
             Leads & Deals Management
           </p>
         </div>
@@ -268,7 +268,7 @@ export default function CRM() {
             className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
               activeTab === 'leads'
                 ? 'bg-primary/10 text-primary border-b-2 border-primary'
-                : 'text-muted-foreground hover:bg-accent'
+                : 'text-gray-800 text-foreground hover:bg-accent'
             }`}
           >
             Leads ({leads.length})
@@ -278,7 +278,7 @@ export default function CRM() {
             className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
               activeTab === 'deals'
                 ? 'bg-primary/10 text-primary border-b-2 border-primary'
-                : 'text-muted-foreground hover:bg-accent'
+                : 'text-gray-800 text-foreground hover:bg-accent'
             }`}
           >
             Deals ({deals.length})
@@ -290,43 +290,43 @@ export default function CRM() {
           {activeTab === 'leads' ? (
             <>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">New</span>
-                <Badge variant="secondary">{leadStats.new}</Badge>
+                <span className="text-gray-800 text-foreground">New</span>
+                <Badge className="bg-gray-700 text-white dark:bg-gray-300 dark:text-gray-900">{leadStats.new}</Badge>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">In Progress</span>
-                <Badge variant="secondary">{leadStats.inProgress}</Badge>
+                <span className="text-gray-800 text-foreground">In Progress</span>
+                <Badge className="bg-gray-700 text-white dark:bg-gray-300 dark:text-gray-900">{leadStats.inProgress}</Badge>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Won</span>
-                <Badge className="bg-green-600">{leadStats.won}</Badge>
+                <span className="text-gray-800 text-foreground">Won</span>
+                <Badge className="bg-green-600 text-white">{leadStats.won}</Badge>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">AI Assigned</span>
-                <Badge className="bg-purple-600">{leadStats.aiAssigned}</Badge>
+                <span className="text-gray-800 text-foreground">AI Assigned</span>
+                <Badge className="bg-purple-600 text-white">{leadStats.aiAssigned}</Badge>
               </div>
               <div className="pt-2 border-t border-border">
-                <div className="text-xs text-muted-foreground">Total Value</div>
-                <div className="text-lg font-bold">${leadStats.totalValue.toLocaleString()}</div>
+                <div className="text-xs text-gray-800 text-foreground">Total Value</div>
+                <div className="text-lg font-bold text-gray-900 dark:text-white">${leadStats.totalValue.toLocaleString()}</div>
               </div>
             </>
           ) : (
             <>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Active Deals</span>
-                <Badge variant="secondary">{dealStats.total}</Badge>
+                <span className="text-gray-800 text-foreground">Active Deals</span>
+                <Badge className="bg-gray-700 text-white dark:bg-gray-300 dark:text-gray-900">{dealStats.total}</Badge>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Won This Month</span>
-                <Badge className="bg-green-600">{dealStats.wonCount}</Badge>
+                <span className="text-gray-800 text-foreground">Won This Month</span>
+                <Badge className="bg-green-600 text-white">{dealStats.wonCount}</Badge>
               </div>
               <div className="pt-2 border-t border-border space-y-2">
                 <div>
-                  <div className="text-xs text-muted-foreground">Pipeline Value</div>
-                  <div className="text-lg font-bold">{formatCurrency(dealStats.totalValue)}</div>
+                  <div className="text-xs text-gray-800 text-foreground">Pipeline Value</div>
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">{formatCurrency(dealStats.totalValue)}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground">Won Value</div>
+                  <div className="text-xs text-gray-800 text-foreground">Won Value</div>
                   <div className="text-sm font-semibold text-green-600">{formatCurrency(dealStats.wonValue)}</div>
                 </div>
               </div>
@@ -373,7 +373,7 @@ export default function CRM() {
           <div className="flex items-center justify-between gap-4">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-800 text-foreground" />
               <Input
                 type="text"
                 placeholder={`Search ${activeTab}...`}
@@ -390,7 +390,7 @@ export default function CRM() {
                 className={`px-3 py-1.5 text-sm font-medium transition-colors rounded ${
                   viewMode === 'pipeline'
                     ? 'bg-background shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
+                    : 'text-gray-800 text-foreground hover:text-foreground'
                 }`}
               >
                 <LayoutGrid className="w-4 h-4" />
@@ -400,7 +400,7 @@ export default function CRM() {
                 className={`px-3 py-1.5 text-sm font-medium transition-colors rounded ${
                   viewMode === 'table'
                     ? 'bg-background shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
+                    : 'text-gray-800 text-foreground hover:text-foreground'
                 }`}
               >
                 <LayoutList className="w-4 h-4" />
@@ -415,7 +415,7 @@ export default function CRM() {
             <div className="flex items-center justify-center h-64">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading {activeTab}...</p>
+                <p className="text-gray-800 text-foreground">Loading {activeTab}...</p>
               </div>
             </div>
           ) : activeTab === 'leads' ? (
@@ -428,8 +428,8 @@ export default function CRM() {
                     <div key={stage.id} className="flex-shrink-0 w-80">
                       <div className={`rounded-t-lg border-2 ${stage.color} p-3 mb-3`}>
                         <div className="flex items-center justify-between">
-                          <h3 className="font-semibold text-gray-900 dark:text-gray-100">{stage.name}</h3>
-                          <Badge variant="secondary">{stageLeads.length}</Badge>
+                          <h3 className="font-semibold text-gray-900 text-foreground">{stage.name}</h3>
+                          <Badge className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 font-bold">{stageLeads.length}</Badge>
                         </div>
                       </div>
                       <div className="space-y-3 min-h-[500px]">
@@ -447,7 +447,7 @@ export default function CRM() {
                                 </Badge>
                               )}
                               <h4 className="font-semibold mb-2">{lead.name}</h4>
-                              <div className="space-y-1 text-sm text-muted-foreground mb-3">
+                              <div className="space-y-1 text-sm text-gray-800 text-foreground mb-3">
                                 {lead.company && (
                                   <div className="flex items-center gap-2">
                                     <Building2 className="w-4 h-4" />
@@ -518,7 +518,7 @@ export default function CRM() {
                           </Card>
                         ))}
                         {stageLeads.length === 0 && (
-                          <div className="text-center py-8 text-muted-foreground text-sm">
+                          <div className="text-center py-8 text-gray-800 text-foreground text-sm">
                             No leads in this stage
                           </div>
                         )}
@@ -535,24 +535,24 @@ export default function CRM() {
                     <table className="w-full">
                       <thead className="bg-muted">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Name</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Contact</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Company</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Value</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Stage</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">AI Status</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Actions</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Name</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Contact</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Company</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Value</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Stage</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">AI Status</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y">
                         {filteredLeads.map(lead => (
                           <tr key={lead._id} className="hover:bg-muted/50">
                             <td className="px-6 py-4 text-sm font-medium">{lead.name}</td>
-                            <td className="px-6 py-4 text-sm text-muted-foreground">
+                            <td className="px-6 py-4 text-sm text-gray-800 text-foreground">
                               <div>{lead.email}</div>
                               <div>{lead.phone}</div>
                             </td>
-                            <td className="px-6 py-4 text-sm text-muted-foreground">{lead.company || '-'}</td>
+                            <td className="px-6 py-4 text-sm text-gray-800 text-foreground">{lead.company || '-'}</td>
                             <td className="px-6 py-4 text-sm font-semibold">
                               {lead.value ? `$${parseFloat(lead.value).toLocaleString()}` : '-'}
                             </td>
@@ -568,7 +568,7 @@ export default function CRM() {
                                   AI Assigned
                                 </Badge>
                               ) : (
-                                <span className="text-muted-foreground">Manual</span>
+                                <span className="text-gray-800 text-foreground">Manual</span>
                               )}
                             </td>
                             <td className="px-6 py-4 text-sm">
@@ -598,7 +598,7 @@ export default function CRM() {
                       </tbody>
                     </table>
                     {filteredLeads.length === 0 && (
-                      <div className="text-center py-12 text-muted-foreground">
+                      <div className="text-center py-12 text-gray-800 text-foreground">
                         No leads found
                       </div>
                     )}
@@ -614,10 +614,10 @@ export default function CRM() {
                   const stageDeals = getDealsByStage(stage.value);
                   return (
                     <div key={stage.value} className="flex-shrink-0 w-80">
-                      <div className={`rounded-t-lg border-2 border-${stage.color} p-3 mb-3 bg-${stage.color}/10`}>
+                      <div className={`rounded-t-lg border-2 ${stage.color} p-3 mb-3`}>
                         <div className="flex items-center justify-between">
-                          <h3 className="font-semibold">{stage.label}</h3>
-                          <Badge variant="secondary">{stageDeals.length}</Badge>
+                          <h3 className="font-semibold text-foreground">{stage.label}</h3>
+                          <Badge className="bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 font-bold">{stageDeals.length}</Badge>
                         </div>
                       </div>
                       <div className="space-y-3 min-h-[500px]">
@@ -625,7 +625,7 @@ export default function CRM() {
                           <Card key={deal._id} className="hover:shadow-md transition-shadow">
                             <CardContent className="p-4">
                               <h4 className="font-semibold mb-2">{deal.title}</h4>
-                              <div className="space-y-1 text-sm text-muted-foreground mb-3">
+                              <div className="space-y-1 text-sm text-gray-800 text-foreground mb-3">
                                 {deal.contact && (
                                   <div className="flex items-center gap-2">
                                     <User className="w-4 h-4" />
@@ -665,7 +665,7 @@ export default function CRM() {
                           </Card>
                         ))}
                         {stageDeals.length === 0 && (
-                          <div className="text-center py-8 text-muted-foreground text-sm">
+                          <div className="text-center py-8 text-gray-800 text-foreground text-sm">
                             No deals in this stage
                           </div>
                         )}
@@ -682,20 +682,20 @@ export default function CRM() {
                     <table className="w-full">
                       <thead className="bg-muted">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Title</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Contact</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Value</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Stage</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Priority</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Expected Close</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase">Actions</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Title</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Contact</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Value</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Stage</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Priority</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Expected Close</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 text-foreground uppercase">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y">
                         {filteredDeals.map(deal => (
                           <tr key={deal._id} className="hover:bg-muted/50">
                             <td className="px-6 py-4 text-sm font-medium">{deal.title}</td>
-                            <td className="px-6 py-4 text-sm text-muted-foreground">{deal.contact?.name || 'N/A'}</td>
+                            <td className="px-6 py-4 text-sm text-gray-800 text-foreground">{deal.contact?.name || 'N/A'}</td>
                             <td className="px-6 py-4 text-sm font-semibold">{formatCurrency(deal.value)}</td>
                             <td className="px-6 py-4 text-sm">
                               <Badge className={DEAL_STAGES.find(s => s.value === deal.stage)?.color}>
@@ -728,7 +728,7 @@ export default function CRM() {
                       </tbody>
                     </table>
                     {filteredDeals.length === 0 && (
-                      <div className="text-center py-12 text-muted-foreground">
+                      <div className="text-center py-12 text-gray-800 text-foreground">
                         No deals found
                       </div>
                     )}
@@ -937,13 +937,13 @@ export default function CRM() {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold">{agent.name}</h3>
-                  <p className="text-sm text-muted-foreground">{agent.description || 'Voice agent'}</p>
+                  <p className="text-sm text-gray-800 text-foreground">{agent.description || 'Voice agent'}</p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                <ChevronRight className="w-5 h-5 text-gray-800 text-foreground" />
               </button>
             ))}
             {agents.filter(a => a.enabled).length === 0 && (
-              <div className="text-center py-8 text-muted-foreground">
+              <div className="text-center py-8 text-gray-800 text-foreground">
                 No active agents available. Deploy an agent first.
               </div>
             )}

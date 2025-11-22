@@ -144,7 +144,7 @@ const AgentSetup = () => {
             onChange={(e) => handleFieldChange(question.id, e.target.value)}
             placeholder={question.placeholder}
             className={`w-full px-4 py-3 rounded-lg border ${
-              hasError ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+              hasError ? 'border-red-500' : 'border-border'
             } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
           />
         );
@@ -160,7 +160,7 @@ const AgentSetup = () => {
             max={question.max}
             placeholder={question.placeholder}
             className={`w-full px-4 py-3 rounded-lg border ${
-              hasError ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+              hasError ? 'border-red-500' : 'border-border'
             } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
           />
         );
@@ -174,7 +174,7 @@ const AgentSetup = () => {
             placeholder={question.placeholder}
             rows={4}
             className={`w-full px-4 py-3 rounded-lg border ${
-              hasError ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+              hasError ? 'border-red-500' : 'border-border'
             } focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none`}
           />
         );
@@ -186,7 +186,7 @@ const AgentSetup = () => {
             value={value}
             onChange={(e) => handleFieldChange(question.id, e.target.value)}
             className={`w-full px-4 py-3 rounded-lg border ${
-              hasError ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+              hasError ? 'border-red-500' : 'border-border'
             } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
           >
             <option value="">Select an option...</option>
@@ -202,7 +202,7 @@ const AgentSetup = () => {
         return (
           <div className="space-y-2">
             {question.options.map(option => (
-              <label key={option.value} className="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 cursor-pointer">
+              <label key={option.value} className="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-secondary/50 hover:bg-secondary/80 bg-secondary cursor-pointer">
                 <input
                   type="checkbox"
                   checked={Array.isArray(value) && value.includes(option.value)}
@@ -215,7 +215,7 @@ const AgentSetup = () => {
                   }}
                   className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 dark:text-gray-300">{option.label}</span>
+                <span className="text-foreground">{option.label}</span>
               </label>
             ))}
           </div>
@@ -225,7 +225,7 @@ const AgentSetup = () => {
         return (
           <div className="space-y-2">
             {question.options.map(option => (
-              <label key={option.value} className="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 cursor-pointer">
+              <label key={option.value} className="flex items-center space-x-3 p-3 rounded-lg border border-gray-200 hover:bg-secondary/50 hover:bg-secondary/80 bg-secondary cursor-pointer">
                 <input
                   type="radio"
                   name={question.id}
@@ -234,7 +234,7 @@ const AgentSetup = () => {
                   onChange={(e) => handleFieldChange(question.id, e.target.value)}
                   className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
                 />
-                <span className="text-gray-700 dark:text-gray-300">{option.label}</span>
+                <span className="text-foreground">{option.label}</span>
               </label>
             ))}
           </div>
@@ -249,7 +249,7 @@ const AgentSetup = () => {
             onChange={(e) => handleFieldChange(question.id, e.target.value)}
             placeholder={question.placeholder}
             className={`w-full px-4 py-3 rounded-lg border ${
-              hasError ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
+              hasError ? 'border-red-500' : 'border-border'
             } focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
           />
         );
@@ -291,9 +291,9 @@ const AgentSetup = () => {
   const progress = ((currentStep) / (template.setupQuestions.length + 1)) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-700">
+    <div className="min-h-screen bg-secondary/50 bg-secondary">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-card border border-border border-b border-gray-200 border-border">
         <div className="max-w-4xl mx-auto px-6 py-6">
           <button
             onClick={() => navigate('/app/agent-library')}
@@ -308,10 +308,10 @@ const AgentSetup = () => {
               {template.icon}
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              <h1 className="text-2xl font-bold text-foreground">
                 Set Up {template.name}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">{template.description}</p>
+              <p className="text-muted-foreground mt-1">{template.description}</p>
             </div>
           </div>
 
@@ -321,7 +321,7 @@ const AgentSetup = () => {
               <span>Step {currentStep + 1} of {template.setupQuestions.length + 1}</span>
               <span>{Math.round(progress)}% Complete</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-secondary rounded-full h-2">
               <div
                 className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
@@ -342,9 +342,9 @@ const AgentSetup = () => {
 
         {!isLastStep ? (
           // Question Step
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 p-8">
+          <div className="bg-card border border-border rounded-xl shadow-sm p-8">
             <div className="mb-6">
-              <label htmlFor={currentQuestion.id} className="block text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              <label htmlFor={currentQuestion.id} className="block text-lg font-semibold text-foreground mb-2">
                 {currentQuestion.label}
                 {currentQuestion.required && <span className="text-red-500 ml-1">*</span>}
               </label>
@@ -363,13 +363,13 @@ const AgentSetup = () => {
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 border-border">
               <button
                 onClick={handlePrevious}
                 disabled={currentStep === 0}
                 className={`flex items-center px-6 py-3 rounded-lg font-medium transition-colors ${
                   currentStep === 0
-                    ? 'text-gray-400 cursor-not-allowed'
+                    ? 'text-muted-foreground cursor-not-allowed'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
@@ -388,12 +388,12 @@ const AgentSetup = () => {
           </div>
         ) : (
           // Review & Create Step
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 p-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Review Your Configuration</h2>
+          <div className="bg-card border border-border rounded-xl shadow-sm p-8">
+            <h2 className="text-2xl font-bold text-foreground mb-6">Review Your Configuration</h2>
 
             {/* Custom Name (Optional) */}
-            <div className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="mb-6 pb-6 border-b border-gray-200 border-border">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Custom Agent Name (Optional)
               </label>
               <input
@@ -401,9 +401,9 @@ const AgentSetup = () => {
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
                 placeholder={`My ${template.name}`}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 rounded-lg border border-border bg-secondary text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+              <p className="text-foreground text-sm mt-1">
                 Leave blank to use the default name: {template.name}
               </p>
             </div>
@@ -457,16 +457,16 @@ const AgentSetup = () => {
             )}
 
             {/* Pricing Summary */}
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6 mb-8">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Pricing</h3>
+            <div className="bg-secondary/50 bg-secondary rounded-lg p-6 mb-8">
+              <h3 className="font-semibold text-foreground mb-3">Pricing</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400">Base Price:</span>
+                  <span className="text-muted-foreground">Base Price:</span>
                   <span className="text-gray-900 font-medium">${template.pricing.basePrice}/month</span>
                 </div>
                 {template.pricing.perCallPrice > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Per Call:</span>
+                    <span className="text-muted-foreground">Per Call:</span>
                     <span className="text-gray-900 font-medium">
                       ${template.pricing.perCallPrice} (after {template.pricing.freeCallsIncluded} free)
                     </span>
@@ -474,7 +474,7 @@ const AgentSetup = () => {
                 )}
                 {template.pricing.percentOfCollections > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Collection Fee:</span>
+                    <span className="text-muted-foreground">Collection Fee:</span>
                     <span className="text-gray-900 font-medium">
                       {template.pricing.percentOfCollections * 100}% of collected payments
                     </span>
@@ -482,7 +482,7 @@ const AgentSetup = () => {
                 )}
                 {template.pricing.perReviewBonus > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400">Per Review:</span>
+                    <span className="text-muted-foreground">Per Review:</span>
                     <span className="text-gray-900 font-medium">${template.pricing.perReviewBonus}</span>
                   </div>
                 )}
@@ -490,10 +490,10 @@ const AgentSetup = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between pt-6 border-t border-gray-200 border-border">
               <button
                 onClick={handlePrevious}
-                className="flex items-center px-6 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 rounded-lg font-medium transition-colors"
+                className="flex items-center px-6 py-3 text-foreground hover:bg-secondary rounded-lg font-medium transition-colors"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Previous

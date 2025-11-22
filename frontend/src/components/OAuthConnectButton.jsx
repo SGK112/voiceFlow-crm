@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 import api from '@/lib/api';
 import { Loader2 } from 'lucide-react';
 

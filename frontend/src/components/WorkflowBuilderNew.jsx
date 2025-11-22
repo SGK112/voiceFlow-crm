@@ -157,14 +157,14 @@ const NODE_TYPES = [
 function CustomNode({ data }) {
   return (
     <div
-      className="px-4 py-3 shadow-lg rounded-lg border-2 bg-white dark:bg-gray-800 min-w-[220px] cursor-pointer hover:shadow-xl transition-shadow"
+      className="px-4 py-3 shadow-lg rounded-lg border-2 bg-card border border-border min-w-[220px] cursor-pointer hover:shadow-xl transition-shadow"
       style={{ borderColor: data.color }}
     >
       <div className="flex items-center gap-2 mb-1">
         <span className="text-3xl">{data.icon}</span>
         <div className="flex-1">
-          <div className="text-sm font-bold text-gray-900 dark:text-gray-100">{data.label}</div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">{data.description}</div>
+          <div className="text-sm font-bold text-foreground">{data.label}</div>
+          <div className="text-xs text-foreground">{data.description}</div>
         </div>
         {data.configured && (
           <div className="w-2 h-2 bg-green-500 rounded-full" title="Configured"></div>
@@ -471,18 +471,18 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 dark:bg-gray-900">
+    <div className="h-full flex flex-col bg-secondary">
       {/* Toolbar */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between flex-wrap gap-3">
+      <div className="bg-card border border-border border-b border-border p-4 flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-4">
           <input
             type="text"
             value={workflowName}
             onChange={(e) => setWorkflowName(e.target.value)}
-            className="text-lg font-semibold bg-transparent border-b-2 border-transparent hover:border-gray-300 focus:border-blue-500 focus:outline-none dark:text-gray-100 px-2 py-1"
+            className="text-lg font-semibold bg-transparent border-b-2 border-transparent hover:border-gray-300 focus:border-blue-500 focus:outline-none dark:text-white px-2 py-1"
             placeholder="Workflow Name"
           />
-          <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline">
+          <span className="text-sm text-foreground hidden sm:inline">
             {nodes.length} steps
           </span>
         </div>
@@ -490,7 +490,7 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setShowTemplates(!showTemplates)}
-            className="flex items-center gap-2 px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm"
+            className="flex items-center gap-2 px-3 py-2 border border-border text-foreground rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 text-sm"
           >
             <Upload className="w-4 h-4" />
             <span className="hidden sm:inline">Templates</span>
@@ -524,17 +524,17 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
           nodeTypes={nodeTypes}
           onNodeClick={(event, node) => setSelectedNode(node)}
           fitView
-          className="bg-gray-50 dark:bg-gray-900"
+          className="bg-secondary"
         >
-          <Controls className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" />
-          <MiniMap className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700" />
-          <Background variant="dots" gap={16} size={1} className="bg-gray-50 dark:bg-gray-900" />
+          <Controls className="bg-card border border-border border border-border" />
+          <MiniMap className="bg-card border border-border border border-border" />
+          <Background variant="dots" gap={16} size={1} className="bg-secondary" />
 
           {/* Templates Panel */}
           {showTemplates && (
             <Panel position="top-center">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-4 border border-gray-200 dark:border-gray-700">
-                <h3 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">Quick Start Templates</h3>
+              <div className="bg-card border border-border rounded-lg shadow-xl p-4 border border-border">
+                <h3 className="font-semibold mb-3 text-foreground">Quick Start Templates</h3>
                 <div className="flex gap-2 flex-wrap">
                   <button
                     onClick={() => loadTemplate('lead_capture')}
@@ -562,12 +562,12 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
           {/* Node Palette */}
           {showNodePalette && (
             <Panel position="top-left">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-4 w-80 max-h-[80vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
+              <div className="bg-card border border-border rounded-lg shadow-xl p-4 w-80 max-h-[80vh] overflow-y-auto border border-border">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">Add a Step</h3>
+                  <h3 className="font-semibold text-foreground">Add a Step</h3>
                   <button
                     onClick={() => setShowNodePalette(false)}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                    className="text-gray-600 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-700 dark:text-gray-100"
                   >
                     ✕
                   </button>
@@ -575,19 +575,19 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
 
                 {['Trigger', 'Action', 'Logic', 'Advanced'].map((category) => (
                   <div key={category} className="mb-4">
-                    <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2">{category}</h4>
+                    <h4 className="text-xs font-semibold text-foreground uppercase mb-2">{category}</h4>
                     <div className="space-y-2">
                       {NODE_TYPES.filter(nt => nt.category === category).map((nodeType) => (
                         <button
                           key={nodeType.id}
                           onClick={() => addNode(nodeType)}
-                          className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
+                          className="w-full flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
                           style={{ borderLeftColor: nodeType.color, borderLeftWidth: '3px' }}
                         >
                           <span className="text-2xl">{nodeType.icon}</span>
                           <div className="flex-1">
-                            <div className="font-medium text-sm text-gray-900 dark:text-gray-100">{nodeType.name}</div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">{nodeType.description}</div>
+                            <div className="font-medium text-sm text-foreground">{nodeType.name}</div>
+                            <div className="text-xs text-foreground">{nodeType.description}</div>
                           </div>
                         </button>
                       ))}
@@ -601,9 +601,9 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
 
         {/* Properties Panel */}
         {selectedNode && (
-          <div className="absolute right-0 top-0 bottom-0 w-full sm:w-96 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 p-4 overflow-y-auto shadow-xl z-10">
+          <div className="absolute right-0 top-0 bottom-0 w-full sm:w-96 bg-card border border-border border-l border-border p-4 overflow-y-auto shadow-xl z-10">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">Step Settings</h3>
+              <h3 className="font-semibold text-foreground">Step Settings</h3>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => deleteNode(selectedNode.id)}
@@ -614,7 +614,7 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
                 </button>
                 <button
                   onClick={() => setSelectedNode(null)}
-                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="p-2 text-gray-600 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-700 dark:text-gray-100"
                 >
                   ✕
                 </button>
@@ -623,7 +623,7 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                <label className="block text-sm font-medium text-foreground mb-1">
                   Step Name
                 </label>
                 <input
@@ -638,14 +638,14 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
                       )
                     );
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-border dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
 
               {/* Dynamic parameter fields */}
               {Object.entries(selectedNode.data.parameters || {}).map(([key, value]) => (
                 <div key={key}>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 capitalize">
+                  <label className="block text-sm font-medium text-foreground mb-1 capitalize">
                     {key.replace(/([A-Z])/g, ' $1').trim()}
                   </label>
                   {typeof value === 'boolean' ? (
@@ -659,7 +659,7 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
                         }}
                         className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                       />
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Enabled</span>
+                      <span className="text-sm text-muted-foreground">Enabled</span>
                     </label>
                   ) : key.includes('Code') || key.includes('Body') || key.includes('text') || key.includes('message') ? (
                     <textarea
@@ -669,7 +669,7 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
                         updateNodeParams(selectedNode.id, newParams);
                       }}
                       rows={6}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-border dark:bg-gray-700 dark:text-white rounded-lg font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder="Enter text..."
                     />
                   ) : (
@@ -680,7 +680,7 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
                         const newParams = { ...selectedNode.data.parameters, [key]: e.target.value };
                         updateNodeParams(selectedNode.id, newParams);
                       }}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-border dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       placeholder={`Enter ${key}...`}
                     />
                   )}
@@ -703,10 +703,10 @@ export default function WorkflowBuilderNew({ workflowId, onSave }) {
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center max-w-md p-8">
               <div className="text-6xl mb-4">🚀</div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <h3 className="text-xl font-bold text-foreground mb-2">
                 Build Your First Workflow
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Click "Add Step" to start building your automated workflow.
                 No coding required!
               </p>

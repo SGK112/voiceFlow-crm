@@ -26,7 +26,7 @@ export default function RecentCallsWidget() {
         {calls.length === 0 ? (
           <div className="flex items-center justify-center h-full text-center py-8">
             <div>
-              <Phone className="h-8 w-8 mx-auto text-muted-foreground opacity-50 mb-2" />
+              <Phone className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
               <p className="text-sm text-muted-foreground">No recent calls</p>
             </div>
           </div>

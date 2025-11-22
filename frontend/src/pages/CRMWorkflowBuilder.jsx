@@ -318,7 +318,7 @@ export default function CRMWorkflowBuilder() {
                   stage: 'new',
                   count: 0
                 })}
-                className="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg cursor-move hover:shadow-md transition-shadow"
+                className="p-3 bg-secondary/50 bg-secondary border border-gray-200 dark:border-gray-800 rounded-lg cursor-move hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4" />
@@ -383,7 +383,7 @@ export default function CRMWorkflowBuilder() {
                 onDragStart={(e) => onDragStart(e, 'delay', {
                   duration: '1 day'
                 })}
-                className="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg cursor-move hover:shadow-md transition-shadow"
+                className="p-3 bg-secondary/50 bg-secondary border border-gray-200 dark:border-gray-800 rounded-lg cursor-move hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
@@ -409,7 +409,7 @@ export default function CRMWorkflowBuilder() {
           onDragOver={onDragOver}
           nodeTypes={nodeTypes}
           fitView
-          className="bg-gray-50 dark:bg-gray-950"
+          className="bg-secondary/50 dark:bg-gray-950"
         >
           <Background color="#aaa" gap={16} />
           <Controls />

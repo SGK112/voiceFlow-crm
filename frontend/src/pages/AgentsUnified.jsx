@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import api from '../services/api';
 import AIVoiceAgentWizard from '../components/AIVoiceAgentWizard';
-import AgentStudio from '../components/AgentStudio';
 import VoiceLibraryBrowser from '../components/VoiceLibraryBrowser';
 
 export default function AgentsUnified() {
@@ -33,8 +32,6 @@ export default function AgentsUnified() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all'); // 'all', 'voice', 'chat'
   const [showAIWizard, setShowAIWizard] = useState(false);
-  const [showAgentStudio, setShowAgentStudio] = useState(false);
-  const [selectedAgentForStudio, setSelectedAgentForStudio] = useState(null);
   const [showVoiceLibrary, setShowVoiceLibrary] = useState(false);
 
   useEffect(() => {
@@ -119,11 +116,11 @@ export default function AgentsUnified() {
       <div className="mb-4">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <Bot className="w-6 h-6 text-blue-600" />
               AI Agents
             </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Deploy AI agents to automate calls, follow-ups, collections, and more
             </p>
           </div>
@@ -150,40 +147,40 @@ export default function AgentsUnified() {
         {/* Stats Cards */}
         {activeTab === 'deployed' && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 border border-gray-200 dark:border-gray-700">
+            <div className="bg-card border border-border rounded-lg shadow-sm p-3 border border-gray-200 border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">Total Agents</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{stats.total}</p>
+                  <p className="text-xs text-muted-foreground">Total Agents</p>
+                  <p className="text-xl font-bold text-foreground">{stats.total}</p>
                 </div>
                 <Bot className="w-6 h-6 text-blue-600" />
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 border border-gray-200 dark:border-gray-700">
+            <div className="bg-card border border-border rounded-lg shadow-sm p-3 border border-gray-200 border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">Active</p>
+                  <p className="text-xs text-muted-foreground">Active</p>
                   <p className="text-xl font-bold text-green-600">{stats.active}</p>
                 </div>
                 <Zap className="w-6 h-6 text-green-600" />
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 border border-gray-200 dark:border-gray-700">
+            <div className="bg-card border border-border rounded-lg shadow-sm p-3 border border-gray-200 border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">Voice Agents</p>
+                  <p className="text-xs text-muted-foreground">Voice Agents</p>
                   <p className="text-xl font-bold text-purple-600">{stats.voice}</p>
                 </div>
                 <Phone className="w-6 h-6 text-purple-600" />
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 border border-gray-200 dark:border-gray-700">
+            <div className="bg-card border border-border rounded-lg shadow-sm p-3 border border-gray-200 border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">Chat Agents</p>
+                  <p className="text-xs text-muted-foreground">Chat Agents</p>
                   <p className="text-xl font-bold text-orange-600">{stats.chat}</p>
                 </div>
                 <MessageSquare className="w-6 h-6 text-orange-600" />
@@ -193,14 +190,14 @@ export default function AgentsUnified() {
         )}
 
         {/* Tabs */}
-        <div className="border-b border-gray-200 dark:border-gray-700">
+        <div className="border-b border-gray-200 border-border">
           <nav className="flex space-x-6">
             <button
               onClick={() => setActiveTab('deployed')}
               className={`py-2 px-1 border-b-2 font-medium text-xs transition-colors ${
                 activeTab === 'deployed'
                   ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:border-gray-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-border'
               }`}
             >
               <div className="flex items-center gap-1.5">
@@ -214,7 +211,7 @@ export default function AgentsUnified() {
               className={`py-2 px-1 border-b-2 font-medium text-xs transition-colors ${
                 activeTab === 'library'
                   ? 'border-blue-600 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:border-gray-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-border'
               }`}
             >
               <div className="flex items-center gap-1.5">
@@ -229,22 +226,22 @@ export default function AgentsUnified() {
       {/* Search and Filter */}
       <div className="mb-3 flex items-center gap-3">
         <div className="flex-1 relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search agents..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-9 pr-3 py-1.5 text-sm border border-border bg-secondary text-foreground rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 
         <div className="flex items-center gap-1.5">
-          <Filter className="w-4 h-4 text-gray-400" />
+          <Filter className="w-4 h-4 text-muted-foreground" />
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="text-xs border border-border bg-secondary text-foreground rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="all">All Types</option>
             <option value="voice">Voice Only</option>
@@ -257,17 +254,17 @@ export default function AgentsUnified() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 animate-pulse">
-              <div className="h-5 bg-gray-200 rounded w-3/4 mb-3"></div>
-              <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
-              <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+            <div key={i} className="bg-card border border-border rounded-lg shadow-sm p-4 animate-pulse">
+              <div className="h-5 bg-secondary rounded w-3/4 mb-3"></div>
+              <div className="h-3 bg-secondary rounded w-full mb-2"></div>
+              <div className="h-3 bg-secondary rounded w-5/6"></div>
             </div>
           ))}
         </div>
       ) : filteredAgents.length === 0 ? (
-        <div className="text-center py-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
-          <Bot className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 mb-2">
+        <div className="text-center py-8 bg-card border border-border rounded-lg shadow-sm border border-gray-200 border-border">
+          <Bot className="w-12 h-12 text-gray-700 dark:text-gray-100 mx-auto mb-3" />
+          <h3 className="text-base font-medium text-foreground mb-2">
             {activeTab === 'deployed' ? 'No agents deployed yet' : 'No agents found'}
           </h3>
           <p className="text-sm text-gray-600 mb-4">
@@ -291,7 +288,7 @@ export default function AgentsUnified() {
           {filteredAgents.map(agent => (
             <div
               key={agent._id || agent.id}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+              className="bg-card border border-border rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
             >
               <div className="p-4">
                 {/* Header */}
@@ -301,8 +298,8 @@ export default function AgentsUnified() {
                       {agent.icon || (agent.type === 'voice' ? '📞' : '💬')}
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{agent.name}</h3>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                      <h3 className="text-sm font-semibold text-foreground">{agent.name}</h3>
+                      <p className="text-xs text-foreground capitalize">
                         {agent.category || agent.type || 'AI'} Agent
                       </p>
                     </div>
@@ -333,13 +330,13 @@ export default function AgentsUnified() {
                 {activeTab === 'deployed' && (
                   <div className="grid grid-cols-2 gap-2 mb-3 py-2 border-y border-gray-100">
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Calls Made</p>
-                      <p className="text-base font-semibold text-gray-900 dark:text-gray-100 dark:text-gray-100">
+                      <p className="text-xs text-foreground mb-0.5">Calls Made</p>
+                      <p className="text-base font-semibold text-foreground text-foreground">
                         {agent.callsMade || 0}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Success Rate</p>
+                      <p className="text-xs text-foreground mb-0.5">Success Rate</p>
                       <p className="text-base font-semibold text-green-600">
                         {agent.successRate || 0}%
                       </p>
@@ -350,7 +347,7 @@ export default function AgentsUnified() {
                 {/* Features (for library) */}
                 {activeTab === 'library' && agent.features && (
                   <div className="mb-3">
-                    <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Key Features:</p>
+                    <p className="text-xs font-semibold text-foreground mb-1.5">Key Features:</p>
                     <ul className="space-y-0.5">
                       {agent.features.slice(0, 3).map((feature, idx) => (
                         <li key={idx} className="text-xs text-gray-600 flex items-start gap-1">
@@ -375,12 +372,9 @@ export default function AgentsUnified() {
                           Manage
                         </button>
                         <button
-                          onClick={() => {
-                            setSelectedAgentForStudio(agent);
-                            setShowAgentStudio(true);
-                          }}
+                          onClick={() => navigate(`/app/voiceflow-builder/${agent._id}`)}
                           className="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 text-xs"
-                          title="Advanced Node Configuration"
+                          title="Advanced Configuration"
                         >
                           <Zap className="w-3.5 h-3.5" />
                           Advanced
@@ -441,54 +435,26 @@ export default function AgentsUnified() {
         />
       )}
 
-      {/* Agent Studio - Advanced Node Configuration */}
-      {showAgentStudio && selectedAgentForStudio && (
-        <div className="fixed inset-0 z-50">
-          <AgentStudio
-            agentId={selectedAgentForStudio._id}
-            agentData={selectedAgentForStudio}
-            onSave={async (configuration) => {
-              try {
-                await api.put(`/agents/${selectedAgentForStudio._id}`, {
-                  configuration: configuration
-                });
-                alert('Agent configuration saved successfully!');
-                setShowAgentStudio(false);
-                setSelectedAgentForStudio(null);
-                fetchAgents();
-              } catch (error) {
-                console.error('Error saving agent configuration:', error);
-                alert('Failed to save configuration');
-              }
-            }}
-            onClose={() => {
-              setShowAgentStudio(false);
-              setSelectedAgentForStudio(null);
-            }}
-          />
-        </div>
-      )}
-
       {/* Voice Library Modal */}
       {showVoiceLibrary && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="bg-white bg-secondary/50 rounded-2xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden flex flex-col">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 border-border">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
                   <Music className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Voice Library</h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Browse hundreds of community voices</p>
+                  <h2 className="text-xl font-bold text-foreground">Voice Library</h2>
+                  <p className="text-sm text-foreground">Browse hundreds of community voices</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowVoiceLibrary(false)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                className="p-2 hover:bg-secondary rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                <X className="w-5 h-5 text-foreground" />
               </button>
             </div>
 

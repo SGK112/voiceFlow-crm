@@ -1,36 +1,45 @@
-# 🚀 Quick Start - Smart AI Agents with Knowledge Base
+# 🚀 QUICK START - Multimodal Agent Demo
 
-See IMPROVEMENTS_SUMMARY.md for complete details!
+## Launch in 30 Seconds
 
-## ✅ What's New
-
-1. **Knowledge Base System** - Upload PDFs, Google Sheets, etc.
-2. **RAG Integration** - AI agents auto-search your data
-3. **Google Sheets Import** - Sync leads and training data
-4. **Cloudinary Storage** - Media and document management
-
-## 📦 Installation Complete
-
-Required packages installed:
-- googleapis, multer, pdf-text-extract, mammoth
-
-## 🎯 Key Endpoints
-
-- POST /api/knowledge-base/upload
-- POST /api/knowledge-base/import/google-sheets
-- POST /api/knowledge-base/search
-- POST /api/ai-agents/:id/chat (now uses RAG!)
-
-## 📚 Full Documentation
-
-- IMPROVEMENTS_SUMMARY.md - Technical overview
-- KNOWLEDGE_BASE_SETUP.md - User guide
-
-## 🚀 Test It
-
+### 1. Start Servers
 ```bash
-npm run dev
-curl http://localhost:5001/api/knowledge-base/stats -H "Authorization: Bearer $TOKEN"
+# Terminal 1 - Backend
+npm run server
+
+# Terminal 2 - Frontend  
+cd frontend && npm run dev
 ```
 
-Your agents are now 10x smarter! 🧠
+### 2. Open Browser
+```
+http://localhost:5173/app/multimodal-agent
+```
+
+### 3. Create Agent (ONE CLICK!)
+- Click **"Create Agent"** button
+- Wait 5 seconds
+- Done!
+
+### 4. Test It
+- Click **"Start Chat"**
+- Allow microphone
+- **Speak**: "Hello!"
+- **Type**: "Can you hear my text too?"
+- **Agent responds to BOTH!**
+
+---
+
+## 🎯 The Magic Moment
+
+**Show this to prove multimodal works:**
+
+1. Say: "My email is..."
+2. Type: `john.doe@example.com`
+3. Agent: "Perfect! Got it - john.doe@example.com"
+
+**That's it!** This proves the agent understands voice AND text simultaneously.
+
+---
+
+Ready? Let's launch! 🚀

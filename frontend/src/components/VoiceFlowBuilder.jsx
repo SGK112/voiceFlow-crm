@@ -1313,7 +1313,7 @@ function VisualAgentBuilderContent() {
         </div>
       </div>
 
-      {/* Main Viewport Area with Split View - Mobile Responsive */}
+      {/* Main Viewport Area with AI Copilot - Mobile Responsive */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Builder Side - Full width on mobile, 2/3 on desktop when executions shown */}
         <div className={`${showExecutions ? 'w-full md:w-2/3' : 'w-full'} flex flex-col transition-all duration-300`}>
@@ -1422,6 +1422,7 @@ function VisualAgentBuilderContent() {
         <ConfigurationModal
           node={configModal}
           voices={voices}
+          nodes={nodes}
           onClose={() => setConfigModal(null)}
           onSave={(data) => {
             updateNodeData(configModal.id, data);
@@ -1439,7 +1440,7 @@ function VisualAgentBuilderContent() {
       <div
         className="fixed bottom-0 left-0 right-0 bg-card border-t border-border flex flex-col z-50"
         style={{
-          height: consoleExpanded ? `${Math.min(consoleHeight, window.innerWidth < 768 ? 250 : consoleHeight)}px` : '40px',
+          height: consoleExpanded ? `${Math.min(consoleHeight, window.innerWidth < 768 ? 250 : consoleHeight)}px` : '48px',
           transition: isResizing ? 'none' : 'height 0.3s ease-in-out'
         }}
       >
@@ -1528,7 +1529,7 @@ function VisualAgentBuilderContent() {
                   e.stopPropagation();
                   setConsoleSplitView(!consoleSplitView);
                   if (!consoleSplitView) {
-                    // Auto-expand console when enabling split view
+                    // Auto-expand console when enabling AI Copilot
                     if (consoleHeight < 300) {
                       setConsoleHeight(500);
                     }
@@ -1542,7 +1543,7 @@ function VisualAgentBuilderContent() {
                 title="Split view: Logs + AI Chat side by side"
               >
                 <Menu className="h-3 w-3 rotate-90" />
-                Split View
+                AI Copilot
               </button>
             )}
             {consoleTab === 'logs' && (
@@ -1588,44 +1589,44 @@ function VisualAgentBuilderContent() {
 
         {/* Console Content - Only visible when expanded */}
         {consoleExpanded && (
-          <div className={`flex-1 overflow-hidden bg-gray-950 ${consoleSplitView ? 'flex' : ''}`}>
-            {/* Split View Mode: Logs + AI Chat side by side */}
+          <div className={`flex-1 overflow-hidden bg-background ${consoleSplitView ? 'flex' : ''}`}>
+            {/* AI Copilot Mode: Logs + AI Chat side by side */}
             {consoleSplitView ? (
               <>
                 {/* Left Panel: Logs */}
-                <div className="w-1/2 border-r border-gray-700 overflow-y-auto">
-                  <div className="p-3 bg-gray-900 border-b border-gray-700 flex items-center justify-between">
-                    <h4 className="text-xs font-semibold text-gray-300">📋 Logs ({consoleLogs.length})</h4>
+                <div className="w-1/2 border-r border-border overflow-y-auto">
+                  <div className="p-3 bg-secondary border-b border-border flex items-center justify-between">
+                    <h4 className="text-xs font-semibold text-foreground">📋 Logs ({consoleLogs.length})</h4>
                     <button
                       onClick={() => setConsoleLogs([])}
-                      className="text-xs text-gray-400 hover:text-white"
+                      className="text-xs text-muted-foreground hover:text-foreground"
                     >
                       Clear
                     </button>
                   </div>
                   <div className="p-4 font-mono text-xs">
                     {consoleLogs.length === 0 ? (
-                      <div className="text-gray-500 text-center py-8">
+                      <div className="text-muted-foreground text-center py-8">
                         📋 No logs yet
                       </div>
                     ) : (
                       consoleLogs.map((log) => (
                         <div
                           key={log.id}
-                          className="mb-2 flex gap-2 cursor-move hover:bg-gray-800 p-1 rounded"
+                          className="mb-2 flex gap-2 cursor-move hover:bg-secondary/50 p-1 rounded"
                           draggable="true"
                           onDragStart={(e) => {
                             e.dataTransfer.setData('text/plain', `[${log.timestamp}] ${log.type.toUpperCase()}: ${log.message}${log.data ? '\n' + JSON.stringify(log.data, null, 2) : ''}`);
                           }}
                           title="Drag to AI chat to discuss this log"
                         >
-                          <span className="text-gray-500">[{log.timestamp}]</span>
+                          <span className="text-muted-foreground">[{log.timestamp}]</span>
                           <span className={
                             log.type === 'success' ? 'text-green-400' :
                             log.type === 'error' ? 'text-red-400' :
                             log.type === 'warning' ? 'text-yellow-400' :
                             log.type === 'info' ? 'text-blue-400' :
-                            'text-gray-300'
+                            'text-foreground'
                           }>
                             {log.type === 'success' && '✅ '}
                             {log.type === 'error' && '❌ '}
@@ -1634,8 +1635,8 @@ function VisualAgentBuilderContent() {
                             {log.message}
                           </span>
                           {log.data && (
-                            <details className="text-gray-400 cursor-pointer">
-                              <summary className="hover:text-gray-300">View Data</summary>
+                            <details className="text-muted-foreground cursor-pointer">
+                              <summary className="hover:text-foreground">View Data</summary>
                               <pre className="mt-1 ml-4 text-[10px] text-cyan-400">
                                 {JSON.stringify(log.data, null, 2)}
                               </pre>
@@ -1650,17 +1651,17 @@ function VisualAgentBuilderContent() {
 
                 {/* Right Panel: AI Chat (copilot content) */}
                 <div className="w-1/2 flex flex-col">
-                  <div className="p-3 bg-gray-900 border-b border-gray-700 flex-shrink-0">
-                    <h4 className="text-xs font-semibold text-gray-300">🤖 AI Copilot</h4>
+                  <div className="p-3 bg-secondary border-b border-border flex-shrink-0">
+                    <h4 className="text-xs font-semibold text-foreground">🤖 AI Copilot</h4>
                   </div>
 
                   {/* AI Chat Messages - scrollable area */}
                   <div className="flex-1 overflow-y-auto p-4 space-y-4">
                     {copilotMessages.length === 0 ? (
-                      <div className="text-gray-500 flex flex-col items-center justify-center py-8 space-y-4">
+                      <div className="text-muted-foreground flex flex-col items-center justify-center py-8 space-y-4">
                         <div className="text-4xl">🤖</div>
                         <div className="text-sm max-w-md">
-                          <p className="font-semibold text-white mb-2 text-center">AI Workflow Copilot</p>
+                          <p className="font-semibold text-foreground mb-2 text-center">AI Workflow Copilot</p>
                           <p className="text-center text-xs">Drag logs from the left panel to ask questions!</p>
                         </div>
                       </div>
@@ -1676,26 +1677,26 @@ function VisualAgentBuilderContent() {
                             <div className={`max-w-[80%] rounded-lg p-3 ${
                               msg.role === 'user'
                                 ? 'bg-blue-600 text-white'
-                                : 'bg-gray-800 text-gray-100'
+                                : 'bg-secondary text-foreground'
                             }`}>
                               <div className="text-sm whitespace-pre-wrap">{msg.content}</div>
                               {msg.suggestions && msg.suggestions.length > 0 && (
-                                <div className="mt-3 pt-3 border-t border-gray-700 space-y-2">
+                                <div className="mt-3 pt-3 border-t border-border space-y-2">
                                   <div className="text-xs font-semibold text-purple-400">Suggestions:</div>
                                   {msg.suggestions.map((suggestion, sidx) => (
-                                    <div key={sidx} className="text-xs bg-gray-900 p-2 rounded">
+                                    <div key={sidx} className="text-xs bg-background p-2 rounded">
                                       💡 {suggestion}
                                     </div>
                                   ))}
                                 </div>
                               )}
                               {msg.changes && (
-                                <div className="mt-3 pt-3 border-t border-gray-700 space-y-2">
+                                <div className="mt-3 pt-3 border-t border-border space-y-2">
                                   <div className="text-xs font-semibold text-green-400">✅ Changes Applied:</div>
                                   {msg.changes.nodes && msg.changes.nodes.length > 0 && (
                                     <div className="text-xs space-y-1">
                                       {msg.changes.nodes.map((change, cidx) => (
-                                        <div key={cidx} className="bg-gray-900 p-2 rounded flex items-center gap-2">
+                                        <div key={cidx} className="bg-background p-2 rounded flex items-center gap-2">
                                           {change.action === 'add' && <span className="text-green-400">➕ Added {change.type} node</span>}
                                           {change.action === 'update' && <span className="text-blue-400">✏️ Updated node</span>}
                                           {change.action === 'delete' && <span className="text-red-400">🗑️ Removed node</span>}
@@ -1704,7 +1705,7 @@ function VisualAgentBuilderContent() {
                                     </div>
                                   )}
                                   {msg.changes.edges && msg.changes.edges.length > 0 && (
-                                    <div className="text-xs bg-gray-900 p-2 rounded">
+                                    <div className="text-xs bg-background p-2 rounded">
                                       🔗 Connected {msg.changes.edges.length} node{msg.changes.edges.length > 1 ? 's' : ''}
                                     </div>
                                   )}
@@ -1723,7 +1724,7 @@ function VisualAgentBuilderContent() {
                             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-white">
                               🤖
                             </div>
-                            <div className="bg-gray-800 text-gray-100 rounded-lg p-3">
+                            <div className="bg-secondary text-foreground rounded-lg p-3">
                               <Loader2 className="h-4 w-4 animate-spin" />
                             </div>
                           </div>
@@ -1735,7 +1736,7 @@ function VisualAgentBuilderContent() {
 
                   {/* AI Chat Input */}
                   <div
-                    className="border-t border-gray-700 p-3 flex-shrink-0"
+                    className="border-t border-border p-3 flex-shrink-0"
                     onDrop={(e) => {
                       e.preventDefault();
                       const text = e.dataTransfer.getData('text/plain');
@@ -1758,7 +1759,7 @@ function VisualAgentBuilderContent() {
                           placeholder="Ask AI or drop logs here..."
                           disabled={copilotLoading}
                           rows={3}
-                          className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                          className="flex-1 px-3 py-2 bg-secondary border border-border rounded-lg text-sm text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
                         />
                         <div className="flex flex-col gap-2">
                           {copilotMessages.length > 0 && (
@@ -1768,7 +1769,7 @@ function VisualAgentBuilderContent() {
                                 localStorage.removeItem('voiceflow_copilot_history');
                                 addLog('info', 'Cleared AI Copilot conversation history');
                               }}
-                              className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm flex items-center gap-2"
+                              className="px-3 py-2 bg-secondary hover:bg-secondary/80 text-foreground rounded-lg text-sm flex items-center gap-2"
                               title="Clear conversation history"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -1777,7 +1778,7 @@ function VisualAgentBuilderContent() {
                           <button
                             onClick={handleCopilotMessage}
                             disabled={copilotLoading || !copilotInput.trim()}
-                            className="px-3 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white rounded-lg text-sm flex items-center gap-2"
+                            className="px-3 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-secondary disabled:cursor-not-allowed text-white rounded-lg text-sm flex items-center gap-2"
                           >
                             {copilotLoading ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
@@ -1787,7 +1788,7 @@ function VisualAgentBuilderContent() {
                           </button>
                         </div>
                       </div>
-                    <div className="mt-2 text-xs text-gray-500">
+                    <div className="mt-2 text-xs text-muted-foreground">
                       💡 Drag logs to input • Shift+Enter for new line
                     </div>
                   </div>
@@ -1800,19 +1801,19 @@ function VisualAgentBuilderContent() {
                 {consoleTab === 'logs' && (
               <div className="p-4 font-mono text-xs">
                 {consoleLogs.length === 0 ? (
-                  <div className="text-gray-500 text-center py-8">
+                  <div className="text-muted-foreground text-center py-8">
                     📋 No logs yet. Test your nodes and execution logs will appear here.
                   </div>
                 ) : (
                   consoleLogs.map((log) => (
                     <div key={log.id} className="mb-2 flex gap-2">
-                      <span className="text-gray-500">[{log.timestamp}]</span>
+                      <span className="text-muted-foreground">[{log.timestamp}]</span>
                       <span className={
                         log.type === 'success' ? 'text-green-400' :
                         log.type === 'error' ? 'text-red-400' :
                         log.type === 'warning' ? 'text-yellow-400' :
                         log.type === 'info' ? 'text-blue-400' :
-                        'text-gray-300'
+                        'text-foreground'
                       }>
                         {log.type === 'success' && '✅ '}
                         {log.type === 'error' && '❌ '}
@@ -1821,8 +1822,8 @@ function VisualAgentBuilderContent() {
                         {log.message}
                       </span>
                       {log.data && (
-                        <details className="text-gray-400 cursor-pointer">
-                          <summary className="hover:text-gray-300">View Data</summary>
+                        <details className="text-muted-foreground cursor-pointer">
+                          <summary className="hover:text-foreground">View Data</summary>
                           <pre className="mt-1 ml-4 text-[10px] text-cyan-400">
                             {JSON.stringify(log.data, null, 2)}
                           </pre>
@@ -1838,7 +1839,7 @@ function VisualAgentBuilderContent() {
             {/* Workflow JSON Tab */}
             {consoleTab === 'workflow' && (
               <div className="p-4">
-                <div className="mb-2 flex items-center gap-2 text-xs text-gray-400">
+                <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
                   <FileText className="h-4 w-4" />
                   <span>Complete workflow schema - nodes and connections</span>
                 </div>
@@ -1878,7 +1879,7 @@ function VisualAgentBuilderContent() {
 
                     {/* Node Configuration */}
                     <div>
-                      <div className="text-xs text-gray-400 mb-2 flex items-center gap-1">
+                      <div className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
                         <Settings className="h-3 w-3" />
                         Configuration
                       </div>
@@ -1889,7 +1890,7 @@ function VisualAgentBuilderContent() {
 
                     {/* Position */}
                     <div>
-                      <div className="text-xs text-gray-400 mb-2">Position</div>
+                      <div className="text-xs text-muted-foreground mb-2">Position</div>
                       <pre className="text-xs text-yellow-300 bg-gray-900 p-3 rounded border border-gray-700">
                         {JSON.stringify(selectedNodeForInspection.position, null, 2)}
                       </pre>
@@ -1897,7 +1898,7 @@ function VisualAgentBuilderContent() {
 
                     {/* Connections */}
                     <div>
-                      <div className="text-xs text-gray-400 mb-2 flex items-center gap-1">
+                      <div className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
                         <Zap className="h-3 w-3" />
                         Connections
                       </div>
@@ -1913,10 +1914,10 @@ function VisualAgentBuilderContent() {
 
                     {/* Full Node Schema */}
                     <details className="mt-4">
-                      <summary className="text-xs text-gray-400 cursor-pointer hover:text-gray-300">
+                      <summary className="text-xs text-muted-foreground cursor-pointer hover:text-gray-700 dark:text-gray-100">
                         View Complete Node Schema
                       </summary>
-                      <pre className="mt-2 text-[10px] text-gray-400 bg-gray-900 p-3 rounded border border-gray-700 overflow-x-auto">
+                      <pre className="mt-2 text-[10px] text-muted-foreground bg-gray-900 p-3 rounded border border-gray-700 overflow-x-auto">
                         {JSON.stringify(selectedNodeForInspection, null, 2)}
                       </pre>
                     </details>
@@ -1940,7 +1941,7 @@ function VisualAgentBuilderContent() {
                       <div className="text-sm max-w-md">
                         <p className="font-semibold text-white mb-2 text-center">AI Workflow Copilot</p>
                         <p className="text-center">I can build, modify, debug, and test your workflow!</p>
-                        <p className="mt-4 text-xs text-gray-400 text-center">Try these commands:</p>
+                        <p className="mt-4 text-xs text-muted-foreground text-center">Try these commands:</p>
                         <ul className="mt-2 text-xs space-y-1 pl-0">
                           <li className="flex items-start gap-2">
                             <span className="text-purple-400">•</span>
@@ -2178,7 +2179,7 @@ function VisualAgentBuilderContent() {
 }
 
 // Configuration Modal
-function ConfigurationModal({ node, voices, onClose, onSave, onDelete, addLog }) {
+function ConfigurationModal({ node, voices, onClose, onSave, onDelete, addLog, nodes }) {
   const [formData, setFormData] = useState({ ...node.data });
 
   return (
@@ -2223,7 +2224,7 @@ function ConfigurationModal({ node, voices, onClose, onSave, onDelete, addLog })
           {node.type === 'mms' && <MMSConfig formData={formData} setFormData={setFormData} />}
           {node.type === 'email' && <EmailConfig formData={formData} setFormData={setFormData} />}
           {node.type === 'webhook' && <WebhookConfig formData={formData} setFormData={setFormData} />}
-          {node.type === 'test' && <TestConfig formData={formData} setFormData={setFormData} addLog={addLog} />}
+          {node.type === 'test' && <TestConfig formData={formData} setFormData={setFormData} addLog={addLog} nodes={nodes} />}
         </div>
 
         {/* Footer */}
@@ -2739,7 +2740,7 @@ function VoiceConfig({ formData, setFormData, voices = [] }) {
                 </div>
               </div>
             ) : (
-              <div className="p-4 bg-gray-50 dark:bg-gray-900 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
+              <div className="p-4 bg-gray-50 bg-secondary border-2 border-dashed border-border rounded-lg">
                 <p className="text-sm text-muted-foreground text-center">
                   💡 No voice selected yet. Choose a voice from the dropdown above.
                 </p>
@@ -2957,7 +2958,7 @@ A: "Most residential projects take 7-10 days from template to installation."
               </button>
               <button
                 onClick={() => setShowExamples(!showExamples)}
-                className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300 text-xs rounded-md flex items-center gap-1.5 hover:bg-purple-50 dark:hover:bg-purple-950 transition-colors"
+                className="px-3 py-1.5 bg-transparent border border-border border border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300 text-xs rounded-md flex items-center gap-1.5 hover:bg-purple-50 dark:hover:bg-purple-950 transition-colors"
               >
                 <FileText className="h-3.5 w-3.5" />
                 {showExamples ? 'Hide' : 'Show'} Examples
@@ -2985,7 +2986,7 @@ A: "Most residential projects take 7-10 days from template to installation."
               <select
                 value={wizardData.purpose}
                 onChange={(e) => setWizardData({ ...wizardData, purpose: e.target.value })}
-                className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-purple-300 dark:border-purple-700 rounded-md text-sm"
+                className="w-full px-3 py-2 bg-white bg-secondary border border-purple-300 dark:border-purple-700 rounded-md text-sm"
               >
                 <option>Customer Support</option>
                 <option>Sales & Lead Generation</option>
@@ -3004,7 +3005,7 @@ A: "Most residential projects take 7-10 days from template to installation."
               <select
                 value={wizardData.tone}
                 onChange={(e) => setWizardData({ ...wizardData, tone: e.target.value })}
-                className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-purple-300 dark:border-purple-700 rounded-md text-sm"
+                className="w-full px-3 py-2 bg-white bg-secondary border border-purple-300 dark:border-purple-700 rounded-md text-sm"
               >
                 <option>Friendly & Casual</option>
                 <option>Professional & Formal</option>
@@ -3021,7 +3022,7 @@ A: "Most residential projects take 7-10 days from template to installation."
                 value={wizardData.industry}
                 onChange={(e) => setWizardData({ ...wizardData, industry: e.target.value })}
                 placeholder="e.g., Home Remodeling, Healthcare, E-commerce"
-                className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-purple-300 dark:border-purple-700 rounded-md text-sm"
+                className="w-full px-3 py-2 bg-white bg-secondary border border-purple-300 dark:border-purple-700 rounded-md text-sm"
               />
             </div>
             <div>
@@ -3033,7 +3034,7 @@ A: "Most residential projects take 7-10 days from template to installation."
                 onChange={(e) => setWizardData({ ...wizardData, additionalInfo: e.target.value })}
                 placeholder="Any specific requirements, company info, or behaviors you want?"
                 rows={2}
-                className="w-full px-3 py-2 bg-white dark:bg-gray-900 border border-purple-300 dark:border-purple-700 rounded-md text-sm"
+                className="w-full px-3 py-2 bg-white bg-secondary border border-purple-300 dark:border-purple-700 rounded-md text-sm"
               />
             </div>
             <button
@@ -4519,7 +4520,7 @@ function CodeConfig({ formData, setFormData }) {
   );
 }
 
-function TestConfig({ formData, setFormData, addLog }) {
+function TestConfig({ formData, setFormData, addLog, nodes = [] }) {
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState(null);
 

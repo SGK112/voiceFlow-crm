@@ -31,10 +31,31 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Company name is required']
   },
+  // Credits/Tokens System (replaces subscription)
+  credits: {
+    type: Number,
+    default: 100, // Free starting credits
+    min: 0
+  },
+  creditBalance: {
+    type: Number,
+    default: 100,
+    min: 0
+  },
+  totalCreditsUsed: {
+    type: Number,
+    default: 0
+  },
+  totalCreditsPurchased: {
+    type: Number,
+    default: 100 // Includes free starting credits
+  },
+
+  // Legacy subscription fields (keeping for migration)
   plan: {
     type: String,
-    enum: ['starter', 'professional', 'enterprise', 'trial'],
-    default: 'trial'
+    enum: ['starter', 'professional', 'enterprise', 'trial', 'pay-as-you-go'],
+    default: 'pay-as-you-go'
   },
   resetPasswordToken: {
     type: String,
@@ -50,8 +71,8 @@ const userSchema = new mongoose.Schema({
   },
   subscriptionStatus: {
     type: String,
-    enum: ['active', 'canceled', 'past_due', 'trialing', 'incomplete'],
-    default: 'trialing'
+    enum: ['active', 'canceled', 'past_due', 'trialing', 'incomplete', 'pay-as-you-go'],
+    default: 'pay-as-you-go'
   },
   subscriptionId: {
     type: String

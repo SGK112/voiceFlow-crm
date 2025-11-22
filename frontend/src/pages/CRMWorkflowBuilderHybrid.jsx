@@ -268,7 +268,7 @@ const AIWorkflowAssistant = ({ onClose, onGenerate }) => {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-secondary rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
         <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 p-6 rounded-t-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
           <div className="relative">
@@ -294,7 +294,7 @@ const AIWorkflowAssistant = ({ onClose, onGenerate }) => {
 
         <div className="p-6">
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-900 text-foreground mb-2">
               Describe Your CRM Workflow
             </label>
             <textarea
@@ -302,12 +302,12 @@ const AIWorkflowAssistant = ({ onClose, onGenerate }) => {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Example: When a lead fills out our form, I want to call them with an AI agent. If they're qualified, notify my sales team and add them to a 5-day email sequence..."
               rows={5}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-3 border border-gray-300 border-border rounded-lg text-sm bg-white bg-secondary text-gray-900 text-foreground focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
             />
           </div>
 
           <div className="mb-6">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            <p className="text-sm font-medium text-gray-900 text-foreground mb-3">
               Or try an example:
             </p>
             <div className="grid grid-cols-1 gap-3">
@@ -315,15 +315,15 @@ const AIWorkflowAssistant = ({ onClose, onGenerate }) => {
                 <button
                   key={idx}
                   onClick={() => setDescription(example.desc)}
-                  className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:shadow-md transition-all text-left group"
+                  className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-gray-200 border-border rounded-lg hover:shadow-md transition-all text-left group"
                 >
                   <div className="flex items-start gap-2">
                     <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400 mt-0.5 group-hover:scale-110 transition-transform" />
                     <div>
-                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
+                      <div className="text-sm font-medium text-gray-900 text-foreground mb-1">
                         {example.title}
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400">
+                      <div className="text-xs text-gray-800 text-foreground">
                         {example.desc}
                       </div>
                     </div>
@@ -336,7 +336,7 @@ const AIWorkflowAssistant = ({ onClose, onGenerate }) => {
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
+              className="flex-1 px-6 py-3 bg-secondary bg-secondary text-gray-900 text-foreground rounded-lg hover:bg-secondary hover:bg-secondary/80 font-medium transition-colors"
             >
               Cancel
             </button>
@@ -933,7 +933,7 @@ function CRMWorkflowBuilderHybridContent() {
                         stage: 'new',
                         count: 0
                       })}
-                      className="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg cursor-move hover:shadow-md transition-shadow"
+                      className="p-3 bg-secondary/50 bg-secondary border border-gray-200 dark:border-gray-800 rounded-lg cursor-move hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-center gap-2">
                         <Users className="h-4 w-4" />
@@ -979,7 +979,7 @@ function CRMWorkflowBuilderHybridContent() {
                       onDragStart={(e) => onDragStart(e, 'delay', {
                         duration: '1 day'
                       })}
-                      className="p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg cursor-move hover:shadow-md transition-shadow"
+                      className="p-3 bg-secondary/50 bg-secondary border border-gray-200 dark:border-gray-800 rounded-lg cursor-move hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4" />
@@ -1023,7 +1023,7 @@ function CRMWorkflowBuilderHybridContent() {
                           className={`p-3 rounded-lg border cursor-pointer hover:shadow-md transition-shadow ${
                             currentWorkflowId === workflow._id
                               ? 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800'
-                              : 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-800'
+                              : 'bg-secondary/50 bg-secondary border-gray-200 dark:border-gray-800'
                           }`}
                         >
                           <div className="flex items-start justify-between">
@@ -1077,7 +1077,7 @@ function CRMWorkflowBuilderHybridContent() {
             onNodeClick={(_, node) => setSelectedNode(node)}
             nodeTypes={nodeTypes}
             fitView
-            className="bg-gray-50 dark:bg-gray-950"
+            className="bg-secondary/50 dark:bg-gray-950"
             snapToGrid
             snapGrid={[15, 15]}
             defaultEdgeOptions={{

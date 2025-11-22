@@ -638,8 +638,8 @@ const DatabasePanel = ({ integration }) => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
-              <Database className="h-6 w-6 text-gray-600 dark:text-gray-400" />
+            <div className="p-2 bg-secondary rounded-lg">
+              <Database className="h-6 w-6 text-muted-foreground" />
             </div>
             <div>
               <CardTitle>MongoDB Database</CardTitle>

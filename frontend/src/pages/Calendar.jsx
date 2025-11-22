@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar as CalendarIcon, Plus, Clock, Users, Video, MapPin, Phone } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 import api from '@/lib/api';
 
 export default function CalendarPage() {
@@ -203,12 +203,12 @@ export default function CalendarPage() {
                     <div className={`h-12 w-12 rounded-lg ${
                       isToday(appointment.dueDate)
                         ? 'bg-blue-100 dark:bg-blue-900'
-                        : 'bg-gray-100 dark:bg-gray-800'
+                        : 'bg-secondary bg-secondary'
                     } flex items-center justify-center`}>
                       <CalendarIcon className={`h-6 w-6 ${
                         isToday(appointment.dueDate)
                           ? 'text-blue-600 dark:text-blue-400'
-                          : 'text-gray-600 dark:text-gray-400'
+                          : 'text-gray-800 text-foreground'
                       }`} />
                     </div>
                     <div className="flex-1">

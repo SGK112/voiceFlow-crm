@@ -5,6 +5,7 @@ import WorkflowEngine from '../services/workflowEngine.js';
 import CallLog from '../models/CallLog.js';
 import Lead from '../models/Lead.js';
 import VoiceAgent from '../models/VoiceAgent.js';
+import { getCallRouter } from '../ai-agents/routers/callRouter.js';
 
 const twilioService = new TwilioService();
 const aiService = new AIService();
@@ -704,6 +705,46 @@ export const testWebhook = async (req, res) => {
     res.status(500).json({
       success: false,
       error: error.message
+    });
+  }
+};
+
+/**
+ * Early call routing handler
+ * Called during initial seconds of call to detect voicemail and route appropriately
+ *
+ * Endpoint: POST /api/ai/route-call
+ * Body: { callId, transcript }
+ */
+export const routeCall = async (req, res) => {
+  try {
+    const { callId, transcript } = req.body;
+
+    if (!callId || !transcript) {
+      return res.status(400).json({
+        success: false,
+        error: 'callId and transcript are required'
+      });
+    }
+
+    console.log(`🎯 Routing call ${callId} with transcript: "${transcript.substring(0, 100)}..."`);
+
+    // Use LangGraph router to analyze intent and route
+    const router = getCallRouter();
+    const routingResult = await router.route(callId, transcript);
+
+    console.log(`📊 Routing result:`, routingResult);
+
+    // Return routing decision
+    res.json(routingResult);
+
+  } catch (error) {
+    console.error('❌ Call routing error:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      route: 'general_agent', // Fallback
+      response: 'How can I help you today?'
     });
   }
 };

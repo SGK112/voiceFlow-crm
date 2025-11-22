@@ -1,4 +1,5 @@
 import BusinessProfile from '../models/BusinessProfile.js';
+import agentContextService from '../services/agentContextService.js';
 
 /**
  * Business Profile Controller
@@ -80,6 +81,13 @@ export const updateProfile = async (req, res) => {
     }
 
     await profile.save();
+
+    // Auto-sync price sheets to knowledge base in background (don't wait)
+    if (profile.priceSheets && profile.priceSheets.length > 0) {
+      agentContextService.syncPriceSheetsToKnowledgeBase(req.user._id).catch(err => {
+        console.error('Background price sheet sync failed:', err);
+      });
+    }
 
     res.json({
       message: 'Profile updated successfully',

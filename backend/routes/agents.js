@@ -22,7 +22,10 @@ import {
   updateSavedVoice,
   testConversation,
   connectWorkflow,
-  disconnectWorkflow
+  disconnectWorkflow,
+  updateTransferSettings,
+  getTransferSettingsStatus,
+  syncTransferSettings
 } from '../controllers/agentController.js';
 import { protect, checkSubscription } from '../middleware/auth.js';
 import { requirePlan } from '../middleware/subscriptionGate.js';
@@ -68,5 +71,10 @@ router.patch('/voices/saved/:voiceId', protect, updateSavedVoice);
 // Agent-Workflow Connection
 router.post('/:id/connect-workflow', protect, connectWorkflow);
 router.delete('/:id/disconnect-workflow', protect, disconnectWorkflow);
+
+// Call Transfer Management
+router.put('/:id/transfer-settings', protect, updateTransferSettings);
+router.get('/:id/transfer-status', protect, getTransferSettingsStatus);
+router.post('/:id/sync-transfer', protect, syncTransferSettings);
 
 export default router;

@@ -115,7 +115,7 @@ export default function TutorialOverlay({
             {/* Content */}
             <div className="p-8">
               {currentStepData?.image && (
-                <div className="mb-6 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                <div className="mb-6 rounded-lg overflow-hidden border border-border">
                   <img
                     src={currentStepData.image}
                     alt={currentStepData.title}
@@ -132,11 +132,11 @@ export default function TutorialOverlay({
                 </div>
               )}
 
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 text-center">
+              <h3 className="text-2xl font-bold text-foreground mb-3 text-center">
                 {currentStepData?.title}
               </h3>
 
-              <p className="text-gray-600 dark:text-gray-400 text-center mb-6 leading-relaxed">
+              <p className="text-muted-foreground text-center mb-6 leading-relaxed">
                 {currentStepData?.description}
               </p>
 
@@ -145,7 +145,7 @@ export default function TutorialOverlay({
                   {currentStepData.bullets.map((bullet, index) => (
                     <li key={index} className="flex items-start gap-2">
                       <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-gray-700 dark:text-gray-300">{bullet}</span>
+                      <span className="text-sm text-foreground">{bullet}</span>
                     </li>
                   ))}
                 </ul>

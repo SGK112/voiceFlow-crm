@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, Filter, Play, Plus, Check, Globe, User, Music, Pause, Star, Users, Sparkles, Trash2, X } from 'lucide-react';
 import api from '../services/api';
 
@@ -75,6 +75,7 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
   const [playingPreview, setPlayingPreview] = useState(null);
   const [audioElement, setAudioElement] = useState(null);
   const [viewMode, setViewMode] = useState('grid'); // grid or list
+  const topRef = useRef(null); // Ref for scrolling to top
 
   useEffect(() => {
     fetchVoiceLibrary(1, true); // Load first page
@@ -105,6 +106,10 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
         setVoices(newVoices);
       } else {
         setVoices(prev => [...prev, ...newVoices]);
+        // Scroll to top when loading more pages
+        if (topRef.current) {
+          topRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
 
       setHasMore(response.data.hasMore || false);
@@ -263,32 +268,35 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-12 min-h-screen bg-white dark:bg-gray-900">
+      <div className="flex items-center justify-center p-12 min-h-screen bg-card">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 dark:border-blue-800 border-t-blue-600 dark:border-t-blue-400 mx-auto mb-4"></div>
-          <p className="text-gray-900 dark:text-white font-medium text-lg">Loading voices...</p>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">This may take a moment</p>
+          <p className="text-foreground font-medium text-lg">Loading voices...</p>
+          <p className="text-muted-foreground text-sm mt-2">This may take a moment</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`voice-library-browser min-h-screen bg-white dark:bg-gray-900 ${embedded ? '' : 'p-6'}`}>
+    <div className={`voice-library-browser min-h-screen bg-card ${embedded ? '' : 'p-6'}`}>
       <div className="max-w-7xl mx-auto">
+        {/* Scroll anchor for "Load More" */}
+        <div ref={topRef} />
+
         {/* Header - Simple & Clear */}
         {!embedded && (
           <div className="mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8">
+            <div className="bg-card rounded-2xl shadow-sm border border-border p-8">
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
                   <Music className="text-white" size={32} />
                 </div>
                 <div className="flex-1">
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h1 className="text-3xl font-bold text-foreground mb-2">
                     Browse Voice Library
                   </h1>
-                  <p className="text-gray-600 dark:text-gray-400 text-base">
+                  <p className="text-muted-foreground text-base">
                     Listen to voice samples, then click "Add" to use them in your AI agents. Browse thousands of voices - use "Load More" button to see more.
                   </p>
                 </div>
@@ -298,23 +306,23 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
         )}
 
         {/* Search and Filters - Simple & Clear */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Find Your Perfect Voice</h2>
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-6 mb-6">
+          <h2 className="text-lg font-bold text-foreground mb-4">Find Your Perfect Voice</h2>
 
           <div className="space-y-4">
             {/* Search */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-semibold text-foreground mb-2">
                 Search by name or description
               </label>
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={20} />
                 <input
                   type="text"
                   placeholder="Type to search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 transition-all text-gray-900 dark:text-white text-base"
+                  className="w-full pl-12 pr-4 py-3 bg-background border-2 border-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 transition-all text-foreground text-base"
                 />
               </div>
             </div>
@@ -323,13 +331,13 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Gender Filter */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-foreground mb-2">
                   Gender
                 </label>
                 <select
                   value={filters.gender}
                   onChange={(e) => setFilters({ ...filters, gender: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-gray-900 dark:text-white font-medium cursor-pointer text-base"
+                  className="w-full px-4 py-3 bg-background border-2 border-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-foreground font-medium cursor-pointer text-base"
                 >
                   <option value="all">All Genders</option>
                   <option value="female">Female</option>
@@ -340,13 +348,13 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
 
               {/* Language Filter */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-foreground mb-2">
                   Language
                 </label>
                 <select
                   value={filters.language}
                   onChange={(e) => setFilters({ ...filters, language: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-gray-900 dark:text-white font-medium cursor-pointer text-base"
+                  className="w-full px-4 py-3 bg-background border-2 border-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-foreground font-medium cursor-pointer text-base"
                 >
                   <option value="all">All Languages</option>
                   {uniqueLanguages.map(lang => (
@@ -357,13 +365,13 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
 
               {/* Accent/Country Filter */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-foreground mb-2">
                   Accent / Country
                 </label>
                 <select
                   value={filters.accent}
                   onChange={(e) => setFilters({ ...filters, accent: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-gray-900 dark:text-white font-medium cursor-pointer text-base"
+                  className="w-full px-4 py-3 bg-background border-2 border-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-foreground font-medium cursor-pointer text-base"
                 >
                   <option value="all">All Accents</option>
                   {uniqueAccents.map(accent => {
@@ -379,13 +387,13 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
 
               {/* Use Case Filter */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-foreground mb-2">
                   Use Case
                 </label>
                 <select
                   value={filters.useCase}
                   onChange={(e) => setFilters({ ...filters, useCase: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-gray-900 dark:text-white font-medium cursor-pointer text-base"
+                  className="w-full px-4 py-3 bg-background border-2 border-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 focus:border-blue-500 dark:focus:border-blue-600 text-foreground font-medium cursor-pointer text-base"
                 >
                   <option value="all">All Use Cases</option>
                   {uniqueUseCases.map(uc => (
@@ -398,15 +406,15 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
             </div>
 
             {/* Free Only Toggle */}
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="pt-4 border-t border-border">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={filters.freeOnly}
                   onChange={(e) => setFilters({ ...filters, freeOnly: e.target.checked })}
-                  className="w-5 h-5 text-blue-600 border-2 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 cursor-pointer"
+                  className="w-5 h-5 text-blue-600 border-2 border-border rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 cursor-pointer"
                 />
-                <span className="text-base font-medium text-gray-700 dark:text-gray-300">
+                <span className="text-base font-medium text-foreground">
                   Show only free voices (no cost to add)
                 </span>
               </label>
@@ -428,7 +436,7 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
           {filteredVoices.map(voice => (
             <div
               key={voice.id}
-              className="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-xl transition-all overflow-hidden"
+              className="bg-card rounded-xl border-2 border-border hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-xl transition-all overflow-hidden"
             >
               {/* Simple Header */}
               <div className="bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-500 dark:to-blue-600 p-4">
@@ -454,7 +462,7 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
               {/* Card Content */}
               <div className="p-5">
                 {/* Voice Name */}
-                <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-3">
+                <h3 className="font-bold text-xl text-foreground mb-3">
                   {voice.name}
                 </h3>
 
@@ -465,12 +473,12 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
                       ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400'
                       : voice.gender === 'male'
                       ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                      : 'bg-secondary bg-secondary text-foreground'
                   }`}>
                     {voice.gender?.toUpperCase()}
                   </span>
                   {voice.age && voice.age !== 'unknown' && (
-                    <span className="px-3 py-1.5 rounded-lg text-sm font-bold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    <span className="px-3 py-1.5 rounded-lg text-sm font-bold bg-secondary bg-secondary text-foreground">
                       {voice.age}
                     </span>
                   )}
@@ -485,7 +493,7 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
                 </div>
 
                 {/* Description */}
-                <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 min-h-[3rem]">
+                <p className="text-foreground mb-4 line-clamp-2 min-h-[3rem]">
                   {voice.description || 'Professional quality voice for your AI agents'}
                 </p>
 
@@ -500,7 +508,7 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
 
                 {/* Stats */}
                 {voice.clonedByCount > 0 && (
-                  <div className="flex items-center gap-2 mb-4 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 mb-4 text-muted-foreground bg-background/50 rounded-lg px-3 py-2">
                     <Users size={16} />
                     <span className="text-sm font-medium">
                       Used by {voice.clonedByCount.toLocaleString()} people
@@ -517,7 +525,7 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
                       className={`w-full flex items-center justify-center gap-3 px-5 py-4 rounded-xl font-bold text-base transition-all ${
                         playingPreview === voice.id
                           ? 'bg-green-500 dark:bg-green-600 text-white shadow-lg'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 border-2 border-gray-300 dark:border-gray-600'
+                          : 'bg-secondary bg-secondary text-foreground hover:bg-secondary hover:bg-secondary/80 border-2 border-border'
                       }`}
                     >
                       {playingPreview === voice.id ? (
@@ -586,7 +594,7 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
 
                 {/* Helper Text */}
                 {!voice.isAddedByUser && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 text-center">
+                  <p className="text-xs text-foreground mt-3 text-center">
                     Click "Add to My Library" to use this voice in your agents
                   </p>
                 )}
@@ -612,7 +620,7 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
                 <>Load More Voices (Page {currentPage + 1})</>
               )}
             </button>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
+            <p className="text-sm text-muted-foreground mt-3">
               Loaded {voices.length} voices so far
             </p>
           </div>
@@ -620,12 +628,12 @@ export default function VoiceLibraryBrowser({ onVoiceSelect, embedded = false })
 
         {/* No Results - Clear Message */}
         {filteredVoices.length === 0 && (
-          <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700">
-            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Search className="text-gray-400 dark:text-gray-500" size={36} />
+          <div className="text-center py-20 bg-card rounded-2xl border-2 border-dashed border-border">
+            <div className="w-20 h-20 bg-secondary bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="text-muted-foreground" size={36} />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">No voices match your search</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 text-lg">
+            <h3 className="text-2xl font-bold text-foreground mb-3">No voices match your search</h3>
+            <p className="text-muted-foreground mb-6 text-lg">
               Try adjusting your filters or search term
             </p>
             <button

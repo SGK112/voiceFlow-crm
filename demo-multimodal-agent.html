@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoiceFlow - Multimodal AI Agent Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 800px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+
+    .feature-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      display: inline-block;
+      margin: 5px;
+    }
+
+    .features {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .status {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-left: 4px solid #667eea;
+    }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.95em;
+    }
+
+    .status-label {
+      color: #666;
+      font-weight: 500;
+    }
+
+    .status-value {
+      color: #333;
+      font-weight: 600;
+    }
+
+    .status-value.success {
+      color: #28a745;
+    }
+
+    .status-value.error {
+      color: #dc3545;
+    }
+
+    .status-value.pending {
+      color: #ffc107;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    button.secondary {
+      background: #6c757d;
+    }
+
+    button.danger {
+      background: #dc3545;
+    }
+
+    .chat-container {
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      height: 300px;
+      overflow-y: auto;
+      padding: 20px;
+      margin-bottom: 20px;
+      background: #f8f9fa;
+    }
+
+    .message {
+      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: 8px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+
+    .message.user {
+      background: #667eea;
+      color: white;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .message.agent {
+      background: white;
+      color: #333;
+      border: 1px solid #e0e0e0;
+    }
+
+    .message.system {
+      background: #fff3cd;
+      color: #856404;
+      text-align: center;
+      font-size: 0.9em;
+      font-style: italic;
+      max-width: 100%;
+    }
+
+    .message-label {
+      font-weight: 600;
+      font-size: 0.85em;
+      margin-bottom: 5px;
+      opacity: 0.8;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1em;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .send-btn {
+      width: auto;
+      min-width: 100px;
+    }
+
+    .instructions {
+      background: #e7f3ff;
+      border-left: 4px solid #2196F3;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    .instructions h3 {
+      color: #1976D2;
+      margin-bottom: 10px;
+    }
+
+    .instructions ul {
+      list-style-position: inside;
+      color: #555;
+    }
+
+    .instructions li {
+      margin-bottom: 8px;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .pulsing {
+      animation: pulse 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎙️ VoiceFlow AI Agent Demo</h1>
+    <p class="subtitle">Multimodal Conversational AI - Voice + Text</p>
+
+    <div class="features">
+      <span class="feature-badge">🗣️ Voice Input</span>
+      <span class="feature-badge">💬 Text Input</span>
+      <span class="feature-badge">⚡ Real-time</span>
+      <span class="feature-badge">🔄 Context Aware</span>
+    </div>
+
+    <div class="status" id="status">
+      <div class="status-item">
+        <span class="status-label">Agent Status:</span>
+        <span class="status-value pending" id="agentStatus">Not Created</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Session:</span>
+        <span class="status-value" id="sessionStatus">Disconnected</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Agent ID:</span>
+        <span class="status-value" id="agentId">-</span>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button id="createAgentBtn" onclick="createAgent()">
+        🤖 Create Demo Agent
+      </button>
+      <button id="startSessionBtn" onclick="startSession()" disabled>
+        🚀 Start Conversation
+      </button>
+      <button id="getWidgetBtn" onclick="getWidget()" disabled>
+        📦 Get Widget Code
+      </button>
+      <button id="endSessionBtn" onclick="endSession()" class="danger" disabled>
+        🛑 End Session
+      </button>
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+      <div class="message system">
+        Welcome! Click "Create Demo Agent" to get started.
+      </div>
+    </div>
+
+    <div class="input-container">
+      <input type="text"
+             id="messageInput"
+             placeholder="Type a message (works during voice conversation!)"
+             disabled
+             onkeypress="handleKeyPress(event)">
+      <button id="sendBtn" class="send-btn" onclick="sendMessage()" disabled>
+        Send 💬
+      </button>
+    </div>
+
+    <div class="instructions">
+      <h3>📖 How to Use</h3>
+      <ul>
+        <li><strong>Step 1:</strong> Click "Create Demo Agent" to initialize your AI agent</li>
+        <li><strong>Step 2:</strong> Click "Start Conversation" to begin talking</li>
+        <li><strong>Step 3:</strong> Speak naturally OR type messages</li>
+        <li><strong>Multimodal Magic:</strong> You can type while speaking - the agent understands both!</li>
+        <li><strong>Widget Code:</strong> Click "Get Widget Code" to embed this on your website</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    let agentData = null;
+    let ws = null;
+    let isConnected = false;
+
+    const API_BASE = window.location.hostname === 'localhost'
+      ? 'http://localhost:5000/api'
+      : '/api';
+
+    function addMessage(text, type = 'system', label = null) {
+      const chatContainer = document.getElementById('chatContainer');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${type}`;
+
+      if (label) {
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'message-label';
+        labelDiv.textContent = label;
+        messageDiv.appendChild(labelDiv);
+      }
+
+      const textDiv = document.createElement('div');
+      textDiv.textContent = text;
+      messageDiv.appendChild(textDiv);
+
+      chatContainer.appendChild(messageDiv);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function updateStatus(agentStatus, sessionStatus, agentId = null) {
+      document.getElementById('agentStatus').textContent = agentStatus;
+      document.getElementById('sessionStatus').textContent = sessionStatus;
+      if (agentId) {
+        document.getElementById('agentId').textContent = agentId.substring(0, 20) + '...';
+      }
+    }
+
+    async function createAgent() {
+      try {
+        addMessage('Creating demo agent...', 'system');
+        document.getElementById('createAgentBtn').disabled = true;
+
+        // You'll need to get a JWT token first by logging in
+        const token = prompt('Please enter your JWT token (login first at /login):');
+        if (!token) {
+          throw new Error('Token required');
+        }
+
+        const response = await fetch(`${API_BASE}/conversational-agents/demo`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        agentData = await response.json();
+
+        addMessage(`✅ Agent created successfully!`, 'system');
+        addMessage(`Agent Name: ${agentData.agent.name}`, 'system');
+        addMessage(`Voice: ${agentData.agent.voiceName}`, 'system');
+        addMessage(`Multimodal: ${agentData.agent.multimodal ? 'Yes' : 'No'}`, 'system');
+
+        updateStatus('Ready', 'Disconnected', agentData.agent.elevenLabsAgentId);
+
+        document.getElementById('startSessionBtn').disabled = false;
+        document.getElementById('getWidgetBtn').disabled = false;
+
+        localStorage.setItem('demoAgentData', JSON.stringify(agentData));
+        localStorage.setItem('demoToken', token);
+
+      } catch (error) {
+        addMessage(`❌ Error: ${error.message}`, 'system');
+        document.getElementById('createAgentBtn').disabled = false;
+      }
+    }
+
+    async function startSession() {
+      try {
+        if (!agentData) {
+          // Try to load from storage
+          agentData = JSON.parse(localStorage.getItem('demoAgentData'));
+          if (!agentData) {
+            throw new Error('Please create an agent first');
+          }
+        }
+
+        addMessage('Connecting to agent...', 'system');
+        document.getElementById('startSessionBtn').disabled = true;
+
+        // Connect to WebSocket
+        ws = new WebSocket(agentData.testing.signedUrl);
+
+        ws.onopen = () => {
+          isConnected = true;
+          addMessage('✅ Connected! Start speaking or type a message.', 'system');
+          updateStatus('Active', 'Connected', agentData.agent.elevenLabsAgentId);
+
+          document.getElementById('messageInput').disabled = false;
+          document.getElementById('sendBtn').disabled = false;
+          document.getElementById('endSessionBtn').disabled = false;
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const message = JSON.parse(event.data);
+
+            switch (message.type) {
+              case 'agent_response':
+              case 'agent_transcript':
+                addMessage(message.text || message.message, 'agent', '🤖 Agent');
+                break;
+
+              case 'user_transcript':
+                addMessage(message.text || message.message, 'user', '👤 You (voice)');
+                break;
+
+              case 'interruption':
+                addMessage('You interrupted the agent', 'system');
+                break;
+
+              case 'ping':
+                ws.send(JSON.stringify({ type: 'pong' }));
+                break;
+            }
+          } catch (e) {
+            console.error('Error parsing message:', e);
+          }
+        };
+
+        ws.onerror = (error) => {
+          addMessage(`❌ Connection error: ${error.message}`, 'system');
+          updateStatus('Error', 'Disconnected');
+        };
+
+        ws.onclose = () => {
+          isConnected = false;
+          addMessage('Connection closed', 'system');
+          updateStatus('Ready', 'Disconnected');
+
+          document.getElementById('messageInput').disabled = true;
+          document.getElementById('sendBtn').disabled = true;
+          document.getElementById('endSessionBtn').disabled = true;
+          document.getElementById('startSessionBtn').disabled = false;
+        };
+
+      } catch (error) {
+        addMessage(`❌ Error: ${error.message}`, 'system');
+        document.getElementById('startSessionBtn').disabled = false;
+      }
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+
+      if (!message || !isConnected || !ws) {
+        return;
+      }
+
+      addMessage(message, 'user', '👤 You (text)');
+
+      ws.send(JSON.stringify({
+        type: 'user_message',
+        message: message
+      }));
+
+      input.value = '';
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+
+    function endSession() {
+      if (ws) {
+        ws.close();
+      }
+    }
+
+    async function getWidget() {
+      if (!agentData) {
+        alert('Please create an agent first');
+        return;
+      }
+
+      const widgetCode = agentData.widget.embedCode;
+
+      // Copy to clipboard
+      navigator.clipboard.writeText(widgetCode).then(() => {
+        addMessage('✅ Widget code copied to clipboard!', 'system');
+
+        // Show in alert for visibility
+        alert('Widget Code (copied to clipboard):\n\n' + widgetCode);
+      });
+    }
+
+    // Try to restore session on load
+    window.onload = () => {
+      const stored = localStorage.getItem('demoAgentData');
+      if (stored) {
+        agentData = JSON.parse(stored);
+        updateStatus('Ready', 'Disconnected', agentData.agent.elevenLabsAgentId);
+        document.getElementById('startSessionBtn').disabled = false;
+        document.getElementById('getWidgetBtn').disabled = false;
+        addMessage('Previous agent session restored. Click "Start Conversation" to begin.', 'system');
+      }
+    };
+  </script>
+</body>
+</html>

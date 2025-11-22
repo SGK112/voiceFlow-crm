@@ -2,6 +2,7 @@ import AIAgent from '../models/AIAgent.js';
 import User from '../models/User.js';
 import aiAgentService from '../services/aiAgentService.js';
 import ragService from '../services/ragService.js';
+import agentContextService from '../services/agentContextService.js';
 
 /**
  * Get all AI agents for the authenticated user
@@ -89,6 +90,10 @@ export const createAIAgent = async (req, res) => {
     const crypto = await import('crypto');
     const apiKey = `ai_${crypto.randomBytes(32).toString('hex')}`;
 
+    // Auto-enhance system prompt with business context
+    const basePrompt = systemPrompt || 'You are a helpful AI assistant for {{company_name}}.';
+    const enhancedPrompt = await agentContextService.enhanceAgentPrompt(basePrompt, req.user._id);
+
     // Create AI agent
     const agent = await AIAgent.create({
       userId: req.user._id,
@@ -96,7 +101,7 @@ export const createAIAgent = async (req, res) => {
       type: type || 'chat',
       provider,
       model,
-      systemPrompt: systemPrompt || 'You are a helpful AI assistant.',
+      systemPrompt: enhancedPrompt,
       category: category || 'general',
       configuration: {
         temperature: configuration?.temperature || 0.7,
@@ -224,6 +229,9 @@ export const chatWithAgent = async (req, res) => {
     // Check if user has enough tokens (implement token checking here)
     // TODO: Check user's token balance before proceeding
 
+    // Always refresh business context dynamically
+    let currentPrompt = await agentContextService.enhanceAgentPrompt(agent.systemPrompt, req.user._id);
+
     // Enhance prompt with RAG context if knowledge base is enabled
     let enhancedAgent = agent;
     let contextsUsed = [];
@@ -233,7 +241,7 @@ export const chatWithAgent = async (req, res) => {
       if (lastUserMessage && lastUserMessage.role === 'user') {
         const enhancementResult = await ragService.enhancePromptWithContext(
           req.user._id,
-          agent.systemPrompt,
+          currentPrompt,
           lastUserMessage.content,
           {
             contextLimit: 3,
@@ -247,7 +255,17 @@ export const chatWithAgent = async (req, res) => {
           systemPrompt: enhancementResult.enhancedPrompt
         };
         contextsUsed = enhancementResult.contextsUsed;
+      } else {
+        enhancedAgent = {
+          ...agent.toObject(),
+          systemPrompt: currentPrompt
+        };
       }
+    } else {
+      enhancedAgent = {
+        ...agent.toObject(),
+        systemPrompt: currentPrompt
+      };
     }
 
     // Handle streaming vs non-streaming
@@ -635,6 +653,96 @@ export const testAIAgent = async (req, res) => {
     });
   } catch (error) {
     console.error('Test AI agent error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Sync price sheets from business profile to knowledge base
+ */
+export const syncPriceSheetsToKB = async (req, res) => {
+  try {
+    const result = await agentContextService.syncPriceSheetsToKnowledgeBase(req.user._id);
+
+    if (!result.success) {
+      return res.status(400).json(result);
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error('Sync price sheets error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Get agent context/variables for preview
+ */
+export const getAgentContext = async (req, res) => {
+  try {
+    const context = await agentContextService.buildAgentContext(req.user._id);
+    const variables = await agentContextService.getContextVariables(req.user._id);
+
+    res.json({
+      context,
+      variables,
+      formatted: agentContextService.generateContextPrompt(context)
+    });
+  } catch (error) {
+    console.error('Get agent context error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Quick test agent with phone number or email
+ */
+export const quickTestAgent = async (req, res) => {
+  try {
+    const { testType, phoneNumber, email, customMessage } = req.body;
+
+    const agent = await AIAgent.findOne({
+      _id: req.params.id,
+      userId: req.user._id
+    });
+
+    if (!agent) {
+      return res.status(404).json({ message: 'AI agent not found' });
+    }
+
+    let testMessage;
+    if (testType === 'phone' && phoneNumber) {
+      testMessage = customMessage || `Hi, this is a test call to ${phoneNumber}. Can you help me?`;
+    } else if (testType === 'email' && email) {
+      testMessage = customMessage || `This is a test email to ${email}. Can you assist?`;
+    } else {
+      testMessage = customMessage || 'Hello, this is a test message. Can you help me?';
+    }
+
+    // Run test with enhanced context
+    const messages = [{ role: 'user', content: testMessage }];
+
+    // Get fresh business context
+    const enhancedPrompt = await agentContextService.enhanceAgentPrompt(agent.systemPrompt, req.user._id);
+
+    const testAgent = {
+      ...agent.toObject(),
+      systemPrompt: enhancedPrompt
+    };
+
+    const result = await aiAgentService.chat(testAgent, messages);
+
+    res.json({
+      input: testMessage,
+      output: result.response,
+      testType,
+      phoneNumber,
+      email,
+      usage: result.usage,
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('Quick test agent error:', error);
     res.status(500).json({ message: error.message });
   }
 };

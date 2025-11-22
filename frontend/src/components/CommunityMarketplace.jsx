@@ -19,7 +19,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 
 export default function CommunityMarketplace() {
   const [searchTerm, setSearchTerm] = useState('');

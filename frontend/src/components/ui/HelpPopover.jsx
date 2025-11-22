@@ -42,7 +42,7 @@ export default function HelpPopover({
           </div>
           <button
             onClick={handleDismiss}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-600 dark:text-gray-200 hover:text-gray-600 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>

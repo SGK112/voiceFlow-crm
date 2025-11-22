@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 import api from '@/lib/api';
 import { Loader2 } from 'lucide-react';
 

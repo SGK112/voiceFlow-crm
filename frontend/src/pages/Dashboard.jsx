@@ -64,7 +64,7 @@ export default function Dashboard() {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading dashboard...</p>
         </div>
       </div>
@@ -88,7 +88,7 @@ export default function Dashboard() {
               <LayoutDashboard className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold">Dashboard</h1>
+              <h1 className="text-xl font-bold text-foreground">Dashboard</h1>
               <p className="text-xs text-muted-foreground">Real-time analytics and insights</p>
             </div>
           </div>
@@ -270,7 +270,7 @@ export default function Dashboard() {
                   return (
                     <div key={index} className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground w-24">
+                        <span className="text-muted-foreground font-medium w-24">
                           {new Date(day._id).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                         </span>
                         <div className="flex items-center gap-2 flex-1">
@@ -295,8 +295,8 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground opacity-50 mb-2" />
-                <p className="text-muted-foreground">No call data available</p>
+                <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
+                <p className="text-muted-foreground font-medium">No call data available</p>
               </div>
             )}
           </CardContent>
@@ -334,7 +334,7 @@ export default function Dashboard() {
                             style={{ width: `${agent.successRate}%` }}
                           />
                         </div>
-                        <span className="text-xs text-muted-foreground w-12 text-right">
+                        <span className="text-xs text-muted-foreground font-semibold w-12 text-right">
                           {agent.successRate?.toFixed(0)}%
                         </span>
                       </div>
@@ -344,8 +344,8 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <Activity className="h-12 w-12 mx-auto text-muted-foreground opacity-50 mb-2" />
-                <p className="text-muted-foreground">No agent data available</p>
+                <Activity className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
+                <p className="text-muted-foreground font-medium">No agent data available</p>
                 <Button
                   variant="outline"
                   size="sm"
@@ -432,7 +432,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <Phone className="h-12 w-12 mx-auto text-muted-foreground opacity-50 mb-2" />
+                <Phone className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
                 <p className="text-muted-foreground">No calls today</p>
                 <Button
                   variant="outline"
@@ -457,8 +457,8 @@ export default function Dashboard() {
             {/* Call Stats */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Total Calls</span>
-                <span className="font-medium">{metrics?.thisMonth?.calls || 0}</span>
+                <span className="text-muted-foreground font-medium">Total Calls</span>
+                <span className="font-bold text-foreground">{metrics?.thisMonth?.calls || 0}</span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div
@@ -471,8 +471,8 @@ export default function Dashboard() {
             {/* Success Rate */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Success Rate</span>
-                <span className="font-medium">{metrics?.calls?.successRate || 0}%</span>
+                <span className="text-muted-foreground font-medium">Success Rate</span>
+                <span className="font-bold text-foreground">{metrics?.calls?.successRate || 0}%</span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div
@@ -485,8 +485,8 @@ export default function Dashboard() {
             {/* Qualified Leads */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Qualified Leads</span>
-                <span className="font-medium">{metrics?.leads?.qualified || 0}</span>
+                <span className="text-muted-foreground font-medium">Qualified Leads</span>
+                <span className="font-bold text-foreground">{metrics?.leads?.qualified || 0}</span>
               </div>
               <div className="w-full bg-muted rounded-full h-2">
                 <div
@@ -501,8 +501,8 @@ export default function Dashboard() {
             {/* Average Call Duration */}
             <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
               <div>
-                <p className="text-sm text-muted-foreground">Avg Call Duration</p>
-                <p className="text-2xl font-bold">{formatDuration(metrics?.calls?.avgDuration || 0)}</p>
+                <p className="text-sm text-muted-foreground font-medium">Avg Call Duration</p>
+                <p className="text-2xl font-bold text-foreground">{formatDuration(metrics?.calls?.avgDuration || 0)}</p>
               </div>
               <Clock className="h-8 w-8 text-muted-foreground" />
             </div>

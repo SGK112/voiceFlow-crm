@@ -67,7 +67,7 @@ const Monitoring = () => {
       case 'disconnected':
         return 'bg-red-50 border-red-200';
       default:
-        return 'bg-gray-50 border-gray-200';
+        return 'bg-secondary/50 border-gray-200';
     }
   };
 
@@ -83,7 +83,7 @@ const Monitoring = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-secondary/50 p-6">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -102,14 +102,14 @@ const Monitoring = () => {
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 autoRefresh
                   ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  : 'bg-secondary text-gray-700 hover:bg-secondary/80'
               }`}
             >
               {autoRefresh ? '🔄 Auto-Refresh ON' : '⏸️ Auto-Refresh OFF'}
             </button>
             <button
               onClick={fetchMonitoringData}
-              className="px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium hover:bg-secondary/50 transition-colors"
             >
               🔃 Refresh Now
             </button>
@@ -273,7 +273,7 @@ const Monitoring = () => {
                 <span className="text-gray-600">System Memory</span>
                 <span className="font-medium">{metricsData?.system?.memory?.usage_percent || '0%'}</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
+              <div className="w-full bg-secondary rounded-full h-3">
                 <div
                   className="bg-indigo-600 h-3 rounded-full transition-all"
                   style={{ width: metricsData?.system?.memory?.usage_percent || '0%' }}

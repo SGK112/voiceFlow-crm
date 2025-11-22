@@ -70,7 +70,7 @@ const MyAgents = () => {
 
   const getStatusBadge = (status) => {
     const styles = {
-      draft: 'bg-gray-100 text-gray-700',
+      draft: 'bg-secondary text-gray-700',
       active: 'bg-green-100 text-green-700',
       paused: 'bg-yellow-100 text-yellow-700',
       archived: 'bg-red-100 text-red-700'
@@ -98,8 +98,8 @@ const MyAgents = () => {
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">My Agents</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your AI agent team</p>
+              <h1 className="text-3xl font-bold text-foreground">My Agents</h1>
+              <p className="text-muted-foreground mt-1">Manage your AI agent team</p>
             </div>
             <button
               onClick={() => navigate('/app/agent-library')}
@@ -152,13 +152,13 @@ const MyAgents = () => {
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <input
               type="text"
               placeholder="Search agents..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-border bg-secondary text-foreground rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
@@ -166,7 +166,7 @@ const MyAgents = () => {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border border-border bg-secondary text-foreground rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -179,8 +179,8 @@ const MyAgents = () => {
         {/* Agents List */}
         {filteredAgents.length === 0 ? (
           <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-            <Settings className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            <Settings className="w-16 h-16 text-gray-700 dark:text-gray-100 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-foreground mb-2">
               {agents.length === 0 ? 'No agents yet' : 'No agents found'}
             </h3>
             <p className="text-gray-600 mb-6">
@@ -213,7 +213,7 @@ const MyAgents = () => {
                       {agent.template?.icon || '🤖'}
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      <h3 className="text-lg font-semibold text-foreground">
                         {agent.customName || agent.template?.name || 'Unnamed Agent'}
                       </h3>
                       <p className="text-sm text-gray-600 capitalize">
@@ -231,7 +231,7 @@ const MyAgents = () => {
                       <Phone className="w-3 h-3 mr-1" />
                       Calls
                     </div>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="text-lg font-semibold text-foreground">
                       {agent.stats?.totalCalls || 0}
                     </p>
                   </div>
@@ -241,7 +241,7 @@ const MyAgents = () => {
                       <Clock className="w-3 h-3 mr-1" />
                       Minutes
                     </div>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="text-lg font-semibold text-foreground">
                       {Math.round(agent.stats?.totalMinutes || 0)}
                     </p>
                   </div>
@@ -251,17 +251,17 @@ const MyAgents = () => {
                       <TrendingUp className="w-3 h-3 mr-1" />
                       Leads
                     </div>
-                    <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    <p className="text-lg font-semibold text-foreground">
                       {agent.stats?.leadsGenerated || 0}
                     </p>
                   </div>
                 </div>
 
                 {/* Billing */}
-                <div className="bg-gray-50 rounded-lg p-3 mb-4">
+                <div className="bg-secondary/50 rounded-lg p-3 mb-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Current Period</span>
-                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    <span className="text-lg font-semibold text-foreground">
                       ${agent.billing?.basePrice || 0}
                       <span className="text-sm text-gray-600 font-normal">/mo</span>
                     </span>
@@ -309,7 +309,7 @@ const MyAgents = () => {
                       e.stopPropagation();
                       navigate(`/app/my-agents/${agent._id}`);
                     }}
-                    className="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 text-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium"
+                    className="flex items-center justify-center px-4 py-2 border border-border bg-secondary text-foreground text-gray-700 rounded-lg hover:bg-secondary/50 hover:bg-secondary/80 transition-colors text-sm font-medium"
                   >
                     View Details
                   </button>

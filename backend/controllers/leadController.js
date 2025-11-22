@@ -4,6 +4,27 @@ import Transaction from '../models/Transaction.js';
 import Estimate from '../models/Estimate.js';
 import Appointment from '../models/Appointment.js';
 import AIConversation from '../models/AIConversation.js';
+import aiExcelParser from '../services/aiExcelParser.js';
+import multer from 'multer';
+
+// Configure multer for file uploads (memory storage)
+const storage = multer.memoryStorage();
+export const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = [
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'text/csv'
+    ];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only Excel (.xlsx, .xls) and CSV files are allowed'));
+    }
+  }
+});
 
 export const getLeads = async (req, res) => {
   try {
@@ -387,6 +408,39 @@ export const getLeadStats = async (req, res) => {
       priorityBreakdown
     });
   } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// AI-powered Excel file upload and parsing
+export const uploadExcelFile = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    console.log('Processing Excel file:', req.file.originalname);
+
+    // Process the Excel file with AI
+    const result = await aiExcelParser.processExcelWithAI(req.file.buffer);
+
+    if (!result.success) {
+      return res.status(400).json({
+        message: 'Failed to process Excel file',
+        error: result.error
+      });
+    }
+
+    // Return parsed data for user review before importing
+    res.json({
+      message: 'File parsed successfully',
+      leads: result.leads,
+      mapping: result.mapping,
+      stats: result.stats,
+      preview: true // Indicates this is preview data, not yet imported
+    });
+  } catch (error) {
+    console.error('Excel upload error:', error);
     res.status(500).json({ message: error.message });
   }
 };

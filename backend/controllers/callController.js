@@ -131,6 +131,7 @@ export const initiateCall = async (req, res) => {
     if (lead) {
       // Standard lead variables
       dynamicVariables.lead_name = lead.name;
+      dynamicVariables.customer_name = lead.name; // Also map to customer_name for compatibility
       dynamicVariables.lead_email = lead.email;
       dynamicVariables.lead_phone = lead.phone;
       dynamicVariables.lead_status = lead.status;
@@ -153,6 +154,7 @@ export const initiateCall = async (req, res) => {
     } else {
       // No lead record - use phone number as identifier
       dynamicVariables.lead_name = phoneNumber;
+      dynamicVariables.customer_name = phoneNumber; // Also map to customer_name for compatibility
       dynamicVariables.lead_phone = phoneNumber;
     }
 

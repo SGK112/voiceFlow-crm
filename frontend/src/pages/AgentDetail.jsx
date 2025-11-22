@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { agentApi, callApi, leadApi } from '@/services/api';
+import api, { agentApi, callApi, leadApi } from '@/services/api';
 import { DynamicVariablePicker } from '@/components/DynamicVariablePicker';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -29,7 +29,15 @@ import {
   ChevronUp,
   Download,
   Info,
-  AlertCircle
+  AlertCircle,
+  UserPlus,
+  X,
+  Sparkles,
+  Loader2,
+  BookOpen,
+  Wrench,
+  Plus,
+  Trash2
 } from 'lucide-react';
 
 // Mock ElevenLabs voices data - in production, this would come from ElevenLabs API
@@ -100,7 +108,7 @@ export default function AgentDetail() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true); // Always in edit mode
   const [showVoiceLibrary, setShowVoiceLibrary] = useState(false);
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
   const [testPhoneNumber, setTestPhoneNumber] = useState('');
@@ -110,6 +118,20 @@ export default function AgentDetail() {
   const [expandedCallId, setExpandedCallId] = useState(null);
   const [isPlayingPreview, setIsPlayingPreview] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
+  const [showNewLeadModal, setShowNewLeadModal] = useState(false);
+  const [newLead, setNewLead] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: ''
+  });
+  const [generatingScript, setGeneratingScript] = useState(false);
+  const [generatingFirstMessage, setGeneratingFirstMessage] = useState(false);
+  const [newKnowledgeBase, setNewKnowledgeBase] = useState('');
+  const [newTool, setNewTool] = useState('');
+  const [showSaveReminder, setShowSaveReminder] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const reminderShownRef = useRef(false); // Track if reminder already shown for current changes
 
   const { data: agent, isLoading } = useQuery({
     queryKey: ['agent', id],
@@ -140,7 +162,15 @@ export default function AgentDetail() {
     }
   }, [agent]);
 
-  const { data: calls } = useQuery({
+  // Detect unsaved changes (no automatic popup)
+  useEffect(() => {
+    if (agent && editedAgent) {
+      const hasChanges = JSON.stringify(agent) !== JSON.stringify(editedAgent);
+      setHasUnsavedChanges(hasChanges);
+    }
+  }, [agent, editedAgent]);
+
+  const { data: calls} = useQuery({
     queryKey: ['agent-calls', id],
     queryFn: () => agentApi.getAgentCalls(id).then(res => res.data),
   });
@@ -155,7 +185,6 @@ export default function AgentDetail() {
     onSuccess: () => {
       queryClient.invalidateQueries(['agent', id]);
       queryClient.invalidateQueries(['agents']);
-      setIsEditing(false);
       alert('Agent updated successfully!');
     },
     onError: (error) => {
@@ -181,6 +210,80 @@ export default function AgentDetail() {
     },
   });
 
+  const createLeadMutation = useMutation({
+    mutationFn: (leadData) => leadApi.createLead(leadData),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries(['leads']);
+      const createdLead = response.data.lead || response.data;
+      setTestLeadId(createdLead._id);
+      setTestPhoneNumber(createdLead.phone);
+      setShowNewLeadModal(false);
+      setNewLead({ name: '', email: '', phone: '', company: '' });
+      alert('Lead created successfully!');
+    },
+    onError: (error) => {
+      alert('Error: ' + (error.response?.data?.message || 'Failed to create lead'));
+    },
+  });
+
+  const handleCreateLead = () => {
+    if (!newLead.name || !newLead.phone) {
+      alert('Please enter at least name and phone number');
+      return;
+    }
+    createLeadMutation.mutate(newLead);
+  };
+
+  const generateScript = async () => {
+    setGeneratingScript(true);
+    try {
+      const response = await api.post('/ai/generate-agent-script', {
+        agentName: editedAgent.name,
+        companyName: '',
+        industry: '',
+        targetAudience: '',
+        keywords: [],
+        voiceName: selectedVoice?.name || editedAgent.voiceName,
+        agentType: editedAgent.type,
+        knowledge: editedAgent.knowledge || '',
+        tools: editedAgent.tools || [],
+        firstMessage: editedAgent.firstMessage || ''
+      });
+
+      setEditedAgent({
+        ...editedAgent,
+        script: response.data.script
+      });
+    } catch (error) {
+      console.error('Error generating script:', error);
+      alert('Failed to generate script. Please try again.');
+    } finally {
+      setGeneratingScript(false);
+    }
+  };
+
+  const generateFirstMessage = async () => {
+    setGeneratingFirstMessage(true);
+    try {
+      const response = await api.post('/ai/generate-first-message', {
+        agentName: editedAgent.name,
+        companyName: '',
+        industry: '',
+        targetAudience: ''
+      });
+
+      setEditedAgent({
+        ...editedAgent,
+        firstMessage: response.data.firstMessage
+      });
+    } catch (error) {
+      console.error('Error generating first message:', error);
+      alert('Failed to generate first message. Please try again.');
+    } finally {
+      setGeneratingFirstMessage(false);
+    }
+  };
+
   const handleSave = () => {
     if (!editedAgent.name || !editedAgent.script) {
       alert('Please fill in all required fields (name and script)');
@@ -201,6 +304,10 @@ export default function AgentDetail() {
   };
 
   const handleTestCall = () => {
+    if (hasUnsavedChanges) {
+      alert('Please save your changes before making a test call.');
+      return;
+    }
     if (!testPhoneNumber) {
       alert('Please enter a phone number');
       return;
@@ -359,38 +466,13 @@ export default function AgentDetail() {
           <p className="text-muted-foreground capitalize">{agent.type.replace('_', ' ')} Agent</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant={agent.enabled ? 'success' : 'secondary'} className="text-sm px-3 py-1">
+          <Badge className="bg-green-600 text-white text-sm px-3 py-1">
             {agent.enabled ? 'Active' : 'Inactive'}
           </Badge>
-          {!isEditing ? (
-            <Button onClick={() => setIsEditing(true)} variant="outline">
-              <Edit className="h-4 w-4 mr-2" />
-              Edit Agent
-            </Button>
-          ) : (
-            <>
-              <Button onClick={handleSave} disabled={updateAgentMutation.isPending}>
-                <Save className="h-4 w-4 mr-2" />
-                {updateAgentMutation.isPending ? 'Saving...' : 'Save Changes'}
-              </Button>
-              <Button onClick={() => {
-                setIsEditing(false);
-                setEditedAgent({
-                  ...agent,
-                  configuration: {
-                    temperature: agent.configuration?.temperature ?? 0.8,
-                    maxDuration: agent.configuration?.maxDuration ?? 300,
-                    language: agent.configuration?.language ?? 'en'
-                  },
-                  enabled: agent.enabled ?? false
-                });
-                const voice = ELEVENLABS_VOICES.find(v => v.id === agent.voiceId);
-                setSelectedVoice(voice || ELEVENLABS_VOICES[0]);
-              }} variant="outline">
-                Cancel
-              </Button>
-            </>
-          )}
+          <Button onClick={handleSave} disabled={updateAgentMutation.isPending}>
+            <Save className="h-4 w-4 mr-2" />
+            {updateAgentMutation.isPending ? 'Saving...' : 'Save Changes'}
+          </Button>
         </div>
       </div>
 
@@ -473,7 +555,7 @@ export default function AgentDetail() {
                 <Settings className="h-5 w-5" />
                 Agent Settings
               </CardTitle>
-              <CardDescription>Configure the basic settings for your voice agent</CardDescription>
+              <CardDescription>Basic agent configuration</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -484,7 +566,7 @@ export default function AgentDetail() {
                     value={editedAgent.name}
                     onChange={(e) => setEditedAgent({ ...editedAgent, name: e.target.value })}
                     disabled={!isEditing}
-                    className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                    className="w-full border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground placeholder:text-gray-500 dark:placeholder:text-gray-400"
                   />
                 </div>
                 <div>
@@ -493,7 +575,7 @@ export default function AgentDetail() {
                     value={editedAgent.type}
                     onChange={(e) => setEditedAgent({ ...editedAgent, type: e.target.value })}
                     disabled={!isEditing}
-                    className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                    className="w-full border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
                   >
                     <optgroup label="General">
                       <option value="lead_gen">Lead Generation</option>
@@ -528,14 +610,36 @@ export default function AgentDetail() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-muted-foreground mb-1">First Message</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground">First Message</label>
+                  {isEditing && (
+                    <Button
+                      onClick={generateFirstMessage}
+                      disabled={generatingFirstMessage}
+                      size="sm"
+                      className="gap-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white border-0 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all"
+                    >
+                      {generatingFirstMessage ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-4 w-4 animate-pulse" />
+                          AI Copilot
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </div>
                 <input
                   type="text"
                   value={editedAgent.firstMessage || ''}
                   onChange={(e) => setEditedAgent({ ...editedAgent, firstMessage: e.target.value })}
                   disabled={!isEditing}
                   placeholder="Hi {{lead_name}}! This is calling from {{company_name}}. How are you?"
-                  className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                  className="w-full border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground placeholder:text-gray-500 dark:placeholder:text-gray-400"
                 />
               </div>
 
@@ -564,6 +668,106 @@ export default function AgentDetail() {
                   </label>
                 </div>
               </div>
+
+              {/* Call Disconnect Settings */}
+              <div className="pt-4 border-t border-border">
+                <label className="block text-sm font-medium text-muted-foreground mb-3">Call Disconnect</label>
+                <div className="flex items-center gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={editedAgent.configuration?.allowAgentDisconnect === true}
+                      onChange={() => setEditedAgent({
+                        ...editedAgent,
+                        configuration: {
+                          ...editedAgent.configuration,
+                          allowAgentDisconnect: true
+                        }
+                      })}
+                      disabled={!isEditing}
+                      className="text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-foreground">Agent can disconnect</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      checked={editedAgent.configuration?.allowAgentDisconnect === false}
+                      onChange={() => setEditedAgent({
+                        ...editedAgent,
+                        configuration: {
+                          ...editedAgent.configuration,
+                          allowAgentDisconnect: false
+                        }
+                      })}
+                      disabled={!isEditing}
+                      className="text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-foreground">User disconnects only</span>
+                  </label>
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Control whether the agent can end the call or only the user can hang up
+                </p>
+              </div>
+
+              {/* Voicemail Settings */}
+              <div className="pt-4 border-t border-border">
+                <label className="block text-sm font-medium text-muted-foreground mb-3">Voicemail Behavior</label>
+                <div className="space-y-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editedAgent.configuration?.detectVoicemail ?? false}
+                      onChange={(e) => setEditedAgent({
+                        ...editedAgent,
+                        configuration: {
+                          ...editedAgent.configuration,
+                          detectVoicemail: e.target.checked
+                        }
+                      })}
+                      disabled={!isEditing}
+                      className="text-blue-600 focus:ring-blue-500 rounded"
+                    />
+                    <span className="text-foreground">Detect voicemail</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editedAgent.configuration?.leaveVoicemail ?? false}
+                      onChange={(e) => setEditedAgent({
+                        ...editedAgent,
+                        configuration: {
+                          ...editedAgent.configuration,
+                          leaveVoicemail: e.target.checked
+                        }
+                      })}
+                      disabled={!isEditing}
+                      className="text-blue-600 focus:ring-blue-500 rounded"
+                    />
+                    <span className="text-foreground">Leave voicemail if detected</span>
+                  </label>
+                </div>
+                {editedAgent.configuration?.leaveVoicemail && (
+                  <div className="mt-3">
+                    <label className="block text-xs font-medium text-muted-foreground mb-1">Voicemail Message</label>
+                    <textarea
+                      value={editedAgent.configuration?.voicemailMessage || ''}
+                      onChange={(e) => setEditedAgent({
+                        ...editedAgent,
+                        configuration: {
+                          ...editedAgent.configuration,
+                          voicemailMessage: e.target.value
+                        }
+                      })}
+                      disabled={!isEditing}
+                      rows={3}
+                      placeholder="Hi, this is {{agent_name}} calling from {{company_name}}. Please call us back at..."
+                      className="w-full border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted"
+                    />
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -576,7 +780,7 @@ export default function AgentDetail() {
                     <Mic className="h-5 w-5" />
                     Voice Selection
                   </CardTitle>
-                  <CardDescription>Choose the voice for your agent from ElevenLabs library</CardDescription>
+                  <CardDescription>Select voice from ElevenLabs</CardDescription>
                 </div>
                 <Button
                   variant="outline"
@@ -624,7 +828,7 @@ export default function AgentDetail() {
               )}
 
               {showVoiceLibrary && (
-                <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto p-2 border border-border rounded-lg bg-background">
+                <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto p-2 border border-border rounded-lg bg-white dark:bg-gray-900">
                   {ELEVENLABS_VOICES.map((voice) => (
                     <div
                       key={voice.id}
@@ -661,7 +865,7 @@ export default function AgentDetail() {
                 System Prompt & Script
               </CardTitle>
               <CardDescription>
-                Define how your agent should behave and what it should say. Variables are auto-injected with real customer data.
+                Agent instructions and conversation flow
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -671,7 +875,29 @@ export default function AgentDetail() {
                     Agent Script / Instructions *
                   </label>
                   <div className="flex items-center gap-2">
-                    {isEditing && <DynamicVariablePicker onSelect={insertVariable} />}
+                    {isEditing && (
+                      <>
+                        <DynamicVariablePicker onSelect={insertVariable} />
+                        <Button
+                          onClick={generateScript}
+                          disabled={generatingScript}
+                          size="sm"
+                          className="gap-2 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white border-0 shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all"
+                        >
+                          {generatingScript ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="h-4 w-4 animate-pulse" />
+                              AI Wizard
+                            </>
+                          )}
+                        </Button>
+                      </>
+                    )}
                     <span className="text-xs text-muted-foreground">
                       {(editedAgent.script || '').length} characters
                     </span>
@@ -697,7 +923,7 @@ CONVERSATION FLOW:
 2. [Add your steps here]
 
 Use {{variables}} for personalization - they're replaced automatically before each call!"
-                  className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted font-mono text-sm"
+                  className="w-full border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted font-mono text-sm placeholder:text-gray-500 dark:placeholder:text-gray-400"
                 />
               </div>
 
@@ -721,7 +947,7 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                 <Phone className="h-5 w-5" />
                 Test Call
               </CardTitle>
-              <CardDescription>Make a test call to verify your agent with personalized data</CardDescription>
+              <CardDescription>Test your agent with real call scenarios</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -745,7 +971,7 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                       setTestPhoneNumber('');
                     }
                   }}
-                  className="w-full border border-input rounded px-3 py-2 text-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background"
+                  className="w-full border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">No lead (enter phone manually)</option>
                   {leads?.map((lead) => (
@@ -754,6 +980,13 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                     </option>
                   ))}
                 </select>
+                <button
+                  onClick={() => setShowNewLeadModal(true)}
+                  className="mt-2 flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  Create New Lead
+                </button>
                 <p className="text-xs text-muted-foreground mt-1">
                   Select a lead to auto-fill their phone number and use their data for personalization
                 </p>
@@ -782,7 +1015,7 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                   value={testPhoneNumber}
                   onChange={(e) => setTestPhoneNumber(e.target.value)}
                   placeholder="+1234567890"
-                  className="w-full border border-input rounded px-3 py-2 text-foreground placeholder:text-muted-foreground disabled:text-muted-foreground focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-background"
+                  className="w-full border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
                   {testLeadId ? 'Auto-filled from selected lead (you can edit if needed)' : 'Enter phone number manually'}
@@ -857,7 +1090,7 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                   disabled={!isEditing}
                   min="30"
                   max="600"
-                  className="w-full border border-input rounded px-3 py-2 text-foreground bg-background focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
+                  className="w-full border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-muted disabled:text-muted-foreground"
                 />
               </div>
 
@@ -894,7 +1127,7 @@ Use {{variables}} for personalization - they're replaced automatically before ea
 
                 {/* Language Grid Picker */}
                 {showLanguagePicker && (
-                  <div className="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto p-2 border border-border rounded-lg bg-background">
+                  <div className="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto p-2 border border-border rounded-lg bg-white dark:bg-gray-900">
                     {LANGUAGE_OPTIONS.map((lang) => (
                       <div
                         key={lang.code}
@@ -925,6 +1158,140 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                   </div>
                 )}
               </div>
+
+              {/* Knowledge Bases */}
+              <div className="pt-4 border-t border-border">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-sm font-medium text-foreground flex items-center gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    Knowledge Bases
+                  </label>
+                </div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Add knowledge bases that this agent can reference during conversations
+                </p>
+
+                <div className="space-y-2">
+                  {(editedAgent.knowledgeBases || []).map((kb, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2 bg-accent/30 rounded-lg border border-border">
+                      <BookOpen className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <span className="flex-1 text-sm text-foreground">{kb}</span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          const updated = [...(editedAgent.knowledgeBases || [])];
+                          updated.splice(index, 1);
+                          setEditedAgent({ ...editedAgent, knowledgeBases: updated });
+                        }}
+                        className="h-6 w-6 p-0"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex gap-2 mt-3">
+                  <input
+                    type="text"
+                    value={newKnowledgeBase}
+                    onChange={(e) => setNewKnowledgeBase(e.target.value)}
+                    placeholder="Enter knowledge base name or URL"
+                    className="flex-1 border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && newKnowledgeBase.trim()) {
+                        setEditedAgent({
+                          ...editedAgent,
+                          knowledgeBases: [...(editedAgent.knowledgeBases || []), newKnowledgeBase.trim()]
+                        });
+                        setNewKnowledgeBase('');
+                      }
+                    }}
+                  />
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      if (newKnowledgeBase.trim()) {
+                        setEditedAgent({
+                          ...editedAgent,
+                          knowledgeBases: [...(editedAgent.knowledgeBases || []), newKnowledgeBase.trim()]
+                        });
+                        setNewKnowledgeBase('');
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Tools & Workflows */}
+              <div className="pt-4 border-t border-border">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="block text-sm font-medium text-foreground flex items-center gap-2">
+                    <Wrench className="h-4 w-4" />
+                    Tools & Workflows
+                  </label>
+                </div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Add tools and workflows that this agent can use (e.g., calendar booking, CRM integration)
+                </p>
+
+                <div className="space-y-2">
+                  {(editedAgent.tools || []).map((tool, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2 bg-accent/30 rounded-lg border border-border">
+                      <Wrench className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <span className="flex-1 text-sm text-foreground">{tool}</span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          const updated = [...(editedAgent.tools || [])];
+                          updated.splice(index, 1);
+                          setEditedAgent({ ...editedAgent, tools: updated });
+                        }}
+                        className="h-6 w-6 p-0"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex gap-2 mt-3">
+                  <input
+                    type="text"
+                    value={newTool}
+                    onChange={(e) => setNewTool(e.target.value)}
+                    placeholder="Enter tool or workflow name"
+                    className="flex-1 border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded px-3 py-2 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && newTool.trim()) {
+                        setEditedAgent({
+                          ...editedAgent,
+                          tools: [...(editedAgent.tools || []), newTool.trim()]
+                        });
+                        setNewTool('');
+                      }
+                    }}
+                  />
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      if (newTool.trim()) {
+                        setEditedAgent({
+                          ...editedAgent,
+                          tools: [...(editedAgent.tools || []), newTool.trim()]
+                        });
+                        setNewTool('');
+                      }
+                    }}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -937,7 +1304,7 @@ Use {{variables}} for personalization - they're replaced automatically before ea
             <TrendingUp className="h-5 w-5" />
             Recent Calls & Conversations
           </CardTitle>
-          <CardDescription>View recent calls, transcripts, and download recordings</CardDescription>
+          <CardDescription>Call history and transcripts</CardDescription>
         </CardHeader>
         <CardContent>
           {calls && calls.length > 0 ? (
@@ -1068,7 +1435,7 @@ Use {{variables}} for personalization - they're replaced automatically before ea
                     {/* No Transcript Message */}
                     {isExpanded && !hasTranscript && (
                       <div className="border-t bg-muted/50 p-4 text-center">
-                        <MessageSquare className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                        <MessageSquare className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                         <p className="text-sm text-muted-foreground">No transcript available for this call</p>
                       </div>
                     )}
@@ -1078,7 +1445,7 @@ Use {{variables}} for personalization - they're replaced automatically before ea
             </div>
           ) : (
             <div className="text-center py-12">
-              <PhoneCall className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+              <PhoneCall className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
               <p className="text-muted-foreground font-medium">No calls yet</p>
               <p className="text-sm text-muted-foreground mt-1">
                 Make a test call to see it appear here
@@ -1087,6 +1454,103 @@ Use {{variables}} for personalization - they're replaced automatically before ea
           )}
         </CardContent>
       </Card>
+
+      {/* Create New Lead Modal */}
+      {showNewLeadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-border">
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <UserPlus className="w-5 h-5" />
+                Create New Lead
+              </h3>
+              <button
+                onClick={() => {
+                  setShowNewLeadModal(false);
+                  setNewLead({ name: '', email: '', phone: '', company: '' });
+                }}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  value={newLead.name}
+                  onChange={(e) => setNewLead({ ...newLead, name: e.target.value })}
+                  placeholder="John Doe"
+                  className="w-full px-3 py-2 border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  value={newLead.phone}
+                  onChange={(e) => setNewLead({ ...newLead, phone: e.target.value })}
+                  placeholder="+1234567890"
+                  className="w-full px-3 py-2 border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={newLead.email}
+                  onChange={(e) => setNewLead({ ...newLead, email: e.target.value })}
+                  placeholder="john@example.com"
+                  className="w-full px-3 py-2 border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Company
+                </label>
+                <input
+                  type="text"
+                  value={newLead.company}
+                  onChange={(e) => setNewLead({ ...newLead, company: e.target.value })}
+                  placeholder="Acme Corp"
+                  className="w-full px-3 py-2 border border-input dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 p-6 border-t border-border">
+              <Button
+                onClick={handleCreateLead}
+                disabled={createLeadMutation.isPending || !newLead.name || !newLead.phone}
+                className="flex-1"
+              >
+                {createLeadMutation.isPending ? 'Creating...' : 'Create Lead'}
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowNewLeadModal(false);
+                  setNewLead({ name: '', email: '', phone: '', company: '' });
+                }}
+                variant="outline"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

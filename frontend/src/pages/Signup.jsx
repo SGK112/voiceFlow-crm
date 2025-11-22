@@ -23,7 +23,8 @@ export default function Signup() {
 
     try {
       await signup(email, password, company);
-      navigate('/app/dashboard');
+      // Redirect to onboarding for business profile setup
+      navigate('/app/onboarding');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create account');
     } finally {
@@ -33,10 +34,10 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-md shadow-xl">
+      <Card className="w-full max-w-md shadow-xl dark:bg-black border-border">
         <CardHeader>
-          <CardTitle className="text-2xl">Create your account</CardTitle>
-          <CardDescription>Get started with VoiceFlow CRM</CardDescription>
+          <CardTitle className="text-2xl text-gray-900 text-foreground">Create your account</CardTitle>
+          <CardDescription className="text-gray-700 text-foreground">Get started with VoiceFlow CRM</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -47,7 +48,7 @@ export default function Signup() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="company">Company Name</Label>
+              <Label htmlFor="company" className="text-gray-900 text-foreground">Company Name</Label>
               <Input
                 id="company"
                 type="text"
@@ -59,7 +60,7 @@ export default function Signup() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-gray-900 text-foreground">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -71,7 +72,7 @@ export default function Signup() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-gray-900 text-foreground">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -97,7 +98,7 @@ export default function Signup() {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
+                  <span className="bg-background px-2 text-gray-600 text-foreground">
                     Or continue with
                   </span>
                 </div>
@@ -109,8 +110,8 @@ export default function Signup() {
           )}
 
           <div className="mt-4 text-center text-sm">
-            <span className="text-muted-foreground">Already have an account? </span>
-            <Link to="/login" className="text-primary hover:underline">
+            <span className="text-gray-600 text-foreground">Already have an account? </span>
+            <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:underline">
               Sign in
             </Link>
           </div>

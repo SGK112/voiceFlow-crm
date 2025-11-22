@@ -144,16 +144,19 @@ export default function BusinessProfileTab() {
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Profile Completion</span>
-            <Badge variant={completionPercent === 100 ? 'default' : 'secondary'}>
+            <Badge
+              variant={completionPercent === 100 ? 'default' : 'secondary'}
+              className={completionPercent === 100 ? 'bg-green-600 text-white' : 'bg-blue-600 text-white'}
+            >
               {completionPercent}%
             </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
-            <div className="w-full bg-muted rounded-full h-3">
+            <div className="w-full bg-secondary rounded-full h-3">
               <div
-                className="bg-primary h-3 rounded-full transition-all"
+                className="bg-blue-600 h-3 rounded-full transition-all"
                 style={{ width: `${completionPercent}%` }}
               />
             </div>

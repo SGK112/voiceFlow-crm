@@ -161,14 +161,14 @@ const PremiumAgentRequest = () => {
                 <Check className="w-10 h-10 text-green-600" />
               </div>
 
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              <h2 className="text-3xl font-bold text-foreground mb-2">
                 Premium Agent Request Submitted!
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-8">
+              <p className="text-muted-foreground mb-8">
                 We've received your custom agent request
               </p>
 
-              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-6 text-left">
+              <div className="bg-secondary rounded-lg p-6 mb-6 text-left">
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm text-gray-500">Request ID</p>
@@ -182,21 +182,21 @@ const PremiumAgentRequest = () => {
               </div>
 
               <div className="space-y-4 text-left mb-8">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Our team will review your requirements and begin building your agent. You'll receive:
                 </p>
                 <div className="space-y-2">
                   <div className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Email confirmation shortly</span>
+                    <span className="text-sm text-foreground">Email confirmation shortly</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Build updates via dashboard</span>
+                    <span className="text-sm text-foreground">Build updates via dashboard</span>
                   </div>
                   <div className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
-                    <span className="text-sm text-gray-700 dark:text-gray-300">Notification when agent is ready</span>
+                    <span className="text-sm text-foreground">Notification when agent is ready</span>
                   </div>
                 </div>
               </div>
@@ -232,10 +232,10 @@ const PremiumAgentRequest = () => {
             <Zap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               Premium Custom Agent Request
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-muted-foreground">
               We'll build your perfect agent - tell us about your business
             </p>
           </div>

@@ -128,12 +128,12 @@ Build rapport, ask probing questions, and use trial closes to get them excited a
    - "Set up in 2-3 hours, free 14-day trial"
 
 7. **PRICING** (Only if asked directly - keep it simple)
-   "Most popular is $299/month for the Pro plan. But honestly, start with the free trial first. See if it books you even one job - then it pays for itself. Sound fair?"
+   "We have three tiers: Starter at $149/month, Pro at $299/month (most popular), and Enterprise at $799/month. But honestly, start with the free trial first. See if it books you even one job - then it pays for itself. Sound fair?"
 
 8. **OBJECTION HANDLING** (Keep responses SHORT, use humor and trial closes)
 
    **"That's expensive"**
-   "I get it. But think about it - $299 versus paying someone $3,000 a month who also needs vacation days and birthday cake. Plus it's free to try. Worth testing, right?"
+   "I get it. But think about it - even our Pro plan at $299 versus paying someone $3,000 a month who also needs vacation days and birthday cake. Plus it's free to try. Worth testing, right?"
 
    **"I need to think about it"**
    "Totally fair. But here's the thing - the trial is free and takes like 2 minutes to sign up. That's less time than your morning commute. Why not try it instead of just thinking about it? You can always cancel."
@@ -232,7 +232,7 @@ Let's convert some customers! 🚀`;
         popular: true
       },
       enterprise: {
-        price: 'Custom',
+        price: 799,
         agents: 'Unlimited',
         minutes: '5,000+',
         features: ['Everything in Professional', 'Custom workflows', 'White-label', 'Unlimited team members', 'Dedicated account manager', 'Custom integrations', '24/7 support'],

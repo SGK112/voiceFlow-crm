@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 
 const CHANNEL_TYPES = [
   { id: 'team', name: 'Team', icon: Users, color: 'blue', description: 'Internal team communications' },
@@ -214,12 +214,12 @@ export default function Messages() {
   return (
     <div className="h-[calc(100vh-8rem)] flex gap-4">
       {/* Sidebar - Channels List */}
-      <div className="w-80 flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <div className="w-80 flex flex-col bg-white dark:bg-secondary rounded-lg shadow-sm border border-gray-200 border-border">
         {/* Header */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-b border-gray-200 border-border">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-gray-900 text-foreground flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-blue-600" />
                 Messages
               </h2>
@@ -232,9 +232,9 @@ export default function Messages() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setShowSlackSettings(true)}
-                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="hover:bg-secondary hover:bg-secondary/80"
               >
-                <Slack className={`w-5 h-5 ${slackSettings.connected ? 'text-purple-600' : 'text-gray-400'}`} />
+                <Slack className={`w-5 h-5 ${slackSettings.connected ? 'text-purple-600' : 'text-gray-600 text-muted-foreground'}`} />
               </Button>
               <Button
                 onClick={() => setShowNewChannel(true)}
@@ -248,22 +248,22 @@ export default function Messages() {
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-muted-foreground w-4 h-4" />
             <Input
               placeholder="Search channels..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+              className="pl-9 bg-secondary/50 bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
             />
           </div>
 
           {/* Type Filter */}
           <div className="mt-3">
             <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+              <SelectTrigger className="bg-secondary/50 bg-secondary border-gray-200 border-border text-gray-900 text-foreground">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-800">
+              <SelectContent className="bg-white bg-secondary">
                 <SelectItem value="all">All Channels</SelectItem>
                 {CHANNEL_TYPES.map(type => (
                   <SelectItem key={type.id} value={type.id}>
@@ -278,7 +278,7 @@ export default function Messages() {
         {/* Channels List */}
         <div className="flex-1 overflow-y-auto p-2">
           {filteredChannels.length === 0 ? (
-            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+            <div className="text-center py-12 text-gray-700 text-foreground">
               <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />
               <p className="text-sm">No channels found</p>
             </div>
@@ -294,7 +294,7 @@ export default function Messages() {
                   className={`w-full text-left p-3 rounded-lg mb-1 transition-colors ${
                     isSelected
                       ? 'bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700'
-                      : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                      : 'hover:bg-secondary/50 hover:bg-secondary/80'
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -302,14 +302,14 @@ export default function Messages() {
                       <ChannelIcon className={`w-4 h-4 mt-0.5 flex-shrink-0 text-${getChannelColor(channel.type)}-600`} />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">
+                          <p className="font-medium text-sm text-gray-900 text-foreground truncate">
                             #{channel.name}
                           </p>
                           {channel.slackIntegrated && (
                             <Slack className="w-3 h-3 text-purple-600 flex-shrink-0" />
                           )}
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
+                        <p className="text-xs text-gray-800 text-foreground truncate">
                           {channel.members} members
                         </p>
                       </div>
@@ -328,11 +328,11 @@ export default function Messages() {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <div className="flex-1 flex flex-col bg-white dark:bg-secondary rounded-lg shadow-sm border border-gray-200 border-border">
         {selectedChannel ? (
           <>
             {/* Chat Header */}
-            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="p-4 border-b border-gray-200 border-border">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {(() => {
@@ -340,10 +340,10 @@ export default function Messages() {
                     return <ChannelIcon className={`w-5 h-5 text-${getChannelColor(selectedChannel.type)}-600`} />;
                   })()}
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                    <h3 className="font-semibold text-gray-900 text-foreground">
                       #{selectedChannel.name}
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                    <p className="text-xs text-gray-800 text-foreground">
                       {selectedChannel.description || `${selectedChannel.members} members`}
                     </p>
                   </div>
@@ -371,7 +371,7 @@ export default function Messages() {
                 >
                   <div className={`max-w-md ${msg.isMe ? 'text-right' : 'text-left'}`}>
                     {!msg.isMe && (
-                      <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                      <p className="text-xs font-medium text-gray-800 text-foreground mb-1">
                         {msg.sender}
                       </p>
                     )}
@@ -379,12 +379,12 @@ export default function Messages() {
                       className={`inline-block rounded-lg px-4 py-2 ${
                         msg.isMe
                           ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                          : 'bg-secondary bg-secondary text-gray-900 text-foreground'
                       }`}
                     >
                       <p className="text-sm">{msg.message}</p>
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-gray-700 text-foreground mt-1">
                       {formatTime(msg.timestamp)}
                     </p>
                   </div>
@@ -392,7 +392,7 @@ export default function Messages() {
               ))}
 
               {(messages[selectedChannel.id] || []).length === 0 && (
-                <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                <div className="text-center py-12 text-gray-700 text-foreground">
                   <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">No messages yet</p>
                   <p className="text-xs mt-1">Send a message to start the conversation</p>
@@ -401,7 +401,7 @@ export default function Messages() {
             </div>
 
             {/* Message Input */}
-            <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="p-4 border-t border-gray-200 border-border">
               <div className="flex gap-2">
                 <Textarea
                   placeholder={`Message #${selectedChannel.name}...`}
@@ -413,7 +413,7 @@ export default function Messages() {
                       handleSendMessage();
                     }
                   }}
-                  className="flex-1 resize-none bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                  className="flex-1 resize-none bg-secondary/50 bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
                   rows={3}
                 />
                 <Button
@@ -424,14 +424,14 @@ export default function Messages() {
                   <Send className="w-4 h-4" />
                 </Button>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+              <p className="text-xs text-gray-700 text-foreground mt-2">
                 Press Enter to send, Shift+Enter for new line
                 {selectedChannel.slackIntegrated && ' • Messages sync with Slack'}
               </p>
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400">
+          <div className="flex-1 flex items-center justify-center text-gray-700 text-foreground">
             <div className="text-center">
               <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-50" />
               <p>Select a channel to start messaging</p>
@@ -442,31 +442,31 @@ export default function Messages() {
 
       {/* New Channel Modal */}
       <Dialog open={showNewChannel} onOpenChange={setShowNewChannel}>
-        <DialogContent className="bg-white dark:bg-gray-800 sm:max-w-[500px]">
+        <DialogContent className="bg-white dark:bg-secondary sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle className="text-gray-900 dark:text-gray-100">Create New Channel</DialogTitle>
+            <DialogTitle className="text-gray-900 text-foreground">Create New Channel</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div>
-              <Label className="text-gray-900 dark:text-gray-100">Channel Name *</Label>
+              <Label className="text-gray-900 text-foreground">Channel Name *</Label>
               <Input
                 placeholder="e.g., project-updates"
                 value={newChannelData.name}
                 onChange={(e) => setNewChannelData({ ...newChannelData, name: e.target.value })}
-                className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
               />
             </div>
 
             <div>
-              <Label className="text-gray-900 dark:text-gray-100">Channel Type *</Label>
+              <Label className="text-gray-900 text-foreground">Channel Type *</Label>
               <Select
                 value={newChannelData.type}
                 onValueChange={(value) => setNewChannelData({ ...newChannelData, type: value })}
               >
-                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                <SelectTrigger className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800">
+                <SelectContent className="bg-white bg-secondary">
                   {CHANNEL_TYPES.map(type => (
                     <SelectItem key={type.id} value={type.id}>
                       <div className="flex items-center gap-2">
@@ -477,18 +477,18 @@ export default function Messages() {
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-xs text-gray-700 text-foreground mt-1">
                 {CHANNEL_TYPES.find(t => t.id === newChannelData.type)?.description}
               </p>
             </div>
 
             <div>
-              <Label className="text-gray-900 dark:text-gray-100">Description</Label>
+              <Label className="text-gray-900 text-foreground">Description</Label>
               <Textarea
                 placeholder="What is this channel about?"
                 value={newChannelData.description}
                 onChange={(e) => setNewChannelData({ ...newChannelData, description: e.target.value })}
-                className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
                 rows={2}
               />
             </div>
@@ -501,21 +501,21 @@ export default function Messages() {
                 onChange={(e) => setNewChannelData({ ...newChannelData, slackIntegrated: e.target.checked })}
                 className="rounded"
               />
-              <Label htmlFor="slackIntegrated" className="text-gray-900 dark:text-gray-100">
+              <Label htmlFor="slackIntegrated" className="text-gray-900 text-foreground">
                 Integrate with Slack
               </Label>
             </div>
 
             {newChannelData.slackIntegrated && (
               <div>
-                <Label className="text-gray-900 dark:text-gray-100">Slack Channel ID</Label>
+                <Label className="text-gray-900 text-foreground">Slack Channel ID</Label>
                 <Input
                   placeholder="C123456789"
                   value={newChannelData.slackChannelId}
                   onChange={(e) => setNewChannelData({ ...newChannelData, slackChannelId: e.target.value })}
-                  className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                  className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
                 />
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-xs text-gray-700 text-foreground mt-1">
                   Find this in Slack channel settings
                 </p>
               </div>
@@ -531,7 +531,7 @@ export default function Messages() {
               <Button
                 onClick={() => setShowNewChannel(false)}
                 variant="outline"
-                className="flex-1 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="flex-1 border-gray-200 border-border text-gray-900 text-foreground"
               >
                 Cancel
               </Button>
@@ -542,9 +542,9 @@ export default function Messages() {
 
       {/* Slack Settings Modal */}
       <Dialog open={showSlackSettings} onOpenChange={setShowSlackSettings}>
-        <DialogContent className="bg-white dark:bg-gray-800 sm:max-w-[500px]">
+        <DialogContent className="bg-white dark:bg-secondary sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle className="text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <DialogTitle className="text-gray-900 text-foreground flex items-center gap-2">
               <Slack className="w-5 h-5 text-purple-600" />
               Slack Integration
             </DialogTitle>
@@ -583,14 +583,14 @@ export default function Messages() {
                 </div>
 
                 <div>
-                  <Label className="text-gray-900 dark:text-gray-100">Slack Webhook URL (Optional)</Label>
+                  <Label className="text-gray-900 text-foreground">Slack Webhook URL (Optional)</Label>
                   <Input
                     placeholder="https://hooks.slack.com/services/..."
                     value={slackSettings.webhookUrl}
                     onChange={(e) => setSlackSettings({ ...slackSettings, webhookUrl: e.target.value })}
-                    className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                    className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
                   />
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <p className="text-xs text-gray-700 text-foreground mt-1">
                     Create an incoming webhook in your Slack workspace
                   </p>
                 </div>

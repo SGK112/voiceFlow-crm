@@ -8,14 +8,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
+import { toast } from '@/utils/toast';
 import api from '@/lib/api';
 import { dealApi, leadApi } from '@/services/api';
 import { invoiceApi } from '@/services/invoiceApi';
 
 // Unified stages that combine Deals → Projects → Invoices workflow
 const BUSINESS_STAGES = [
-  { id: 'lead', name: 'New Lead', color: 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600', icon: Users },
+  { id: 'lead', name: 'New Lead', color: 'bg-secondary bg-secondary border-gray-300 border-border', icon: Users },
   { id: 'qualified', name: 'Qualified', color: 'bg-blue-100 dark:bg-blue-900 border-blue-300 dark:border-blue-700', icon: TrendingUp },
   { id: 'proposal', name: 'Proposal', color: 'bg-purple-100 dark:bg-purple-900 border-purple-300 dark:border-purple-700', icon: FileText },
   { id: 'negotiation', name: 'Negotiation', color: 'bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700', icon: DollarSign },
@@ -326,11 +326,11 @@ export default function Business() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-gray-900 text-foreground flex items-center gap-3">
             <Building2 className="w-8 h-8 text-blue-600" />
             Business Pipeline
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-gray-800 text-foreground mt-1">
             Manage deals, projects, and invoices in one unified workflow
           </p>
         </div>
@@ -349,23 +349,23 @@ export default function Business() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Total Pipeline</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.total}</p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">{formatCurrency(stats.totalValue)}</p>
+        <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 border border-gray-200 border-border">
+          <p className="text-xs text-gray-800 text-foreground mb-1">Total Pipeline</p>
+          <p className="text-2xl font-bold text-gray-900 text-foreground">{stats.total}</p>
+          <p className="text-sm text-gray-800 text-foreground">{formatCurrency(stats.totalValue)}</p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Active Deals</p>
+        <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 border border-gray-200 border-border">
+          <p className="text-xs text-gray-800 text-foreground mb-1">Active Deals</p>
           <p className="text-2xl font-bold text-blue-600">
             {(stats.byStage.lead?.count || 0) + (stats.byStage.qualified?.count || 0) + (stats.byStage.proposal?.count || 0) + (stats.byStage.negotiation?.count || 0)}
           </p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">In Progress</p>
+        <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 border border-gray-200 border-border">
+          <p className="text-xs text-gray-800 text-foreground mb-1">In Progress</p>
           <p className="text-2xl font-bold text-cyan-600">{stats.byStage.in_progress?.count || 0}</p>
         </div>
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 border border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Revenue (Paid)</p>
+        <div className="bg-white dark:bg-secondary rounded-lg shadow-sm p-4 border border-gray-200 border-border">
+          <p className="text-xs text-gray-800 text-foreground mb-1">Revenue (Paid)</p>
           <p className="text-2xl font-bold text-green-600">{formatCurrency(stats.byStage.paid?.value || 0)}</p>
         </div>
       </div>
@@ -373,13 +373,13 @@ export default function Business() {
       {/* Search */}
       <div className="mb-6">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 text-muted-foreground w-5 h-5" />
           <Input
             type="text"
             placeholder="Search opportunities, contacts, or descriptions..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+            className="pl-10 bg-white dark:bg-secondary border-gray-200 border-border"
           />
         </div>
       </div>
@@ -399,11 +399,11 @@ export default function Business() {
                     <StageIcon className="w-4 h-4" />
                     <h3 className="font-semibold text-sm">{stage.name}</h3>
                   </div>
-                  <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 px-2 py-1 rounded">
+                  <span className="text-sm font-semibold text-gray-900 text-foreground bg-white dark:bg-secondary px-2 py-1 rounded">
                     {stageItems.length}
                   </span>
                 </div>
-                <p className="text-xs text-gray-700 dark:text-gray-300">
+                <p className="text-xs text-gray-900 text-foreground">
                   {formatCurrency(stats.byStage[stage.id]?.value || 0)}
                 </p>
               </div>
@@ -413,12 +413,12 @@ export default function Business() {
                 {stageItems.map((item) => (
                   <Card
                     key={item._id}
-                    className="cursor-pointer hover:shadow-lg transition-shadow bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                    className="cursor-pointer hover:shadow-lg transition-shadow bg-white dark:bg-secondary border-gray-200 border-border"
                     onClick={() => handleCardClick(item)}
                   >
                     <CardContent className="p-4">
                       <div className="mb-3">
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-1 line-clamp-2">
+                        <h4 className="font-semibold text-gray-900 text-foreground mb-1 line-clamp-2">
                           {item.title}
                         </h4>
                         <Badge variant="outline" className="text-xs">
@@ -434,7 +434,7 @@ export default function Business() {
                           </div>
                         )}
                         {item.value > 0 && (
-                          <div className="flex items-center gap-1 font-semibold text-gray-900 dark:text-gray-100">
+                          <div className="flex items-center gap-1 font-semibold text-gray-900 text-foreground">
                             <DollarSign className="w-3 h-3" />
                             <span>{formatCurrency(item.value)}</span>
                           </div>
@@ -458,13 +458,13 @@ export default function Business() {
                       </div>
 
                       {/* Stage Actions */}
-                      <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+                      <div className="pt-2 border-t border-gray-100 border-border">
                         <Select
                           value={item.stage}
                           onValueChange={(newStage) => handleStageChange(item, newStage)}
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <SelectTrigger className="h-8 text-xs bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
+                          <SelectTrigger className="h-8 text-xs bg-white bg-secondary border-gray-200 border-border">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -481,7 +481,7 @@ export default function Business() {
                 ))}
 
                 {stageItems.length === 0 && (
-                  <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm">
+                  <div className="text-center py-8 text-gray-600 text-muted-foreground text-sm">
                     No items
                   </div>
                 )}
@@ -493,36 +493,36 @@ export default function Business() {
 
       {/* Add/Edit Modal */}
       <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-        <DialogContent className="bg-white dark:bg-gray-800 sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-white dark:bg-secondary sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-gray-900 dark:text-gray-100">
+            <DialogTitle className="text-gray-900 text-foreground">
               {selectedItem ? 'Edit Opportunity' : 'New Opportunity'}
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div>
-              <Label htmlFor="title" className="text-gray-900 dark:text-gray-100">Title *</Label>
+              <Label htmlFor="title" className="text-gray-900 text-foreground">Title *</Label>
               <Input
                 id="title"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 placeholder="Enter opportunity name"
-                className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="contact" className="text-gray-900 dark:text-gray-100">Contact</Label>
+              <Label htmlFor="contact" className="text-gray-900 text-foreground">Contact</Label>
               <Select
                 value={formData.contact}
                 onValueChange={(value) => setFormData({ ...formData, contact: value })}
               >
-                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                <SelectTrigger className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground">
                   <SelectValue placeholder="Select a contact" />
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800">
+                <SelectContent className="bg-white bg-secondary">
                   <SelectItem value="none">None</SelectItem>
                   {leads.map((lead) => (
                     <SelectItem key={lead._id} value={lead._id}>
@@ -534,28 +534,28 @@ export default function Business() {
             </div>
 
             <div>
-              <Label htmlFor="value" className="text-gray-900 dark:text-gray-100">Value ($) *</Label>
+              <Label htmlFor="value" className="text-gray-900 text-foreground">Value ($) *</Label>
               <Input
                 id="value"
                 type="number"
                 value={formData.value}
                 onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })}
                 placeholder="0"
-                className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="stage" className="text-gray-900 dark:text-gray-100">Stage</Label>
+              <Label htmlFor="stage" className="text-gray-900 text-foreground">Stage</Label>
               <Select
                 value={formData.stage}
                 onValueChange={(value) => setFormData({ ...formData, stage: value })}
               >
-                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                <SelectTrigger className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800">
+                <SelectContent className="bg-white bg-secondary">
                   {BUSINESS_STAGES.map((stage) => (
                     <SelectItem key={stage.id} value={stage.id}>
                       {stage.name}
@@ -567,15 +567,15 @@ export default function Business() {
 
             {!selectedItem && (
               <div>
-                <Label htmlFor="priority" className="text-gray-900 dark:text-gray-100">Priority</Label>
+                <Label htmlFor="priority" className="text-gray-900 text-foreground">Priority</Label>
                 <Select
                   value={formData.priority}
                   onValueChange={(value) => setFormData({ ...formData, priority: value })}
                 >
-                  <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                  <SelectTrigger className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-gray-800">
+                  <SelectContent className="bg-white bg-secondary">
                     <SelectItem value="low">Low</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
                     <SelectItem value="high">High</SelectItem>
@@ -586,25 +586,25 @@ export default function Business() {
             )}
 
             <div>
-              <Label htmlFor="description" className="text-gray-900 dark:text-gray-100">Description</Label>
+              <Label htmlFor="description" className="text-gray-900 text-foreground">Description</Label>
               <Textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Add notes or description"
-                className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
                 rows={3}
               />
             </div>
 
             <div>
-              <Label htmlFor="expectedCloseDate" className="text-gray-900 dark:text-gray-100">Expected Close Date</Label>
+              <Label htmlFor="expectedCloseDate" className="text-gray-900 text-foreground">Expected Close Date</Label>
               <Input
                 id="expectedCloseDate"
                 type="date"
                 value={formData.expectedCloseDate}
                 onChange={(e) => setFormData({ ...formData, expectedCloseDate: e.target.value })}
-                className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="bg-white bg-secondary border-gray-200 border-border text-gray-900 text-foreground"
               />
             </div>
 
@@ -623,7 +623,7 @@ export default function Business() {
                   resetForm();
                 }}
                 variant="outline"
-                className="flex-1 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                className="flex-1 border-gray-200 border-border text-gray-900 text-foreground"
               >
                 Cancel
               </Button>

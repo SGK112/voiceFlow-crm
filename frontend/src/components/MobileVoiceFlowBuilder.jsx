@@ -19,7 +19,7 @@ export default function MobileVoiceFlowBuilder() {
   const [deployResult, setDeployResult] = useState(null);
 
   const [workflowData, setWorkflowData] = useState({
-    name: 'Untitled Workflow',
+    name: 'Untitled Agent',
     voiceId: null,
     voiceName: '',
     prompt: '',
@@ -28,38 +28,32 @@ export default function MobileVoiceFlowBuilder() {
     knowledgeUrls: []
   });
 
-  // Load existing workflow if editing
+  // Load existing agent if editing
   useEffect(() => {
     if (workflowId) {
-      loadWorkflow();
+      loadAgent();
     }
   }, [workflowId]);
 
-  const loadWorkflow = async () => {
+  const loadAgent = async () => {
     try {
-      const response = await api.get(`/workflows/${workflowId}`);
+      const response = await api.get(`/agents/${workflowId}`);
       if (response.data) {
-        const workflow = response.data;
-
-        // Extract data from nodes
-        const voiceNode = workflow.nodes?.find(n => n.type === 'voice');
-        const promptNode = workflow.nodes?.find(n => n.type === 'prompt');
-        const inboundNode = workflow.nodes?.find(n => n.type === 'inboundCall');
-        const knowledgeNode = workflow.nodes?.find(n => n.type === 'knowledge');
+        const agent = response.data;
 
         setWorkflowData({
-          name: workflow.name || 'Untitled Workflow',
-          voiceId: voiceNode?.data?.voiceId || null,
-          voiceName: voiceNode?.data?.voiceName || '',
-          prompt: promptNode?.data?.prompt || '',
-          firstMessage: promptNode?.data?.firstMessage || 'Hello! How can I help you today?',
-          twilioNumber: inboundNode?.data?.twilioNumber || '',
-          knowledgeUrls: knowledgeNode?.data?.urls || []
+          name: agent.name || 'Untitled Agent',
+          voiceId: agent.voiceId || null,
+          voiceName: agent.voiceName || '',
+          prompt: agent.script || '',
+          firstMessage: agent.firstMessage || 'Hello! How can I help you today?',
+          twilioNumber: agent.phoneNumber || '',
+          knowledgeUrls: agent.knowledgeUrls || []
         });
       }
     } catch (error) {
-      console.error('Failed to load workflow:', error);
-      alert('Failed to load workflow');
+      console.error('Failed to load agent:', error);
+      alert('Failed to load agent');
     }
   };
 
@@ -76,72 +70,39 @@ export default function MobileVoiceFlowBuilder() {
     try {
       setSaving(true);
 
-      // Build nodes from workflow data
-      const nodes = [
-        {
-          id: 'inbound-1',
-          type: 'inboundCall',
-          position: { x: 50, y: 100 },
-          data: { twilioNumber: workflowData.twilioNumber }
-        },
-        {
-          id: 'voice-1',
-          type: 'voice',
-          position: { x: 300, y: 100 },
-          data: {
-            voiceId: workflowData.voiceId,
-            voiceName: workflowData.voiceName
-          }
-        },
-        {
-          id: 'prompt-1',
-          type: 'prompt',
-          position: { x: 550, y: 100 },
-          data: {
-            prompt: workflowData.prompt,
-            firstMessage: workflowData.firstMessage
-          }
-        }
-      ];
-
-      const edges = [
-        { id: 'e1', source: 'inbound-1', target: 'voice-1', type: 'smoothstep' },
-        { id: 'e2', source: 'voice-1', target: 'prompt-1', type: 'smoothstep' }
-      ];
-
-      // Add knowledge node if URLs exist
-      if (workflowData.knowledgeUrls.length > 0) {
-        nodes.push({
-          id: 'knowledge-1',
-          type: 'knowledge',
-          position: { x: 800, y: 100 },
-          data: { urls: workflowData.knowledgeUrls }
-        });
-        edges.push({ id: 'e3', source: 'prompt-1', target: 'knowledge-1', type: 'smoothstep' });
-      }
-
-      const payload = {
+      // Create agent directly (simplified approach - no complex workflow saving)
+      const agentData = {
         name: workflowData.name,
-        nodes,
-        edges
+        voiceId: workflowData.voiceId,
+        voiceName: workflowData.voiceName,
+        script: workflowData.prompt,
+        firstMessage: workflowData.firstMessage,
+        phoneNumber: workflowData.twilioNumber || null,
+        type: 'custom',
+        language: 'en',
+        temperature: 0.8
       };
 
-      let savedWorkflowId = workflowId;
-
+      let response;
       if (workflowId) {
-        // Update existing
-        await api.put(`/workflows/${workflowId}`, payload);
+        // Update existing agent
+        console.log('Updating agent:', workflowId);
+        response = await api.patch(`/agents/${workflowId}`, agentData);
+        alert('Agent updated successfully!');
       } else {
-        // Create new
-        const response = await api.post('/workflows', payload);
-        savedWorkflowId = response.data._id || response.data.id;
-        navigate(`/app/voiceflow-builder/${savedWorkflowId}`, { replace: true });
+        // Create new agent
+        console.log('Creating new agent via POST /agents/create');
+        console.log('Agent data:', agentData);
+        response = await api.post('/agents/create', agentData);
+        console.log('Create response:', response.data);
+        const newAgentId = response.data._id || response.data.id;
+        alert('Agent created successfully!');
+        // Redirect to agent detail page
+        navigate(`/app/agents/${newAgentId}`);
       }
-
-      alert('Workflow saved!');
     } catch (error) {
       console.error('Save failed:', error);
-      alert(`Failed to save: ${error.response?.data?.message || error.message}`);
+      alert(`Failed to save agent: ${error.response?.data?.message || error.message}`);
     } finally {
       setSaving(false);
     }
@@ -149,23 +110,28 @@ export default function MobileVoiceFlowBuilder() {
 
   const handleDeploy = async () => {
     if (!workflowId) {
-      alert('Please save the workflow first');
+      alert('Please save the agent first');
       return;
     }
 
     if (!workflowData.voiceId || !workflowData.prompt) {
-      alert('Please configure voice and instructions before deploying');
+      alert('Please configure voice and instructions before activating');
       return;
     }
 
     try {
       setDeploying(true);
-      const response = await api.post(`/voiceflow/deploy/${workflowId}`);
-      setDeployResult(response.data);
+      // Activate the agent by setting enabled = true
+      await api.patch(`/agents/${workflowId}`, { enabled: true });
+      setDeployResult({
+        success: true,
+        message: 'Agent activated successfully!',
+        agentId: workflowId
+      });
       setCurrentStep(steps.length); // Go to success screen
     } catch (error) {
-      console.error('Deployment error:', error);
-      alert(`Deployment failed: ${error.response?.data?.message || error.message}`);
+      console.error('Activation error:', error);
+      alert(`Activation failed: ${error.response?.data?.message || error.message}`);
     } finally {
       setDeploying(false);
     }
@@ -174,9 +140,9 @@ export default function MobileVoiceFlowBuilder() {
   const steps = [
     {
       id: 'name',
-      title: 'Workflow Name',
+      title: 'Agent Name',
       icon: MessageSquare,
-      description: 'Give your workflow a name'
+      description: 'Give your agent a name'
     },
     {
       id: 'voice',
@@ -198,9 +164,9 @@ export default function MobileVoiceFlowBuilder() {
     },
     {
       id: 'review',
-      title: 'Review & Deploy',
+      title: 'Review & Activate',
       icon: Rocket,
-      description: 'Save and deploy your workflow'
+      description: 'Save and activate your agent'
     }
   ];
 
@@ -217,8 +183,8 @@ export default function MobileVoiceFlowBuilder() {
                 <Rocket className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">Deployed!</h1>
-                <p className="text-purple-100 text-sm">Workflow is live</p>
+                <h1 className="text-xl font-bold text-white">Activated!</h1>
+                <p className="text-purple-100 text-sm">Agent is live</p>
               </div>
             </div>
             <button onClick={() => navigate('/app/agents')} className="p-2 hover:bg-white/20 rounded-lg">
@@ -449,7 +415,7 @@ export default function MobileVoiceFlowBuilder() {
                 ) : (
                   <>
                     <Save className="h-5 w-5" />
-                    Save Workflow
+                    Save Agent
                   </>
                 )}
               </button>
@@ -463,12 +429,12 @@ export default function MobileVoiceFlowBuilder() {
                   {deploying ? (
                     <>
                       <Loader2 className="h-5 w-5 animate-spin" />
-                      Deploying...
+                      Activating...
                     </>
                   ) : (
                     <>
                       <Rocket className="h-5 w-5" />
-                      Deploy to ElevenLabs
+                      Activate Agent
                     </>
                   )}
                 </button>

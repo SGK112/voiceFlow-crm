@@ -115,7 +115,7 @@ function CredentialConnectionModal({ isOpen, onClose, credentialInfo, onConnecte
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md">
+      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-t-2xl relative">
           <button
@@ -162,10 +162,10 @@ function CredentialConnectionModal({ isOpen, onClose, credentialInfo, onConnecte
             </div>
 
             <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+              <h3 className="font-semibold text-foreground">
                 What happens next:
               </h3>
-              <ol className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <ol className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="font-semibold text-blue-600 dark:text-blue-400 w-5">1.</span>
                   <span>A popup will open to {credentialInfo?.provider}'s login page</span>
@@ -185,8 +185,8 @@ function CredentialConnectionModal({ isOpen, onClose, credentialInfo, onConnecte
               </ol>
             </div>
 
-            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <div className="pt-4 border-t border-border">
+              <div className="flex items-center gap-2 text-xs text-foreground">
                 <CheckCircle className="w-4 h-4 text-green-500" />
                 <span>Your credentials are encrypted and stored securely</span>
               </div>
@@ -195,7 +195,7 @@ function CredentialConnectionModal({ isOpen, onClose, credentialInfo, onConnecte
         </div>
 
         {/* Footer */}
-        <div className="p-6 bg-gray-50 dark:bg-gray-900/50 rounded-b-2xl space-y-3">
+        <div className="p-6 bg-secondary/50 rounded-b-2xl space-y-3">
           <button
             onClick={handleConnect}
             disabled={isConnecting}
@@ -220,7 +220,7 @@ function CredentialConnectionModal({ isOpen, onClose, credentialInfo, onConnecte
 
           <button
             onClick={handleOpenN8n}
-            className="w-full py-2 px-4 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            className="w-full py-2 px-4 text-sm text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           >
             Or manage credentials in n8n →
           </button>

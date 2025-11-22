@@ -55,7 +55,7 @@ function CustomNode({ data, id, selected }) {
 
   return (
     <div
-      className={`relative px-3 py-2 shadow-lg rounded-lg border-2 bg-white dark:bg-gray-800 group ${
+      className={`relative px-3 py-2 shadow-lg rounded-lg border-2 bg-card border border-border group ${
         selected ? 'ring-2 ring-blue-400 ring-offset-2' : ''
       }`}
       style={{ borderColor: data.color, minWidth: '140px', maxWidth: '180px' }}
@@ -80,8 +80,8 @@ function CustomNode({ data, id, selected }) {
       <div className="flex items-center gap-2">
         <span className="text-2xl">{data.icon}</span>
         <div className="flex-1 min-w-0">
-          <div className="text-xs font-bold truncate text-gray-900 dark:text-gray-100">{data.label}</div>
-          <div className="text-[10px] text-gray-500 dark:text-gray-400 truncate">{data.description}</div>
+          <div className="text-xs font-bold truncate text-foreground">{data.label}</div>
+          <div className="text-[10px] text-foreground truncate">{data.description}</div>
         </div>
       </div>
 
@@ -216,21 +216,21 @@ function InboundCallTriggerConfig({
     <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-2xl">📞</span>
-        <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+        <h4 className="text-sm font-semibold text-foreground">
           Inbound Call Configuration
         </h4>
       </div>
 
       {/* Phone Number Selection */}
       <div className="mb-4">
-        <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-xs font-medium text-foreground mb-2">
           Select Phone Number
         </label>
 
         {loadingPhoneNumbers ? (
-          <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg">
+          <div className="flex items-center gap-2 px-3 py-2 bg-secondary rounded-lg">
             <Loader2 className="w-4 h-4 animate-spin text-gray-600" />
-            <span className="text-sm text-gray-600 dark:text-gray-400">Loading phone numbers...</span>
+            <span className="text-sm text-muted-foreground">Loading phone numbers...</span>
           </div>
         ) : phoneNumbers.length === 0 ? (
           <div className="space-y-3">
@@ -251,7 +251,7 @@ function InboundCallTriggerConfig({
           <select
             value={selectedPhoneNumber}
             onChange={(e) => handlePhoneNumberChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+            className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card border border-border text-foreground"
           >
             <option value="">Choose a phone number...</option>
             {phoneNumbers.map((phone) => (
@@ -266,7 +266,7 @@ function InboundCallTriggerConfig({
       {/* Webhook URL Display */}
       {webhookUrl && (
         <div className="mb-4">
-          <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label className="block text-xs font-medium text-foreground mb-2">
             Webhook URL
           </label>
           <div className="flex gap-2">
@@ -274,7 +274,7 @@ function InboundCallTriggerConfig({
               type="text"
               value={webhookUrl}
               readOnly
-              className="flex-1 px-3 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-xs font-mono text-gray-900 dark:text-gray-100"
+              className="flex-1 px-3 py-2 bg-secondary border border-border rounded-lg text-xs font-mono text-foreground"
             />
             <button
               onClick={() => {
@@ -287,7 +287,7 @@ function InboundCallTriggerConfig({
               <ExternalLink className="w-4 h-4" />
             </button>
           </div>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             Use this URL in your ElevenLabs agent configuration
           </p>
         </div>
@@ -345,7 +345,7 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
         {/* Gradient Header with Rocket */}
         <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 p-6 rounded-t-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32"></div>
@@ -378,7 +378,7 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
         <div className="p-6">
           {/* Workflow Type Selector */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            <label className="block text-sm font-medium text-foreground mb-3">
               Workflow Type
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -389,7 +389,7 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     workflowType === type
                       ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                      : 'bg-gray-100 dark:bg-gray-700 text-foreground hover:bg-gray-200 dark:hover:bg-gray-600'
                   }`}
                 >
                   {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -400,7 +400,7 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
 
           {/* Description Input */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Describe Your Workflow
             </label>
             <textarea
@@ -408,16 +408,16 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Example: When someone fills out my contact form, save them as a lead in the CRM, send them a welcome email, and notify my team on Slack..."
               rows={5}
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-3 border border-border rounded-lg text-sm bg-card text-foreground focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            <p className="text-xs text-foreground mt-2">
               Be specific about triggers, actions, and conditions
             </p>
           </div>
 
           {/* Example Workflows */}
           <div className="mb-6">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            <p className="text-sm font-medium text-foreground mb-3">
               Or try an example:
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -425,15 +425,15 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
                 <button
                   key={idx}
                   onClick={() => setDescription(example.desc)}
-                  className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:shadow-md transition-all text-left group"
+                  className="p-3 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border border-border rounded-lg hover:shadow-md transition-all text-left group"
                 >
                   <div className="flex items-start gap-2">
                     <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400 mt-0.5 group-hover:scale-110 transition-transform" />
                     <div>
-                      <div className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
+                      <div className="text-sm font-medium text-foreground mb-1">
                         {example.title}
                       </div>
-                      <div className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
+                      <div className="text-xs text-muted-foreground line-clamp-2">
                         {example.desc}
                       </div>
                     </div>
@@ -447,7 +447,7 @@ function AIWorkflowWizard({ onClose, onGenerate }) {
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
+              className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-foreground rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 font-medium transition-colors"
             >
               Cancel
             </button>
@@ -1144,11 +1144,11 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
   // Render sidebar
   const renderSidebar = () => (
-    <div className={`${showSidebar ? 'w-56' : 'w-0'} bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 overflow-hidden flex flex-col`}>
+    <div className={`${showSidebar ? 'w-56' : 'w-0'} bg-card border-r border-border transition-all duration-300 overflow-hidden flex flex-col`}>
       {/* Sidebar Header */}
-      <div className="p-3 border-b border-gray-200 dark:border-gray-700">
+      <div className="p-3 border-b border-border">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">Workflows</h2>
+          <h2 className="text-sm font-bold text-foreground">Workflows</h2>
           <button
             onClick={() => setShowSidebar(false)}
             className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
@@ -1171,7 +1171,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
         {workflows.map((workflow) => (
           <div
             key={workflow._id}
-            className={`group relative p-2 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
+            className={`group relative p-2 border-b border-gray-100 dark:border-gray-800 hover:bg-secondary/80 transition-colors ${
               currentWorkflow?._id === workflow._id ? 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-l-blue-600' : ''
             }`}
           >
@@ -1183,10 +1183,10 @@ Example: "Send a text message to the customer confirming their appointment"`;
               className="cursor-pointer"
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-medium text-gray-900 dark:text-gray-100 truncate pr-2">{workflow.name}</span>
+                <span className="text-xs font-medium text-foreground truncate pr-2">{workflow.name}</span>
                 <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${workflow.enabled ? 'bg-green-500' : 'bg-gray-300'}`} />
               </div>
-              <div className="text-[10px] text-gray-500 dark:text-gray-400">
+              <div className="text-[10px] text-foreground">
                 {workflow.executionCount || 0} runs
               </div>
             </div>
@@ -1207,8 +1207,8 @@ Example: "Send a text message to the customer confirming their appointment"`;
       </div>
 
       {/* Stats */}
-      <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-        <div className="text-[10px] text-gray-600 dark:text-gray-400 space-y-1">
+      <div className="p-3 border-t border-border bg-gray-50 dark:bg-gray-800">
+        <div className="text-[10px] text-muted-foreground space-y-1">
           <div className="flex justify-between">
             <span>Total:</span>
             <span className="font-semibold">{stats.total}</span>
@@ -1239,11 +1239,11 @@ Example: "Send a text message to the customer confirming their appointment"`;
     return (
       <div className="flex-1 flex relative" style={{ height: '100%' }}>
         {/* Node Palette */}
-        <div className={`${showNodePalette ? 'w-52' : 'w-12'} bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 overflow-hidden`}>
+        <div className={`${showNodePalette ? 'w-52' : 'w-12'} bg-gray-50 dark:bg-gray-800 border-r border-border transition-all duration-300 overflow-hidden`}>
           <div className="p-2 h-full overflow-y-scroll [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <button
               onClick={() => setShowNodePalette(!showNodePalette)}
-              className="w-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded mb-2 sticky top-0 bg-gray-50 dark:bg-gray-800 z-10"
+              className="w-full p-2 hover:bg-secondary/80 rounded mb-2 sticky top-0 bg-gray-50 dark:bg-gray-800 z-10"
             >
               {showNodePalette ? <ChevronLeft className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -1252,7 +1252,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
               <div className="space-y-3">
                 {Object.entries(nodesByCategory).map(([category, templates]) => (
                   <div key={category}>
-                    <h3 className="text-[10px] font-bold text-gray-600 dark:text-gray-400 mb-1 px-2 uppercase tracking-wide">
+                    <h3 className="text-[10px] font-bold text-muted-foreground mb-1 px-2 uppercase tracking-wide">
                       {category}
                     </h3>
                     <div className="space-y-1">
@@ -1261,13 +1261,13 @@ Example: "Send a text message to the customer confirming their appointment"`;
                           key={template.type}
                           draggable
                           onDragStart={(e) => onDragStart(e, template)}
-                          className="p-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded cursor-move hover:shadow-md hover:scale-105 transition-all group"
+                          className="p-2 bg-card border border-border rounded cursor-move hover:shadow-md hover:scale-105 transition-all group"
                         >
                           <div className="flex items-center gap-2">
                             <span className="text-lg group-hover:scale-110 transition-transform">{template.icon}</span>
                             <div className="flex-1 min-w-0">
-                              <div className="text-xs font-medium text-gray-900 dark:text-gray-100 truncate">{template.label}</div>
-                              <div className="text-[10px] text-gray-500 dark:text-gray-400 truncate">{template.description}</div>
+                              <div className="text-xs font-medium text-foreground truncate">{template.label}</div>
+                              <div className="text-[10px] text-foreground truncate">{template.description}</div>
                             </div>
                           </div>
                         </div>
@@ -1321,17 +1321,17 @@ Example: "Send a text message to the customer confirming their appointment"`;
         </ReactFlow>
 
         {/* Help Text - Hidden on mobile to prevent navigation interference */}
-        <div className="hidden md:block absolute top-4 left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-4 py-2 shadow-lg text-xs text-gray-600 dark:text-gray-400 pointer-events-none">
+        <div className="hidden md:block absolute top-4 left-1/2 transform -translate-x-1/2 bg-card border border-border border border-border rounded-lg px-4 py-2 shadow-lg text-xs text-muted-foreground pointer-events-none">
           💡 Hover over nodes to delete • Click edges and press Delete • Press Shift to multi-select
         </div>
       </div>
 
       {/* Properties Panel */}
       {selectedNode && (
-        <div className="absolute right-0 top-0 bottom-0 w-64 bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 overflow-y-scroll [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] shadow-xl">
+        <div className="absolute right-0 top-0 bottom-0 w-64 bg-card border-l border-border overflow-y-scroll [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] shadow-xl">
           <div className="p-3">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-base font-bold text-gray-900 dark:text-gray-100">{selectedNode.data.label}</h3>
+              <h3 className="text-base font-bold text-foreground">{selectedNode.data.label}</h3>
               <button
                 onClick={() => setSelectedNode(null)}
                 className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded"
@@ -1340,7 +1340,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
               </button>
             </div>
 
-            <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            <div className="text-sm text-muted-foreground mb-4">
               {selectedNode.data.description}
             </div>
 
@@ -1358,7 +1358,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
             {/* Special Configuration for Sub-Workflow Nodes */}
             {selectedNode.data.nodeType === 'sub_workflow' && (
               <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Select Workflow to Run
                 </label>
                 <select
@@ -1367,14 +1367,14 @@ Example: "Send a text message to the customer confirming their appointment"`;
                     const newParams = { ...selectedNode.data.parameters, workflowId: e.target.value };
                     updateNodeParams(selectedNode.id, newParams);
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card border border-border text-foreground"
                 >
                   <option value="">Choose a workflow...</option>
                   {workflows.map(w => (
                     <option key={w._id} value={w._id}>{w.name}</option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                   This node will execute the selected workflow and pass data through
                 </p>
               </div>
@@ -1383,7 +1383,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
             {/* Special Configuration for Stakeholder Router */}
             {selectedNode.data.nodeType === 'stakeholder_router' && (
               <div className="mb-6 p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg">
-                <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Route By Stakeholder Role
                 </label>
                 <select
@@ -1392,7 +1392,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                     const newParams = { ...selectedNode.data.parameters, routeBy: e.target.value };
                     updateNodeParams(selectedNode.id, newParams);
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 mb-3"
+                  className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card border border-border text-foreground mb-3"
                 >
                   <option value="">Select role...</option>
                   <option value="homeowner">Homeowner</option>
@@ -1403,7 +1403,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                   <option value="trade">Trade/Subcontractor</option>
                   <option value="manager">Project Manager</option>
                 </select>
-                <p className="text-xs text-gray-600 dark:text-gray-400">
+                <p className="text-xs text-muted-foreground">
                   Routes communication to different teams based on stakeholder role
                 </p>
               </div>
@@ -1412,7 +1412,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
             {/* Special Configuration for Multi-Channel */}
             {selectedNode.data.nodeType === 'multi_channel' && (
               <div className="mb-6 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
-                <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Communication Channels
                 </label>
                 <div className="space-y-2">
@@ -1431,11 +1431,11 @@ Example: "Send a text message to the customer confirming their appointment"`;
                         }}
                         className="rounded"
                       />
-                      <span className="text-sm text-gray-900 dark:text-gray-100">{channel}</span>
+                      <span className="text-sm text-foreground">{channel}</span>
                     </label>
                   ))}
                 </div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                   Send message through multiple channels simultaneously
                 </p>
               </div>
@@ -1446,7 +1446,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
               <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-2xl">👤</span>
-                  <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  <h4 className="text-sm font-semibold text-foreground">
                     {selectedNode.data.nodeType === 'human_approval' ? 'Approval Contact' :
                      selectedNode.data.nodeType === 'human_escalation' ? 'Escalation Contact' :
                      selectedNode.data.nodeType === 'human_notify' ? 'Notification Contact' :
@@ -1456,7 +1456,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
                 {/* Contact Type */}
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-medium text-foreground mb-1.5">
                     Contact Type
                   </label>
                   <select
@@ -1465,7 +1465,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       const newParams = { ...selectedNode.data.parameters, contactType: e.target.value };
                       updateNodeParams(selectedNode.id, newParams);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg text-xs bg-card border border-border text-foreground"
                   >
                     <option value="team">Team Member</option>
                     <option value="external">External Contact</option>
@@ -1477,7 +1477,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
                 {/* Contact Name */}
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-medium text-foreground mb-1.5">
                     Name
                   </label>
                   <input
@@ -1488,13 +1488,13 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       const newParams = { ...selectedNode.data.parameters, contactName: e.target.value };
                       updateNodeParams(selectedNode.id, newParams);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg text-xs bg-card border border-border text-foreground"
                   />
                 </div>
 
                 {/* Email */}
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-medium text-foreground mb-1.5">
                     Email
                   </label>
                   <input
@@ -1505,13 +1505,13 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       const newParams = { ...selectedNode.data.parameters, contactEmail: e.target.value };
                       updateNodeParams(selectedNode.id, newParams);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg text-xs bg-card border border-border text-foreground"
                   />
                 </div>
 
                 {/* Phone */}
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-medium text-foreground mb-1.5">
                     Phone Number
                   </label>
                   <input
@@ -1522,13 +1522,13 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       const newParams = { ...selectedNode.data.parameters, contactPhone: e.target.value };
                       updateNodeParams(selectedNode.id, newParams);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg text-xs bg-card border border-border text-foreground"
                   />
                 </div>
 
                 {/* Action Type */}
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-medium text-foreground mb-1.5">
                     Action
                   </label>
                   <select
@@ -1537,7 +1537,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       const newParams = { ...selectedNode.data.parameters, actionType: e.target.value };
                       updateNodeParams(selectedNode.id, newParams);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg text-xs bg-card border border-border text-foreground"
                   >
                     <option value="notify">Notify</option>
                     <option value="approve">Request Approval</option>
@@ -1550,7 +1550,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
                 {/* Communication Method */}
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-medium text-foreground mb-1.5">
                     Communication Method
                   </label>
                   <div className="space-y-1.5">
@@ -1569,7 +1569,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                           }}
                           className="rounded text-green-600"
                         />
-                        <span className="text-xs text-gray-900 dark:text-gray-100">{method}</span>
+                        <span className="text-xs text-foreground">{method}</span>
                       </label>
                     ))}
                   </div>
@@ -1577,7 +1577,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
                 {/* Message Template */}
                 <div className="mb-3">
-                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  <label className="block text-xs font-medium text-foreground mb-1.5">
                     Message Template (Optional)
                   </label>
                   <textarea
@@ -1588,14 +1588,14 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       const newParams = { ...selectedNode.data.parameters, messageTemplate: e.target.value };
                       updateNodeParams(selectedNode.id, newParams);
                     }}
-                    className="w-full px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 resize-none"
+                    className="w-full px-2.5 py-1.5 border border-border rounded-lg text-xs bg-card border border-border text-foreground resize-none"
                   />
                 </div>
 
                 {/* Priority Level (for approval/escalation) */}
                 {['human_approval', 'human_escalation'].includes(selectedNode.data.nodeType) && (
                   <div className="mb-3">
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                    <label className="block text-xs font-medium text-foreground mb-1.5">
                       Priority
                     </label>
                     <select
@@ -1604,7 +1604,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                         const newParams = { ...selectedNode.data.parameters, priority: e.target.value };
                         updateNodeParams(selectedNode.id, newParams);
                       }}
-                      className="w-full px-2.5 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                      className="w-full px-2.5 py-1.5 border border-border rounded-lg text-xs bg-card border border-border text-foreground"
                     >
                       <option value="low">Low</option>
                       <option value="normal">Normal</option>
@@ -1614,7 +1614,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                   </div>
                 )}
 
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-3 p-2 bg-green-100 dark:bg-green-900/30 rounded">
+                <p className="text-xs text-muted-foreground mt-3 p-2 bg-green-100 dark:bg-green-900/30 rounded">
                   💡 Tip: Use variables like {'{name}'}, {'{email}'}, {'{phone}'} in your message template
                 </p>
               </div>
@@ -1622,12 +1622,12 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
             {/* Node Parameters */}
             <div className="space-y-3 mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label className="block text-sm font-medium text-foreground">
                 Parameters
               </label>
               {Object.entries(selectedNode.data.parameters || {}).map(([key, value]) => (
                 <div key={key}>
-                  <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">{key}</label>
+                  <label className="block text-xs text-muted-foreground mb-1">{key}</label>
                   <input
                     type="text"
                     value={value}
@@ -1635,7 +1635,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       const newParams = { ...selectedNode.data.parameters, [key]: e.target.value };
                       updateNodeParams(selectedNode.id, newParams);
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card border border-border text-foreground"
                   />
                 </div>
               ))}
@@ -1655,7 +1655,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
             </div>
 
             {/* AI Copilot Assistant */}
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <div className="border-t border-border pt-4">
               <button
                 onClick={() => setShowNodeAI(!showNodeAI)}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 shadow-lg"
@@ -1670,7 +1670,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                   <div className="p-3 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
                     <div className="flex items-start gap-2 mb-2">
                       <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400 mt-0.5 flex-shrink-0" />
-                      <div className="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-line">
+                      <div className="text-xs text-muted-foreground whitespace-pre-line">
                         {getNodeContextHelp(selectedNode.data.nodeType)}
                       </div>
                     </div>
@@ -1678,7 +1678,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
                   {/* AI Input */}
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                    <label className="block text-xs font-medium text-foreground mb-1.5">
                       What do you want this node to do?
                     </label>
                     <textarea
@@ -1686,7 +1686,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       onChange={(e) => setNodeAIRequest(e.target.value)}
                       placeholder={`e.g., "Configure this to send a confirmation SMS to the customer with their appointment details for Surprise Granite"`}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 resize-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full px-3 py-2 border border-border rounded-lg text-sm bg-card border border-border text-foreground resize-none focus:ring-2 focus:ring-purple-500"
                       onKeyPress={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
                           e.preventDefault();
@@ -1694,7 +1694,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                         }
                       }}
                     />
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-foreground mt-1">
                       Press Enter to send, Shift+Enter for new line
                     </p>
                   </div>
@@ -1726,7 +1726,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                           <div className="font-medium text-blue-900 dark:text-blue-100 mb-2">
                             AI Configuration Suggestion
                           </div>
-                          <p className="text-sm text-gray-900 dark:text-gray-100 mb-3">
+                          <p className="text-sm text-foreground mb-3">
                             {nodeAIResponse.explanation}
                           </p>
                         </div>
@@ -1741,11 +1741,11 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       )}
 
                       {nodeAIResponse.parameters && Object.keys(nodeAIResponse.parameters).length > 0 && (
-                        <div className="p-3 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
-                          <div className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <div className="p-3 bg-card border border-border rounded border border-border">
+                          <div className="text-xs font-medium text-foreground mb-2">
                             Suggested Parameters:
                           </div>
-                          <pre className="text-xs text-gray-800 dark:text-gray-200 whitespace-pre-wrap break-words">
+                          <pre className="text-xs text-muted-foreground whitespace-pre-wrap break-words">
                             {JSON.stringify(nodeAIResponse.parameters, null, 2)}
                           </pre>
                         </div>
@@ -1761,7 +1761,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
                       <button
                         onClick={() => setNodeAIResponse(null)}
-                        className="w-full text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+                        className="w-full text-xs text-muted-foreground hover:text-gray-800 dark:hover:text-gray-200"
                       >
                         Clear and try different configuration
                       </button>
@@ -1781,20 +1781,20 @@ Example: "Send a text message to the customer confirming their appointment"`;
   const renderExecutions = () => (
     <div className="flex-1 p-6 overflow-y-auto">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Workflow Executions</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-6">Workflow Executions</h2>
 
         {executions.length === 0 ? (
-          <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-            <History className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No executions yet</h3>
-            <p className="text-gray-600 dark:text-gray-400">This workflow hasn't been run yet</p>
+          <div className="text-center py-12 bg-card border border-border rounded-lg border border-border">
+            <History className="w-16 h-16 text-gray-700 dark:text-gray-100 dark:text-gray-600 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">No executions yet</h3>
+            <p className="text-muted-foreground">This workflow hasn't been run yet</p>
           </div>
         ) : (
           <div className="space-y-3">
             {executions.map((execution) => (
               <div
                 key={execution.id}
-                className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-shadow"
+                className="bg-card border border-border border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -1804,10 +1804,10 @@ Example: "Send a text message to the customer confirming their appointment"`;
                       <XCircle className="w-6 h-6 text-red-600" />
                     )}
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-gray-100">
+                      <div className="font-medium text-foreground">
                         {execution.status === 'success' ? 'Completed Successfully' : 'Failed'}
                       </div>
-                      <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                      <div className="text-sm text-foreground flex items-center gap-2">
                         <Clock className="w-3 h-3" />
                         {execution.timestamp.toLocaleString()}
                         <span>• {execution.duration}ms</span>
@@ -1837,24 +1837,24 @@ Example: "Send a text message to the customer confirming their appointment"`;
   const renderPlayground = () => (
     <div className="flex-1 p-6 overflow-y-auto">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Workflow Playground</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-6">Workflow Playground</h2>
 
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+        <div className="bg-card border border-border border border-border rounded-lg p-6">
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Test Your Workflow</h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <h3 className="text-lg font-semibold text-foreground mb-2">Test Your Workflow</h3>
+            <p className="text-muted-foreground text-sm">
               Send test data to your workflow and see the results in real-time
             </p>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Test Payload (JSON)
               </label>
               <textarea
                 rows={10}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg font-mono text-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                className="w-full px-3 py-2 border border-border rounded-lg font-mono text-sm bg-card text-foreground"
                 placeholder={`{\n  "name": "John Doe",\n  "email": "john@example.com",\n  "phone": "+1234567890"\n}`}
               />
             </div>
@@ -1865,9 +1865,9 @@ Example: "Send a text message to the customer confirming their appointment"`;
             </button>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Test Results</h4>
-            <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+          <div className="mt-6 pt-6 border-t border-border">
+            <h4 className="font-medium text-foreground mb-3">Test Results</h4>
+            <div className="p-4 bg-secondary rounded-lg border border-border text-sm text-foreground">
               Run a test to see results here...
             </div>
           </div>
@@ -1877,9 +1877,9 @@ Example: "Send a text message to the customer confirming their appointment"`;
   );
 
   return (
-    <div className="h-screen flex flex-col bg-gray-100 dark:bg-gray-900">
+    <div className="h-screen flex flex-col bg-secondary">
       {/* Top Header */}
-      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-2 flex items-center justify-between">
+      <div className="bg-card border-b border-border px-4 py-2 flex items-center justify-between">
         <div className="flex items-center gap-4">
           {!showSidebar && (
             <button
@@ -1892,7 +1892,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
           <div className="flex items-center gap-2">
             <WorkflowIcon className="w-5 h-5 text-blue-600" />
-            <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+            <h1 className="text-lg font-bold text-foreground">
               {currentWorkflow ? currentWorkflow.name : 'Workflows'}
             </h1>
           </div>
@@ -1909,7 +1909,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
           <button
             onClick={() => navigate('/app/marketplace')}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-foreground hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
           >
             <ShoppingBag className="w-3.5 h-3.5" />
             Marketplace
@@ -1936,7 +1936,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg ${
                   currentWorkflow.enabled
                     ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                    : 'bg-secondary text-muted-foreground'
                 }`}
               >
                 {currentWorkflow.enabled ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -1957,13 +1957,13 @@ Example: "Send a text message to the customer confirming their appointment"`;
 
       {/* Tab Bar */}
       {currentWorkflow && (
-        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 flex gap-1">
+        <div className="bg-card border-b border-border px-4 flex gap-1">
           <button
             onClick={() => setActiveTab('editor')}
             className={`px-3 py-1.5 text-xs font-medium border-b-2 transition-colors ${
               activeTab === 'editor'
                 ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                : 'border-transparent text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             <Zap className="w-3.5 h-3.5 inline mr-1.5" />
@@ -1975,7 +1975,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
             className={`px-3 py-1.5 text-xs font-medium border-b-2 transition-colors ${
               activeTab === 'executions'
                 ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                : 'border-transparent text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             <History className="w-3.5 h-3.5 inline mr-1.5" />
@@ -1987,7 +1987,7 @@ Example: "Send a text message to the customer confirming their appointment"`;
             className={`px-3 py-1.5 text-xs font-medium border-b-2 transition-colors ${
               activeTab === 'playground'
                 ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                : 'border-transparent text-muted-foreground hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             <TestTube className="w-3.5 h-3.5 inline mr-1.5" />
@@ -2003,11 +2003,11 @@ Example: "Send a text message to the customer confirming their appointment"`;
         {!currentWorkflow ? (
           <div className="flex-1 flex items-center justify-center p-6">
             <div className="text-center max-w-md">
-              <WorkflowIcon className="w-20 h-20 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <WorkflowIcon className="w-20 h-20 text-gray-700 dark:text-gray-100 dark:text-gray-600 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-foreground mb-2">
                 Welcome to Workflow Studio
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Create powerful automation workflows with visual drag-and-drop editor, AI assistance, and integrated testing
               </p>
               <button

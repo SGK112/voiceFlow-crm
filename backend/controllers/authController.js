@@ -406,37 +406,59 @@ export const googleAuth = async (req, res) => {
       name = payload.name;
     }
 
-    let user = await User.findOne({ $or: [{ googleId }, { email }] });
+    // SECURITY FIX: Strict user lookup to prevent data leakage between accounts
+    // Always match ONLY by Google ID - never by email for Google OAuth
+    let user = await User.findOne({ googleId });
+    let isNewUser = false;
 
-    if (user && !user.googleId) {
-      user.googleId = googleId;
-      await user.save();
-    } else if (!user) {
-      user = await User.create({
-        email,
-        googleId,
-        company: name || email.split('@')[0],
-        plan: 'trial',
-        subscriptionStatus: 'trialing'
-      });
+    if (!user) {
+      // Check if an email/password account exists with this email
+      const existingEmailUser = await User.findOne({ email, googleId: { $exists: false } });
 
-      const now = new Date();
-      const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      const planLimits = {
-        trial: { minutes: 30, agents: 1 },
-        starter: { minutes: 200, agents: 1 },
-        professional: { minutes: 1000, agents: 5 },
-        enterprise: { minutes: 5000, agents: Infinity }
-      };
-      const limits = planLimits[user.plan] || planLimits.trial;
+      if (existingEmailUser) {
+        // Link the existing email/password account to this Google account
+        existingEmailUser.googleId = googleId;
+        await existingEmailUser.save();
+        user = existingEmailUser;
+        console.log(`✅ Linked existing account ${email} to Google ID ${googleId}`);
+      } else {
+        // Create a new user for this Google account
+        // If email already exists (from another Google account), make it unique
+        const emailExists = await User.findOne({ email });
+        const uniqueEmail = emailExists ? `${googleId}@google-account.local` : email;
 
-      await Usage.create({
-        userId: user._id,
-        month,
-        plan: user.plan,
-        minutesIncluded: limits.minutes,
-        agentsLimit: limits.agents
-      });
+        user = await User.create({
+          email: uniqueEmail,
+          googleId,
+          company: name || email.split('@')[0],
+          plan: 'trial',
+          subscriptionStatus: 'trialing'
+        });
+
+        isNewUser = true;
+        console.log(`✅ Created new account for Google ID ${googleId} with email ${uniqueEmail}`);
+      }
+
+      // Only create usage record for brand new users
+      if (isNewUser) {
+        const now = new Date();
+        const month = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const planLimits = {
+          trial: { minutes: 30, agents: 1 },
+          starter: { minutes: 200, agents: 1 },
+          professional: { minutes: 1000, agents: 5 },
+          enterprise: { minutes: 5000, agents: Infinity }
+        };
+        const limits = planLimits[user.plan] || planLimits.trial;
+
+        await Usage.create({
+          userId: user._id,
+          month,
+          plan: user.plan,
+          minutesIncluded: limits.minutes,
+          agentsLimit: limits.agents
+        });
+      }
     }
 
     const token = generateToken(user._id);

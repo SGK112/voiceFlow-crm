@@ -328,7 +328,7 @@ Return ONLY valid JSON in this exact format (no markdown, no explanation):
   async chat(prompt, options = {}) {
     const maxTokens = options.maxTokens || 1500;
     const temperature = options.temperature || 0.7;
-    const model = options.model || null;
+    const model = options.model || 'gpt-4o-mini';
 
     try {
       switch (this.activeProvider) {

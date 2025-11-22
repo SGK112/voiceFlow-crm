@@ -3,6 +3,8 @@ import CallLog from '../models/CallLog.js';
 import User from '../models/User.js';
 import ElevenLabsService from '../services/elevenLabsService.js';
 import VoiceAgentWorkflowService from '../services/voiceAgentWorkflowService.js';
+import { expandedAgentTemplates } from '../config/expandedAgentTemplates.js';
+import { syncTransferSettingsToElevenLabs, getTransferStatus } from '../services/elevenlabsTransferService.js';
 
 // Factory function to get ElevenLabs service with platform credentials
 const getElevenLabsService = () => {
@@ -138,6 +140,16 @@ export const createAgent = async (req, res) => {
       elevenLabsAgentId = elevenLabsAgent.agent_id || elevenLabsAgent.id;
       console.log(`✅ [CREATE AGENT] ElevenLabs agent created: ${elevenLabsAgentId}`);
 
+      // Configure post-call webhook for automated processing (vendor lists, appointments, etc.)
+      try {
+        console.log('🔗 [CREATE AGENT] Configuring post-call webhook...');
+        await elevenLabsService.configurePostCallWebhook(elevenLabsAgentId);
+        console.log('✅ [CREATE AGENT] Post-call webhook configured');
+      } catch (webhookError) {
+        console.warn('⚠️  [CREATE AGENT] Failed to configure post-call webhook:', webhookError.message);
+        // Don't fail the whole request if webhook configuration fails
+      }
+
     } catch (elevenLabsError) {
       console.error('❌ [CREATE AGENT] Failed to create ElevenLabs agent:', elevenLabsError.message);
 
@@ -240,7 +252,7 @@ export const updateAgent = async (req, res) => {
       return res.status(404).json({ message: 'Agent not found' });
     }
 
-    const { name, script, phoneNumber, enabled, availability, configuration } = req.body;
+    const { name, script, phoneNumber, enabled, availability, configuration, voiceId, voiceName, firstMessage } = req.body;
 
     if (name) agent.name = name;
     if (script) agent.script = script;
@@ -248,14 +260,31 @@ export const updateAgent = async (req, res) => {
     if (enabled !== undefined) agent.enabled = enabled;
     if (availability) agent.availability = { ...agent.availability, ...availability };
     if (configuration) agent.configuration = { ...agent.configuration, ...configuration };
+    if (voiceId) agent.voiceId = voiceId;
+    if (voiceName) agent.voiceName = voiceName;
+    if (firstMessage) agent.firstMessage = firstMessage;
 
-    if (script && agent.elevenLabsAgentId) {
+    // Update ElevenLabs agent if any relevant fields changed
+    if ((script || voiceId || firstMessage || name) && agent.elevenLabsAgentId) {
       try {
         const elevenLabsService = getElevenLabsService();
-        await elevenLabsService.updateAgent(agent.elevenLabsAgentId, {
+        const updatePayload = {
           name: agent.name,
           script: agent.script
-        });
+        };
+
+        // Include voiceId if it's being updated
+        if (voiceId) {
+          updatePayload.voiceId = voiceId;
+          console.log(`🎙️ Updating voice for agent ${agent.elevenLabsAgentId} to ${voiceName || voiceId}`);
+        }
+
+        // Include firstMessage if provided
+        if (firstMessage) {
+          updatePayload.firstMessage = firstMessage;
+        }
+
+        await elevenLabsService.updateAgent(agent.elevenLabsAgentId, updatePayload);
 
         // CRITICAL FIX: Re-assign phone number after updating agent config
         // ElevenLabs API clears phone assignment when agent is updated
@@ -336,6 +365,9 @@ export const getVoices = async (req, res) => {
 
 export const getAgentTemplates = async (req, res) => {
   try {
+    // Get filter parameters from query
+    const { category, industry, search } = req.query;
+
     const templates = [
       // === CONSTRUCTION TRADE AGENTS ===
       {
@@ -345,6 +377,7 @@ export const getAgentTemplates = async (req, res) => {
         description: 'Schedule plumbing jobs and emergency calls',
         icon: '🔧',
         category: 'construction',
+        industry: 'Construction',
         script: `You are a professional plumber dispatch assistant for {{company_name}}.
 
 CUSTOMER INFORMATION:
@@ -385,6 +418,7 @@ If emergency, dispatch within 2 hours. Otherwise, offer next available slot.`,
         description: 'Gather project details and schedule estimates',
         icon: '🪚',
         category: 'construction',
+        industry: 'Construction',
         script: `You are a carpentry project estimator for {{company_name}}.
 
 CLIENT INFORMATION:
@@ -1093,8 +1127,48 @@ TONE: Appreciative, understanding, excited to have them back`,
       }
     ];
 
-    res.json(templates);
+    // Merge with expanded templates from separate file
+    const allTemplates = [
+      ...templates,
+      ...Object.values(expandedAgentTemplates)
+    ];
+
+    // Apply filters if provided
+    let filteredTemplates = allTemplates;
+
+    if (category) {
+      filteredTemplates = filteredTemplates.filter(t =>
+        t.category === category
+      );
+    }
+
+    if (industry) {
+      filteredTemplates = filteredTemplates.filter(t =>
+        t.industry === industry
+      );
+    }
+
+    if (search) {
+      const searchLower = search.toLowerCase();
+      filteredTemplates = filteredTemplates.filter(t =>
+        t.name.toLowerCase().includes(searchLower) ||
+        t.description.toLowerCase().includes(searchLower) ||
+        (t.tags && t.tags.some(tag => tag.toLowerCase().includes(searchLower)))
+      );
+    }
+
+    // Get unique industries and categories for frontend filtering
+    const industries = [...new Set(allTemplates.map(t => t.industry).filter(Boolean))].sort();
+    const categories = [...new Set(allTemplates.map(t => t.category).filter(Boolean))].sort();
+
+    res.json({
+      templates: filteredTemplates,
+      total: filteredTemplates.length,
+      industries,
+      categories
+    });
   } catch (error) {
+    console.error('Error fetching agent templates:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -1150,9 +1224,10 @@ export const getAgentPerformance = async (req, res) => {
 // Test call - make a quick test call with an agent
 export const testCall = async (req, res) => {
   try {
-    const { agentId, phoneNumber } = req.body;
+    const { agentId, phoneNumber, type = 'outbound' } = req.body;
 
     console.log('\n📞 [TEST CALL] Initiating test call via Twilio + ElevenLabs');
+    console.log('   Type:', type);
     console.log('   Agent ID:', agentId);
     console.log('   Phone:', phoneNumber);
 
@@ -1207,17 +1282,32 @@ export const testCall = async (req, res) => {
       });
     }
 
-    // Make outbound call using Twilio + ElevenLabs WebSocket
+    // Make call based on type (inbound or outbound)
     console.log('   Initiating Twilio call with ElevenLabs WebSocket...');
 
-    const call = await twilioService.makeCallWithElevenLabs(
-      twilioFromNumber,
-      formattedNumber,
-      agent.elevenLabsAgentId
-    );
+    let call, callDirection;
+
+    if (type === 'inbound') {
+      // INBOUND: Agent calls the user's number (we call them, they answer and talk to agent)
+      call = await twilioService.makeCallWithElevenLabs(
+        twilioFromNumber,
+        formattedNumber,
+        agent.elevenLabsAgentId
+      );
+      callDirection = 'outbound'; // From our perspective it's outbound, but it's "inbound test" for user
+      console.log('   ✅ Inbound test call initiated (calling user):', call.sid);
+    } else {
+      // OUTBOUND: Agent calls a specified number (could be a lead, customer, etc.)
+      call = await twilioService.makeCallWithElevenLabs(
+        twilioFromNumber,
+        formattedNumber,
+        agent.elevenLabsAgentId
+      );
+      callDirection = 'outbound';
+      console.log('   ✅ Outbound test call initiated:', call.sid);
+    }
 
     const callId = call.sid;
-    console.log('   ✅ Call initiated via Twilio:', callId);
 
     // Log the call
     await CallLog.create({
@@ -1226,9 +1316,10 @@ export const testCall = async (req, res) => {
       elevenLabsCallId: callId,
       phoneNumber: formattedNumber,
       status: 'initiated',
-      direction: 'outbound',
+      direction: callDirection,
       metadata: {
         testCall: true,
+        testType: type,
         twilioCallSid: callId,
         fromNumber: twilioFromNumber,
         method: 'twilio_elevenlabs_websocket'
@@ -1237,8 +1328,9 @@ export const testCall = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Test call initiated successfully via Twilio',
+      message: `${type === 'inbound' ? 'Inbound' : 'Outbound'} test call initiated successfully via Twilio`,
       callId: callId,
+      type: type,
       method: 'twilio_elevenlabs_websocket'
     });
 
@@ -1937,6 +2029,126 @@ export const disconnectWorkflow = async (req, res) => {
     });
   } catch (error) {
     console.error('Disconnect workflow error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Update call transfer settings for an agent
+ */
+export const updateTransferSettings = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { enabled, transferNumber, transferType, transferConditions, transferMessage } = req.body;
+
+    const agent = await VoiceAgent.findOne({ _id: id, userId: req.user._id });
+
+    if (!agent) {
+      return res.status(404).json({ message: 'Agent not found' });
+    }
+
+    // Update transfer settings
+    agent.callTransfer = {
+      enabled: enabled || false,
+      transferNumber: transferNumber || agent.callTransfer?.transferNumber,
+      transferType: transferType || agent.callTransfer?.transferType || 'conference',
+      transferConditions: transferConditions || agent.callTransfer?.transferConditions || [],
+      transferMessage: transferMessage || agent.callTransfer?.transferMessage || 'Let me connect you with someone who can help you with that. One moment please.'
+    };
+
+    await agent.save();
+
+    // Sync to ElevenLabs if agent has ElevenLabs ID
+    let syncResult = null;
+    if (agent.elevenLabsAgentId) {
+      try {
+        syncResult = await syncTransferSettingsToElevenLabs(agent);
+      } catch (syncError) {
+        console.error('Error syncing to ElevenLabs:', syncError);
+        return res.status(500).json({
+          message: 'Transfer settings saved but failed to sync to ElevenLabs',
+          error: syncError.message,
+          agent
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Transfer settings updated successfully',
+      agent,
+      syncResult
+    });
+
+  } catch (error) {
+    console.error('Update transfer settings error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Get transfer settings status from ElevenLabs
+ */
+export const getTransferSettingsStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const agent = await VoiceAgent.findOne({ _id: id, userId: req.user._id });
+
+    if (!agent) {
+      return res.status(404).json({ message: 'Agent not found' });
+    }
+
+    if (!agent.elevenLabsAgentId) {
+      return res.json({
+        database: agent.callTransfer || { enabled: false },
+        elevenlabs: null,
+        synced: false
+      });
+    }
+
+    // Get status from ElevenLabs
+    const elevenLabsStatus = await getTransferStatus(agent.elevenLabsAgentId);
+
+    res.json({
+      database: agent.callTransfer || { enabled: false },
+      elevenlabs: elevenLabsStatus,
+      synced: agent.callTransfer?.enabled === elevenLabsStatus.enabled
+    });
+
+  } catch (error) {
+    console.error('Get transfer status error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Sync transfer settings to ElevenLabs manually
+ */
+export const syncTransferSettings = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const agent = await VoiceAgent.findOne({ _id: id, userId: req.user._id });
+
+    if (!agent) {
+      return res.status(404).json({ message: 'Agent not found' });
+    }
+
+    if (!agent.elevenLabsAgentId) {
+      return res.status(400).json({ message: 'Agent does not have an ElevenLabs agent ID' });
+    }
+
+    const result = await syncTransferSettingsToElevenLabs(agent);
+
+    res.json({
+      success: true,
+      message: 'Transfer settings synced to ElevenLabs successfully',
+      result
+    });
+
+  } catch (error) {
+    console.error('Sync transfer settings error:', error);
     res.status(500).json({ message: error.message });
   }
 };
